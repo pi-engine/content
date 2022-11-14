@@ -24,13 +24,12 @@ class ItemListHandler implements RequestHandlerInterface
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface   $streamFactory,
-        ItemService      $itemService
-    )
-    {
+        StreamFactoryInterface $streamFactory,
+        ItemService $itemService
+    ) {
         $this->responseFactory = $responseFactory;
-        $this->streamFactory = $streamFactory;
-        $this->itemService = $itemService;
+        $this->streamFactory   = $streamFactory;
+        $this->itemService     = $itemService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -43,17 +42,15 @@ class ItemListHandler implements RequestHandlerInterface
         $requestBody = $request->getParsedBody();
 
 
-
         // Get order after store data
-        $result = $this->itemService->getItemList($requestBody );
-
+        $result = $this->itemService->getItemList($requestBody);
 
 
         // Set result
         $result = [
             'result' => true,
-            'data' => $result,
-            'error' => [],
+            'data'   => $result,
+            'error'  => [],
         ];
 
         return new JsonResponse($result);

@@ -24,13 +24,12 @@ class ItemDetailHandler implements RequestHandlerInterface
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface   $streamFactory,
-        ItemService      $itemService
-    )
-    {
+        StreamFactoryInterface $streamFactory,
+        ItemService $itemService
+    ) {
         $this->responseFactory = $responseFactory;
-        $this->streamFactory = $streamFactory;
-        $this->itemService = $itemService;
+        $this->streamFactory   = $streamFactory;
+        $this->itemService     = $itemService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -43,9 +42,9 @@ class ItemDetailHandler implements RequestHandlerInterface
             // Set result
             $result = [
                 'result' => false,
-                'data' => [],
-                'error' => [
-                    'message' => 'Set slug !'
+                'data'   => [],
+                'error'  => [
+                    'message' => 'Set slug !',
                 ],
             ];
         } else {
@@ -55,8 +54,8 @@ class ItemDetailHandler implements RequestHandlerInterface
             // Set result
             $result = [
                 'result' => true,
-                'data' => $result,
-                'error' => [],
+                'data'   => $result,
+                'error'  => [],
             ];
         }
 

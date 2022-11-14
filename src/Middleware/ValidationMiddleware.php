@@ -58,7 +58,8 @@ class ValidationMiddleware implements MiddlewareInterface
 
             default:
                 $request = $request->withAttribute('status', StatusCodeInterface::STATUS_FORBIDDEN);
-                $request = $request->withAttribute('error',
+                $request = $request->withAttribute(
+                    'error',
                     [
                         'message' => 'Validator not set !',
                         'code'    => StatusCodeInterface::STATUS_FORBIDDEN,
@@ -71,7 +72,8 @@ class ValidationMiddleware implements MiddlewareInterface
         // Check if validation result is not true
         if (!$this->validationResult['status']) {
             $request = $request->withAttribute('status', $this->validationResult['code']);
-            $request = $request->withAttribute('error',
+            $request = $request->withAttribute(
+                'error',
                 [
                     'message' => $this->validationResult['message'],
                     'code'    => $this->validationResult['code'],

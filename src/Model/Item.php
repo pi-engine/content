@@ -4,15 +4,15 @@ namespace Content\Model;
 
 class Item
 {
-    private mixed $id;
+    private mixed  $id;
     private string $title;
     private string $slug;
     private string $type;
-    private int $status;
-    private int $user_id;
-    private int $time_create;
-    private int $time_update;
-    private int $time_delete;
+    private int    $status;
+    private int    $user_id;
+    private int    $time_create;
+    private int    $time_update;
+    private int    $time_delete;
     private string $information;
 
     public function __construct(
@@ -27,16 +27,16 @@ class Item
         $information,
         $id = null
     ) {
-        $this->title = $title;
-        $this->slug = $slug;
-        $this->type = $type;
-        $this->status = $status;
-        $this->user_id = $user_id;
+        $this->title       = $title;
+        $this->slug        = $slug;
+        $this->type        = $type;
+        $this->status      = $status;
+        $this->user_id     = $user_id;
         $this->time_create = $time_create;
         $this->time_update = $time_update;
         $this->time_delete = $time_delete;
         $this->information = $information;
-        $this->id = $id;
+        $this->id          = $id;
     }
 
     /**

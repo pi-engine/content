@@ -10,7 +10,7 @@ interface ItemRepositoryInterface
 
     public function getItem($parameter, $type): object|array;
 
-    public function getItemCount(array $params = []) : int;
+    public function getItemCount(array $params = []): int;
 
     public function addItem($params, $account);
 

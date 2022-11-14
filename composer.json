@@ -32,7 +32,6 @@
     "ext-pdo": "*",
     "ext-spl": "*",
     "lib-curl": "*",
-
     "laminas/laminas-mvc": "^3.1.1",
     "laminas/laminas-mvc-i18n": "^1.2.0",
     "laminas/laminas-mvc-plugins": "^1.1.0",
@@ -51,13 +50,11 @@
     "laminas/laminas-permissions-rbac": "^3.2",
     "laminas/laminas-i18n": "^2.14"
   },
-
   "autoload": {
     "psr-4": {
       "User\\": "vendor/pi/notification/src/"
     }
   },
-
   "suggest": {
     "ext-apc": "for opcode cache and system persistent data",
     "ext-discount": "for Markdown text parsing",
