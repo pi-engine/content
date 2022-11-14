@@ -35,19 +35,11 @@ class ItemListHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-
-        // Get account
-        $account = $request->getAttribute('account');
-
         // Get request body
         $requestBody = $request->getParsedBody();
 
-
-
         // Get order after store data
-        $result = $this->itemService->getItemList($requestBody );
-
-
+        $result = $this->itemService->getItemList($requestBody);
 
         // Set result
         $result = [

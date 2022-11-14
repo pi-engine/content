@@ -13,49 +13,115 @@ class ItemService implements ServiceInterface
      * @param ItemRepositoryInterface $itemRepository
      */
     public function __construct(
-        ItemRepositoryInterface       $itemRepository
-    )
-    {
+        ItemRepositoryInterface $itemRepository
+    ) {
         $this->itemRepository = $itemRepository;
     }
 
-    protected array $allowType = [
-         'category', 'location', 'product', 'video', 'business', 'blog'
-    ];
+    protected array $allowType
+        = [
+            'category', 'location', 'product', 'video', 'business', 'blog',
+        ];
 
     /**
-     * @param $params
-     * @param $account
+     * @param array $params
      *
      * @return array
      */
-    public function getItemList($params )
+    public function getItemList(array $params): array
     {
-        // Get items list
-        $limit = (int)($params['limit'] ?? 10);
-        $page = (int)($params['page'] ?? 1);
-        $type = $params['type'] ??  "item";
-        $parent_id = (int)($params['parent_id'] ?? 0);
-        $item = $params['item'] ?? ['created_at DESC', 'id DESC'];
+        $limit  = $params['limit'] ?? 25;
+        $page   = $params['page'] ?? 1;
+        $order  = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
 
-        // Set params
+        // ToDo: add filter
         $listParams = [
-            'page' => $page,
-            'parent_id' => $parent_id,
-            'limit' => $limit,
-            'item' => $item,
+            'order'  => $order,
             'offset' => $offset,
-            'type' => $type,
+            'limit'  => $limit,
+            'type'   => isset($params['type']) ?? '',
+            'status' => 1,
         ];
-        return $this->itemRepository->getItemList($listParams);
 
+        // Get list
+        $list   = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+
+        // Get count
+        $count = $this->itemRepository->getItemCount($listParams);
+
+        return [
+            'result' => true,
+            'data'   => [
+                'list'      => $list,
+                'paginator' => [
+                    'count' => $count,
+                    'limit' => $limit,
+                    'page'  => $page,
+                ],
+            ],
+            'error'  => [],
+        ];
     }
 
-    public function getItem($params, $account)
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return array
+     */
+    public function getItem(string $parameter, string $type = 'id'): array
     {
-        return $this->itemRepository->getItem($params);
+        $item = $this->itemRepository->getItem($parameter, $type);
+        return $this->canonizeItem($item);
     }
+
+    /**
+     * @param object|array $item
+     *
+     * @return array
+     */
+    public function canonizeItem(object|array $item): array
+    {
+        if (empty($item)) {
+            return [];
+        }
+
+        if (is_object($item)) {
+            $item = [
+                'id'          => $item->getId(),
+                'title'       => $item->getTitle(),
+                'slug'        => $item->getSlug(),
+                'type'        => $item->getType(),
+                'status'      => $item->getStatus(),
+                'user_id'     => $item->getUserId(),
+                'time_create' => $item->getTimeCreate(),
+                'time_update' => $item->getTimeUpdate(),
+                'time_delete' => $item->getTimeDelete(),
+                'information' => $item->getInformation(),
+            ];
+        } else {
+            $item = [
+                'id'          => $item['id'],
+                'title'       => $item['title'],
+                'slug'        => $item['slug'],
+                'type'        => $item['type'],
+                'status'      => $item['status'],
+                'user_id'     => $item['user_id'],
+                'time_create' => $item['time_create'],
+                'time_update' => $item['time_update'],
+                'time_delete' => $item['time_delete'],
+                'information' => $item['information'],
+            ];
+        }
+
+        return $item;
+    }
+
 
     // ToDo: update it
     public function editItem($params, $account)
@@ -65,53 +131,15 @@ class ItemService implements ServiceInterface
     }
 
     // ToDo: update it
-    public function addItem($params,)
+    public function addItem($params, $account)
     {
-        return $this->itemRepository->addItem($params);
+        return $this->itemRepository->addItem($params, $account);
     }
 
     // ToDo: update it
     public function deleteItem($params, $account)
     {
         $params["time_deleted"] = time();
-        return $this->itemRepository->deleteItem($params);
+        return $this->itemRepository->deleteItem($params, $account);
     }
-
-    public function canonizeItem($item): array
-    {
-        if (empty($item)) {
-            return [];
-        }
-
-        if (is_object($item)) {
-            $item = [
-                'id'                  => $item->getId(),
-                'title'                  => $item->getTitle(),
-                'slug'                  => $item->getSlug(),
-                'type'                  => $item->getType(),
-                'status'                  => $item->getStatus(),
-                'user_id'             => $item->getUserId(),
-                'time_create'             => $item->getTimeCreate(),
-                'time_update'             => $item->getTimeUpdate(),
-                'time_delete'             => $item->getTimeDelete(),
-                'information'             => $item->getInformation(),
-            ];
-        } else {
-            $item = [
-                'id'                  => $item['id'],
-                'title'             => $item['title'],
-                'slug'             => $item['slug'],
-                'type'             => $item['type'],
-                'status'             => $item['status'],
-                'user_id'             => $item['user_id'],
-                'time_create'             => $item['time_create'],
-                'time_update'             => $item['time_update'],
-                'time_delete'             => $item['time_delete'],
-                'information'             => $item['information'],
-            ];
-        }
-
-        return $item;
-    }
-
 }

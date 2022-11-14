@@ -6,6 +6,7 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Db\Sql\Insert;
+use Laminas\Db\Sql\Predicate\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Update;
 use Laminas\Hydrator\HydratorInterface;
@@ -43,59 +44,107 @@ class ItemRepository implements ItemRepositoryInterface
     private $config;
 
     public function __construct(
-        AdapterInterface  $db,
+        AdapterInterface $db,
         HydratorInterface $hydrator,
-        Item             $itemPrototype
-    )
-    {
-        $this->db = $db;
-        $this->hydrator = $hydrator;
+        Item $itemPrototype
+    ) {
+        $this->db            = $db;
+        $this->hydrator      = $hydrator;
         $this->itemPrototype = $itemPrototype;
     }
 
-    public function getItemList($params)
+    /**
+     * @param array $params
+     *
+     * @return HydratingResultSet|array
+     */
+    public function getItemList($params): HydratingResultSet|array
     {
-        $where = ["time_deleted"=>0];
-        $sql = new Sql($this->db);
-        $select = $sql->select($this->tableItem)->where($where)->order("id DESC")->offset($params['offset'])->limit($params['limit']);
+        $where = [];
+        if (isset($params['user_id']) && !empty($params['user_id'])) {
+            $where['user_id'] = $params['user_id'];
+        }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
+        if (isset($params['status']) && !empty($params['status'])) {
+            $where['status'] = $params['status'];
+        }
+        if (isset($params['id']) && !empty($params['id'])) {
+            $where['id'] = $params['id'];
+        }
+
+        $sql       = new Sql($this->db);
+        $select    = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $result    = $statement->execute();
 
         if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            throw new RuntimeException(sprintf(
-                'Failed retrieving blog post with identifier "%s"; unknown database error.',
-                $params
-            ));
+            return [];
         }
 
         $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
         $resultSet->initialize($result);
-        $resultSet->buffer();
 
-        return $resultSet->toArray();
+        return $resultSet;
     }
 
-    public function getItem($params)
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return object|array
+     */
+    public function getItem($parameter, $type = 'id'): object|array
     {
-        $where = ['id' => $params['id']];
-        $sql = new Sql($this->db);
-        $select = $sql->select($this->tableItem)->where($where);
+        $where = [$type => $parameter];
+
+        $sql       = new Sql($this->db);
+        $select    = $sql->select($this->tableItem)->where($where);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $result    = $statement->execute();
 
         if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            throw new RuntimeException(sprintf(
-                'Failed retrieving blog post with identifier "%s"; unknown database error.',
-                $params
-            ));
+            throw new RuntimeException(
+                sprintf(
+                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
+                    $parameter
+                )
+            );
         }
 
         $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
         $resultSet->initialize($result);
-        $resultSet->buffer();
+        $item = $resultSet->current();
 
-        /// TODO : return a object
-        return sizeof($resultSet->toArray()) > 0 ? $resultSet->toArray()[0] : [];
+        if (!$item) {
+            return [];
+        }
+
+        return $item;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return int
+     */
+    public function getItemCount(array $params = []): int
+    {
+        // Set where
+        $columns = ['count' => new Expression('count(*)')];
+        $where   = [];
+
+        if (isset($params['status']) && is_numeric($params['status'])) {
+            $where['status'] = $params['status'];
+        }
+
+        $sql       = new Sql($this->db);
+        $select    = $sql->select($this->tableItem)->columns($columns)->where($where);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $row       = $statement->execute()->current();
+
+        return (int)$row['count'];
     }
 
     /**
@@ -103,16 +152,16 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return int $notificationId
      */
-    public function addItem($params)
+    public function addItem($params, $account)
     {
         $data = $params;
 
         $insert = new Insert($this->tableItem);
         $insert->values($data);
 
-        $sql = new Sql($this->db);
+        $sql       = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($insert);
-        $result = $statement->execute();
+        $result    = $statement->execute();
 
         if (!$result instanceof ResultInterface) {
             throw new RuntimeException(
@@ -120,10 +169,9 @@ class ItemRepository implements ItemRepositoryInterface
             );
         }
         $params['id'] = $result->getGeneratedValue();
-        $result = $this->getItem($params);
+        $result       = $this->getItem($params);
         return $result;
     }
-
 
     /**
      * @param array $params
@@ -136,9 +184,9 @@ class ItemRepository implements ItemRepositoryInterface
         $update->set($params);
         $update->where(['id' => $params["id"]]);
 
-        $sql = new Sql($this->db);
+        $sql       = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
+        $result    = $statement->execute();
 
         if (!$result instanceof ResultInterface) {
             throw new RuntimeException(
@@ -148,21 +196,20 @@ class ItemRepository implements ItemRepositoryInterface
         return $this->getItem($params);
     }
 
-
     /**
      * @param array $params
      *
      * @return int $notificationId
      */
-    public function deleteItem($params)
+    public function deleteItem($params, $account)
     {
         $update = new Update($this->tableItem);
         $update->set($params);
         $update->where(['id' => $params["id"]]);
 
-        $sql = new Sql($this->db);
+        $sql       = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
+        $result    = $statement->execute();
 
         if (!$result instanceof ResultInterface) {
             throw new RuntimeException(
