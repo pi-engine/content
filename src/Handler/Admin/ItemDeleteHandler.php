@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Item;
+namespace Content\Handler\Admin;
 
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -10,7 +10,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Content\Service\ItemService;
 
-class ItemDetailHandler implements RequestHandlerInterface
+class ItemDeleteHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -42,8 +42,11 @@ class ItemDetailHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
 
+
+
         // Get list of notifications
-        $result = $this->itemService->getItem($requestBody, $account);
+        $result = $this->itemService->deleteItem($requestBody, $account);
+
 
         // Get record
         // $result = [];

@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Item;
+namespace Content\Handler\Api;
 
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -10,7 +10,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Content\Service\ItemService;
 
-class ItemUpdateHandler implements RequestHandlerInterface
+class ItemListHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -44,12 +44,10 @@ class ItemUpdateHandler implements RequestHandlerInterface
 
 
 
-        // Get list of notifications
-        $result = $this->itemService->updateItem($requestBody, $account);
+        // Get order after store data
+        $result = $this->itemService->getItemList($requestBody );
 
 
-        // Get record
-        // $result = [];
 
         // Set result
         $result = [

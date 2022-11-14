@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Factory\Handler\Api\Item;
+namespace Content\Factory\Handler\Admin;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -8,7 +8,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Content\Handler\Api\Item\ItemDeleteHandler;
+use Content\Handler\Admin\ItemDeleteHandler;
 use Content\Service\ItemService;
 
 class ItemDeleteHandlerFactory implements FactoryInterface

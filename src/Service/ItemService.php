@@ -9,7 +9,6 @@ class ItemService implements ServiceInterface
     /* @var ItemRepositoryInterface */
     protected ItemRepositoryInterface $itemRepository;
 
-
     /**
      * @param ItemRepositoryInterface $itemRepository
      */
@@ -19,6 +18,10 @@ class ItemService implements ServiceInterface
     {
         $this->itemRepository = $itemRepository;
     }
+
+    protected array $allowType = [
+         'category', 'location', 'product', 'video', 'business', 'blog'
+    ];
 
     /**
      * @param $params
@@ -54,23 +57,61 @@ class ItemService implements ServiceInterface
         return $this->itemRepository->getItem($params);
     }
 
-    public function updateItem($params, $account)
+    // ToDo: update it
+    public function editItem($params, $account)
     {
         $params["time_deleted"] = time();
-        return $this->itemRepository->updateItem($params, $account);
+        return $this->itemRepository->editItem($params, $account);
     }
 
-    public function storeItem($params,)
+    // ToDo: update it
+    public function addItem($params,)
     {
-        return $this->itemRepository->storeItem($params);
+        return $this->itemRepository->addItem($params);
     }
 
-
-
+    // ToDo: update it
     public function deleteItem($params, $account)
     {
         $params["time_deleted"] = time();
         return $this->itemRepository->deleteItem($params);
+    }
+
+    public function canonizeItem($item): array
+    {
+        if (empty($item)) {
+            return [];
+        }
+
+        if (is_object($item)) {
+            $item = [
+                'id'                  => $item->getId(),
+                'title'                  => $item->getTitle(),
+                'slug'                  => $item->getSlug(),
+                'type'                  => $item->getType(),
+                'status'                  => $item->getStatus(),
+                'user_id'             => $item->getUserId(),
+                'time_create'             => $item->getTimeCreate(),
+                'time_update'             => $item->getTimeUpdate(),
+                'time_delete'             => $item->getTimeDelete(),
+                'information'             => $item->getInformation(),
+            ];
+        } else {
+            $item = [
+                'id'                  => $item['id'],
+                'title'             => $item['title'],
+                'slug'             => $item['slug'],
+                'type'             => $item['type'],
+                'status'             => $item['status'],
+                'user_id'             => $item['user_id'],
+                'time_create'             => $item['time_create'],
+                'time_update'             => $item['time_update'],
+                'time_delete'             => $item['time_delete'],
+                'information'             => $item['information'],
+            ];
+        }
+
+        return $item;
     }
 
 }

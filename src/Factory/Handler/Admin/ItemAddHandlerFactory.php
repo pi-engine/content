@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Factory\Handler\Api\Item;
+namespace Content\Factory\Handler\Admin;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -8,23 +8,23 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Content\Handler\Api\Item\ItemDetailHandler;
+use Content\Handler\Admin\ItemAddHandler;
 use Content\Service\ItemService;
 
-class ItemDetailHandlerFactory implements FactoryInterface
+class ItemAddHandlerFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param null|array         $options
      *
-     * @return ItemDetailHandler
+     * @return ItemAddHandler
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ItemDetailHandler
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ItemAddHandler
     {
-        return new ItemDetailHandler(
+        return new ItemAddHandler(
             $container->get(ResponseFactoryInterface::class),
             $container->get(StreamFactoryInterface::class),
             $container->get(ItemService::class)

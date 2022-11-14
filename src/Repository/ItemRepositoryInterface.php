@@ -6,7 +6,7 @@ interface ItemRepositoryInterface
 {
     public function getItemList($params);
     public function getItem($params);
-    public function updateItem($params,$account);
-    public function storeItem($params);
+    public function editItem($params,$account);
+    public function addItem($params);
     public function deleteItem($params);
 }

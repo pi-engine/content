@@ -9,7 +9,7 @@ use Laminas\Db\Sql\Insert;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Update;
 use Laminas\Hydrator\HydratorInterface;
-use Content\Model\Item\Item;
+use Content\Model\Item;
 use RuntimeException;
 use InvalidArgumentException;
 
@@ -23,7 +23,6 @@ class ItemRepository implements ItemRepositoryInterface
      */
     private string $tableItem = 'content_item';
 
-
     /**
      * @var AdapterInterface
      */
@@ -33,8 +32,6 @@ class ItemRepository implements ItemRepositoryInterface
      * @var Item
      */
     private Item $itemPrototype;
-
-
 
     /**
      * @var HydratorInterface
@@ -106,7 +103,7 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return int $notificationId
      */
-    public function storeItem($params)
+    public function addItem($params)
     {
         $data = $params;
 
@@ -133,7 +130,7 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return int $notificationId
      */
-    public function updateItem($params, $account)
+    public function editItem($params, $account)
     {
         $update = new Update($this->tableItem);
         $update->set($params);

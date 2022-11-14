@@ -1,15 +1,54 @@
 <?php
 
 return [
-    'api'   => [
+    'admin' => [
         [
             'module'      => 'content',
-            'section'     => 'api',
+            'section'     => 'admin',
             'package'     => 'item',
-            'handler'     => 'item',
-            'permissions' => 'dashboard',
+            'handler'     => 'list',
+            'permissions' => 'item-list',
             'role'        => [
-                'member',
+                'admin',
+            ],
+        ],
+        [
+            'module'      => 'content',
+            'section'     => 'admin',
+            'package'     => 'item',
+            'handler'     => 'detail',
+            'permissions' => 'item-detail',
+            'role'        => [
+                'admin',
+            ],
+        ],
+        [
+            'module'      => 'content',
+            'section'     => 'admin',
+            'package'     => 'item',
+            'handler'     => 'add',
+            'permissions' => 'item-add',
+            'role'        => [
+                'admin',
+            ],
+        ],
+        [
+            'module'      => 'content',
+            'section'     => 'admin',
+            'package'     => 'item',
+            'handler'     => 'edit',
+            'permissions' => 'item-edit',
+            'role'        => [
+                'admin',
+            ],
+        ],
+        [
+            'module'      => 'content',
+            'section'     => 'admin',
+            'package'     => 'item',
+            'handler'     => 'delete',
+            'permissions' => 'item-delete',
+            'role'        => [
                 'admin',
             ],
         ],
