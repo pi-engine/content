@@ -1,6 +1,6 @@
 <?php
 
-namespace content;
+namespace Content;
 
 use Laminas\Mvc\MvcEvent;
 

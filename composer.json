@@ -1,6 +1,6 @@
 {
-  "name": "pi/notification",
-  "description": "Api base notification module via laminas and pi",
+  "name": "pi/content",
+  "description": "",
   "license": "BSD-3-Clause",
   "keywords": [
     "Pi",
@@ -8,8 +8,6 @@
     "Laminas",
     "Laminas MVC",
     "Laminas Module",
-    "Notification management",
-    "Notification system",
     "Psr",
     "MultiTenant",
     "SaaS"

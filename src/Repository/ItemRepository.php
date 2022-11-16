@@ -150,14 +150,12 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * @param array $params
      *
-     * @return int $notificationId
+     * @return array|object $notificationId
      */
     public function addItem($params, $account)
     {
-        $data = $params;
-
         $insert = new Insert($this->tableItem);
-        $insert->values($data);
+        $insert->values($params);
 
         $sql       = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($insert);
@@ -168,9 +166,8 @@ class ItemRepository implements ItemRepositoryInterface
                 'Database error occurred during blog post insert operation'
             );
         }
-        $params['id'] = $result->getGeneratedValue();
-        $result       = $this->getItem($params);
-        return $result;
+        $id = $result->getGeneratedValue();
+        return $this->getItem($id);
     }
 
     /**
