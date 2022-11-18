@@ -2,13 +2,13 @@
 
 namespace Content\Handler\Api;
 
+use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Content\Service\ItemService;
 
 class ItemDetailHandler implements RequestHandlerInterface
 {

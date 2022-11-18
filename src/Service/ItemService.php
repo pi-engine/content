@@ -12,6 +12,12 @@ class ItemService implements ServiceInterface
 {
     /* @var ItemRepositoryInterface */
     protected ItemRepositoryInterface $itemRepository;
+    protected array $allowKey
+        = [
+            'type', 'category', 'brand', 'min_price', 'max_price', 'title', 'color', 'size',
+        ];
+
+    // ToDo: get it from DB and cache
 
     /**
      * @param ItemRepositoryInterface $itemRepository
@@ -21,12 +27,6 @@ class ItemService implements ServiceInterface
     ) {
         $this->itemRepository = $itemRepository;
     }
-
-    // ToDo: get it from DB and cache
-    protected array $allowKey
-        = [
-            'type', 'category', 'brand', 'min_price', 'max_price', 'title', 'color', 'size',
-        ];
 
     /**
      * @param array $params
@@ -56,7 +56,7 @@ class ItemService implements ServiceInterface
         // Get filtered IDs
         $itemIdList = [];
         if (!empty($filters)) {
-            $rowSet     = $this->itemRepository->getIDFromFilter($filters);
+            $rowSet = $this->itemRepository->getIDFromFilter($filters);
             foreach ($rowSet as $row) {
                 $itemIdList[] = $this->canonizeMetaItemID($row);
             }
@@ -90,6 +90,64 @@ class ItemService implements ServiceInterface
             ],
             'error'  => [],
         ];
+    }
+
+    public function canonizeMetaItemID(object|array $meta): int
+    {
+        if (empty($meta)) {
+            return 0;
+        }
+
+        if (is_object($meta)) {
+            $itemID = $meta->getItemID();
+        } else {
+            $itemID = $meta['item'];
+        }
+
+        return $itemID;
+    }
+
+    /**
+     * @param object|array $item
+     *
+     * @return array
+     */
+    public function canonizeItem(object|array $item): array
+    {
+        if (empty($item)) {
+            return [];
+        }
+
+        if (is_object($item)) {
+            $item = [
+                'id'          => $item->getId(),
+                'title'       => $item->getTitle(),
+                'slug'        => $item->getSlug(),
+                'type'        => $item->getType(),
+                'status'      => $item->getStatus(),
+                'user_id'     => $item->getUserId(),
+                'time_create' => $item->getTimeCreate(),
+                'time_update' => $item->getTimeUpdate(),
+                'time_delete' => $item->getTimeDelete(),
+                'information' => $item->getInformation(),
+            ];
+        } else {
+            $item = [
+                'id'          => $item['id'],
+                'title'       => $item['title'],
+                'slug'        => $item['slug'],
+                'type'        => $item['type'],
+                'status'      => $item['status'],
+                'user_id'     => $item['user_id'],
+                'time_create' => $item['time_create'],
+                'time_update' => $item['time_update'],
+                'time_delete' => $item['time_delete'],
+                'information' => $item['information'],
+            ];
+        }
+
+        // Set information
+        return !empty($item['information']) ? json_decode($item['information'], true) : [];
     }
 
     /**
@@ -168,66 +226,9 @@ class ItemService implements ServiceInterface
         return $filters;
     }
 
-    /**
-     * @param object|array $item
-     *
-     * @return array
-     */
-    public function canonizeItem(object|array $item): array
-    {
-        if (empty($item)) {
-            return [];
-        }
-
-        if (is_object($item)) {
-            $item = [
-                'id'          => $item->getId(),
-                'title'       => $item->getTitle(),
-                'slug'        => $item->getSlug(),
-                'type'        => $item->getType(),
-                'status'      => $item->getStatus(),
-                'user_id'     => $item->getUserId(),
-                'time_create' => $item->getTimeCreate(),
-                'time_update' => $item->getTimeUpdate(),
-                'time_delete' => $item->getTimeDelete(),
-                'information' => $item->getInformation(),
-            ];
-        } else {
-            $item = [
-                'id'          => $item['id'],
-                'title'       => $item['title'],
-                'slug'        => $item['slug'],
-                'type'        => $item['type'],
-                'status'      => $item['status'],
-                'user_id'     => $item['user_id'],
-                'time_create' => $item['time_create'],
-                'time_update' => $item['time_update'],
-                'time_delete' => $item['time_delete'],
-                'information' => $item['information'],
-            ];
-        }
-
-        // Set information
-        return !empty($item['information']) ? json_decode($item['information'], true) : [];
-    }
-
-    public function canonizeMetaItemID(object|array $meta): int
-    {
-        if (empty($meta)) {
-            return 0;
-        }
-
-        if (is_object($meta)) {
-            $itemID = $meta->getItemID();
-        } else {
-            $itemID = $meta['item'];
-        }
-
-        return $itemID;
-    }
-
 
     // ToDo: update it
+
     public function editItem($params, $account)
     {
         $params["time_deleted"] = time();

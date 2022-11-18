@@ -5,7 +5,6 @@ namespace Content\Validator;
 use Laminas\Validator\AbstractValidator;
 use function array_merge;
 use function preg_match;
-use function var_dump;
 
 class SlugValidator extends AbstractValidator
 {
@@ -39,12 +38,13 @@ class SlugValidator extends AbstractValidator
     /**
      * {@inheritDoc}
      */
-    public function __construct($options = []) {
-        $this->options        = array_merge($this->options, $options);
+    public function __construct($options = [])
+    {
+        $this->options = array_merge($this->options, $options);
 
         $this->messageTemplates = [
-            self::INVALID  => 'Invalid slug format !',
-            self::TAKEN    => 'Slug is already taken !',
+            self::INVALID => 'Invalid slug format !',
+            self::TAKEN   => 'Slug is already taken !',
         ];
 
         parent::__construct($options);

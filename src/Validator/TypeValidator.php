@@ -5,7 +5,6 @@ namespace Content\Validator;
 use Laminas\Validator\AbstractValidator;
 use function array_merge;
 use function in_array;
-use function var_dump;
 
 class TypeValidator extends AbstractValidator
 {

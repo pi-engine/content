@@ -81,41 +81,6 @@ class ItemRepository implements ItemRepositoryInterface
     }
 
     /**
-     * @param string $parameter
-     * @param string $type
-     *
-     * @return object|array
-     */
-    public function getItem($parameter, $type = 'id'): object|array
-    {
-        $where = [$type => $parameter];
-
-        $sql       = new Sql($this->db);
-        $select    = $sql->select($this->tableItem)->where($where);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result    = $statement->execute();
-
-        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            throw new RuntimeException(
-                sprintf(
-                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
-                    $parameter
-                )
-            );
-        }
-
-        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
-        $resultSet->initialize($result);
-        $item = $resultSet->current();
-
-        if (!$item) {
-            return [];
-        }
-
-        return $item;
-    }
-
-    /**
      * @param array $params
      *
      * @return HydratingResultSet|array
@@ -195,6 +160,41 @@ class ItemRepository implements ItemRepositoryInterface
         }
         $id = $result->getGeneratedValue();
         return $this->getItem($id);
+    }
+
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return object|array
+     */
+    public function getItem($parameter, $type = 'id'): object|array
+    {
+        $where = [$type => $parameter];
+
+        $sql       = new Sql($this->db);
+        $select    = $sql->select($this->tableItem)->where($where);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result    = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            throw new RuntimeException(
+                sprintf(
+                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
+                    $parameter
+                )
+            );
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
+        $resultSet->initialize($result);
+        $item = $resultSet->current();
+
+        if (!$item) {
+            return [];
+        }
+
+        return $item;
     }
 
     /**

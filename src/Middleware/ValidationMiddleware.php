@@ -15,7 +15,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use User\Handler\ErrorHandler;
 use function implode;
-use function var_dump;
 
 class ValidationMiddleware implements MiddlewareInterface
 {
@@ -91,6 +90,19 @@ class ValidationMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
+    protected function listIsValid($params)
+    {
+        $type = new Input('type');
+        $type->getValidatorChain()->attach(new TypeValidator());
+
+        $inputFilter = new InputFilter();
+        $inputFilter->add($type);
+        $inputFilter->setData($params);
+
+        if (!$inputFilter->isValid()) {
+            return $this->setErrorHandler($inputFilter);
+        }
+    }
 
     protected function setErrorHandler($inputFilter): array
     {
@@ -113,20 +125,6 @@ class ValidationMiddleware implements MiddlewareInterface
 
         $inputFilter = new InputFilter();
         $inputFilter->add($slug);
-        $inputFilter->setData($params);
-
-        if (!$inputFilter->isValid()) {
-            return $this->setErrorHandler($inputFilter);
-        }
-    }
-
-    protected function listIsValid($params)
-    {
-        $type = new Input('type');
-        $type->getValidatorChain()->attach(new TypeValidator());
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($type);
         $inputFilter->setData($params);
 
         if (!$inputFilter->isValid()) {

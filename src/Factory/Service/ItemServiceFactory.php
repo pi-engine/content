@@ -2,12 +2,12 @@
 
 namespace Content\Factory\Service;
 
+use Content\Repository\ItemRepositoryInterface;
+use Content\Service\ItemService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Content\Repository\ItemRepositoryInterface;
-use Content\Service\ItemService;
 
 class ItemServiceFactory implements FactoryInterface
 {

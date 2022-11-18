@@ -23,7 +23,7 @@ class Meta
     ) {
         $this->item_id      = $item_id;
         $this->time_create  = $time_create;
-        $this->status  = $status;
+        $this->status       = $status;
         $this->key          = $key;
         $this->value_string = $value_string;
         $this->value_number = $value_number;

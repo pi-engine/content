@@ -2,13 +2,13 @@
 
 namespace Content\Factory\Handler;
 
+use Content\Handler\InstallerHandler;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Content\Handler\InstallerHandler;
 use User\Service\InstallerService;
 
 class InstallerHandlerFactory implements FactoryInterface

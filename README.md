@@ -1,13 +1,17 @@
 # Content
+
 Pi content management by laminas
 
 ## Information json/array format
+
 This is standard for each type format
 
 ### Type: `page`
+
 page type for static pages
 
 Json format:
+
 ```
 {
     "body": {
@@ -212,6 +216,7 @@ Json format:
 ```
 
 PHP array format:
+
 ``` 
 [
     'body'          => [
@@ -404,9 +409,11 @@ PHP array format:
 ```
 
 ### Type: `category`
+
 category type for all topics and categories
 
 Json format:
+
 ```
 {
     "body": {
@@ -519,6 +526,7 @@ Json format:
 ```
 
 PHP array format:
+
 ``` 
 [
     'body'          => [
@@ -631,9 +639,11 @@ PHP array format:
 ```
 
 ### Type: `product`
+
 product type for shopping
 
 Json format:
+
 ```
 {
     "body": {
@@ -734,6 +744,7 @@ Json format:
 ```
 
 PHP array format:
+
 ```
 [
     'body'          => [
