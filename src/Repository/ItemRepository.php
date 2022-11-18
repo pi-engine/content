@@ -2,6 +2,9 @@
 
 namespace Content\Repository;
 
+use Content\Model\Item;
+use Content\Model\Key;
+use Content\Model\Meta;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
@@ -10,9 +13,8 @@ use Laminas\Db\Sql\Predicate\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Update;
 use Laminas\Hydrator\HydratorInterface;
-use Content\Model\Item;
 use RuntimeException;
-use InvalidArgumentException;
+use function sprintf;
 
 
 class ItemRepository implements ItemRepositoryInterface
@@ -25,6 +27,20 @@ class ItemRepository implements ItemRepositoryInterface
     private string $tableItem = 'content_item';
 
     /**
+     * Meta Value Table name
+     *
+     * @var string
+     */
+    private string $tableMetaValue = 'content_meta_value';
+
+    /**
+     * Meta Key Table name
+     *
+     * @var string
+     */
+    private string $tableMetaKey = 'content_meta_key';
+
+    /**
      * @var AdapterInterface
      */
     private AdapterInterface $db;
@@ -35,58 +51,33 @@ class ItemRepository implements ItemRepositoryInterface
     private Item $itemPrototype;
 
     /**
+     * @var Meta
+     */
+    private Meta $metaValuePrototype;
+
+    /**
+     * @var Key
+     */
+    private Key $metaKeyPrototype;
+
+    /**
      * @var HydratorInterface
      */
     private HydratorInterface $hydrator;
-    /**
-     * @var mixed
-     */
-    private $config;
+
 
     public function __construct(
         AdapterInterface $db,
         HydratorInterface $hydrator,
-        Item $itemPrototype
+        Item $itemPrototype,
+        Meta $metaValuePrototype,
+        Key $metaKeyPrototype
     ) {
-        $this->db            = $db;
-        $this->hydrator      = $hydrator;
-        $this->itemPrototype = $itemPrototype;
-    }
-
-    /**
-     * @param array $params
-     *
-     * @return HydratingResultSet|array
-     */
-    public function getItemList($params): HydratingResultSet|array
-    {
-        $where = [];
-        if (isset($params['user_id']) && !empty($params['user_id'])) {
-            $where['user_id'] = $params['user_id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['status']) && !empty($params['status'])) {
-            $where['status'] = $params['status'];
-        }
-        if (isset($params['id']) && !empty($params['id'])) {
-            $where['id'] = $params['id'];
-        }
-
-        $sql       = new Sql($this->db);
-        $select    = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result    = $statement->execute();
-
-        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            return [];
-        }
-
-        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
-        $resultSet->initialize($result);
-
-        return $resultSet;
+        $this->db                 = $db;
+        $this->hydrator           = $hydrator;
+        $this->itemPrototype      = $itemPrototype;
+        $this->metaValuePrototype = $metaValuePrototype;
+        $this->metaKeyPrototype   = $metaKeyPrototype;
     }
 
     /**
@@ -127,6 +118,42 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * @param array $params
      *
+     * @return HydratingResultSet|array
+     */
+    public function getItemList(array $params = []): HydratingResultSet|array
+    {
+        $where = [];
+        if (isset($params['user_id']) && !empty($params['user_id'])) {
+            $where['user_id'] = $params['user_id'];
+        }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
+        if (isset($params['status']) && !empty($params['status'])) {
+            $where['status'] = $params['status'];
+        }
+        if (isset($params['id']) && !empty($params['id'])) {
+            $where['id'] = $params['id'];
+        }
+
+        $sql       = new Sql($this->db);
+        $select    = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result    = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            return [];
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
+        $resultSet->initialize($result);
+
+        return $resultSet;
+    }
+
+    /**
+     * @param array $params
+     *
      * @return int
      */
     public function getItemCount(array $params = []): int
@@ -150,9 +177,9 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * @param array $params
      *
-     * @return array|object $notificationId
+     * @return array|object
      */
-    public function addItem($params, $account)
+    public function addItem(array $params): object|array
     {
         $insert = new Insert($this->tableItem);
         $insert->values($params);
@@ -173,9 +200,9 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * @param array $params
      *
-     * @return int $notificationId
+     * @return array|object
      */
-    public function editItem($params, $account)
+    public function editItem(array $params): object|array
     {
         $update = new Update($this->tableItem);
         $update->set($params);
@@ -190,15 +217,15 @@ class ItemRepository implements ItemRepositoryInterface
                 'Database error occurred during update operation'
             );
         }
-        return $this->getItem($params);
+        return $this->getItem($params["id"]);
     }
 
     /**
      * @param array $params
      *
-     * @return int $notificationId
+     * @return void
      */
-    public function deleteItem($params, $account)
+    public function deleteItem(array $params): void
     {
         $update = new Update($this->tableItem);
         $update->set($params);
@@ -206,13 +233,55 @@ class ItemRepository implements ItemRepositoryInterface
 
         $sql       = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+    }
+
+    /**
+     * @param array $filters
+     *
+     * @return HydratingResultSet|array
+     */
+    // ToDo: This is temp solution, need be improve
+    public function getIDFromFilter(array $filters = []): HydratingResultSet|array
+    {
+        $where  = ['status' => 1];
+        $sql    = new Sql($this->db);
+        $select = $sql->select($this->tableMetaValue)->where($where);
+
+        foreach ($filters as $filter) {
+            switch ($filter['type']) {
+                case 'int':
+                    $select->where(['key' => $filter['key'], 'value_number' => $filter['value']]);
+                    break;
+
+                case 'string':
+                    $select->where(['key' => $filter['key'], 'value_string' => $filter['value']]);
+                    break;
+
+                case 'search':
+                    $select->where(['key' => $filter['key'], 'value_string like ?' => '%s' . $filter['value'] . '%s']);
+                    break;
+
+                case 'rangeMax':
+                    $select->where(['key' => $filter['key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
+                    break;
+
+                case 'rangeMin':
+                    $select->where(['key' => $filter['key'], 'value_string > ?' => '%s' . $filter['value'] . '%s']);
+                    break;
+            }
+        }
+
+        $statement = $sql->prepareStatementForSqlObject($select);
         $result    = $statement->execute();
 
-        if (!$result instanceof ResultInterface) {
-            throw new RuntimeException(
-                'Database error occurred during update operation'
-            );
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            return [];
         }
-        return true;
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->metaValuePrototype);
+        $resultSet->initialize($result);
+
+        return $resultSet;
     }
 }

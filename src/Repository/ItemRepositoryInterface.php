@@ -6,15 +6,17 @@ use Laminas\Db\ResultSet\HydratingResultSet;
 
 interface ItemRepositoryInterface
 {
-    public function getItemList($params): HydratingResultSet|array;
-
     public function getItem($parameter, $type): object|array;
+
+    public function getItemList(array $params = []): HydratingResultSet|array;
 
     public function getItemCount(array $params = []): int;
 
-    public function addItem($params, $account);
+    public function addItem(array $params): object|array;
 
-    public function editItem($params, $account);
+    public function editItem(array $params): object|array;
 
-    public function deleteItem($params, $account);
+    public function deleteItem(array $params): void;
+
+    public function getIDFromFilter(array $filters = []): HydratingResultSet|array;
 }

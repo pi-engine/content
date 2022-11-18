@@ -2,14 +2,16 @@
 
 namespace Content\Factory\Repository;
 
+use Content\Model\Item;
+use Content\Model\Key;
+use Content\Model\Meta;
+use Content\Repository\ItemRepository;
 use Interop\Container\ContainerInterface;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Hydrator\ReflectionHydrator;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Content\Model\Item;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Content\Repository\ItemRepository;
 
 
 class ItemRepositoryFactory implements FactoryInterface
@@ -28,7 +30,9 @@ class ItemRepositoryFactory implements FactoryInterface
         return new ItemRepository(
             $container->get(AdapterInterface::class),
             new ReflectionHydrator(),
-            new Item('', '', '', 0, 0, 0, 0, 0, ''),
+            new Item('', '', '', 0, 0, 0, 0, 0, '', 0),
+            new Meta(0, 0, 0, '', '', 0, 0),
+            new Key('', '', 0, 0)
         );
     }
 }

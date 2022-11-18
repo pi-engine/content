@@ -3,6 +3,9 @@
 namespace Content\Service;
 
 use Content\Repository\ItemRepositoryInterface;
+use function explode;
+use function in_array;
+use function is_object;
 use function json_decode;
 
 class ItemService implements ServiceInterface
@@ -19,9 +22,10 @@ class ItemService implements ServiceInterface
         $this->itemRepository = $itemRepository;
     }
 
-    protected array $allowType
+    // ToDo: get it from DB and cache
+    protected array $allowKey
         = [
-            'category', 'location', 'product', 'video', 'business', 'blog',
+            'type', 'category', 'brand', 'min_price', 'max_price', 'title', 'color', 'size',
         ];
 
     /**
@@ -36,7 +40,11 @@ class ItemService implements ServiceInterface
         $order  = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
 
-        // ToDo: add filter
+        // Set filters
+        //$filters = $this->prepareFilter($params);
+        $filters = [];
+
+        // Set params
         $listParams = [
             'order'  => $order,
             'offset' => $offset,
@@ -44,6 +52,20 @@ class ItemService implements ServiceInterface
             'type'   => $params['type'],
             'status' => 1,
         ];
+
+        // Get filtered IDs
+        $itemIdList = [];
+        if (!empty($filters)) {
+            $rowSet     = $this->itemRepository->getIDFromFilter($filters);
+            foreach ($rowSet as $row) {
+                $itemIdList[] = $this->canonizeMetaItemID($row);
+            }
+        }
+
+        // Set filtered IDs to params
+        if (!empty($itemIdList)) {
+            $listParams['id'] = $itemIdList;
+        }
 
         // Get list
         $list   = [];
@@ -64,6 +86,7 @@ class ItemService implements ServiceInterface
                     'limit' => $limit,
                     'page'  => $page,
                 ],
+                'filters'   => $filters,
             ],
             'error'  => [],
         ];
@@ -79,6 +102,70 @@ class ItemService implements ServiceInterface
     {
         $item = $this->itemRepository->getItem($parameter, $type);
         return $this->canonizeItem($item);
+    }
+
+    public function prepareFilter($params): array
+    {
+        // Set filter list
+        $filters = [];
+        foreach ($params as $key => $value) {
+            if (in_array($key, $this->allowKey)) {
+                // ToDo: get this info from DB
+                switch ($key) {
+                    case 'color':
+                    case 'size':
+                        $filters[$key] = [
+                            'key'   => $key,
+                            'value' => explode(',', $value),
+                            'type'  => 'string',
+                        ];
+                        break;
+
+                    case 'type':
+                        $filters[$key] = [
+                            'key'   => $key,
+                            'value' => $value,
+                            'type'  => 'string',
+                        ];
+                        break;
+
+                    case 'title':
+                        $filters[$key] = [
+                            'key'   => $key,
+                            'value' => $value,
+                            'type'  => 'search',
+                        ];
+                        break;
+
+                    case 'brand':
+                    case 'category':
+                        $filters[$key] = [
+                            'key'   => $key,
+                            'value' => $value,
+                            'type'  => 'int',
+                        ];
+                        break;
+
+                    case 'max_price':
+                        $filters[$key] = [
+                            'key'   => $key,
+                            'value' => $value,
+                            'type'  => 'rangeMax',
+                        ];
+                        break;
+
+                    case 'min_price':
+                        $filters[$key] = [
+                            'key'   => $key,
+                            'value' => $value,
+                            'type'  => 'rangeMin',
+                        ];
+                        break;
+                }
+            }
+        }
+
+        return $filters;
     }
 
     /**
@@ -122,6 +209,21 @@ class ItemService implements ServiceInterface
 
         // Set information
         return !empty($item['information']) ? json_decode($item['information'], true) : [];
+    }
+
+    public function canonizeMetaItemID(object|array $meta): int
+    {
+        if (empty($meta)) {
+            return 0;
+        }
+
+        if (is_object($meta)) {
+            $itemID = $meta->getItemID();
+        } else {
+            $itemID = $meta['item'];
+        }
+
+        return $itemID;
     }
 
 
