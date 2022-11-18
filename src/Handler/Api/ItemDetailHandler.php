@@ -37,27 +37,15 @@ class ItemDetailHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
 
-        // ToDo: Move this check to middleware
-        if (empty($requestBody['slug'])) {
-            // Set result
-            $result = [
-                'result' => false,
-                'data'   => [],
-                'error'  => [
-                    'message' => 'Set slug !',
-                ],
-            ];
-        } else {
-            // Get list of notifications
-            $result = $this->itemService->getItem($requestBody['slug'], 'slug');
+        // Get list of notifications
+        $result = $this->itemService->getItem($requestBody['slug'], 'slug');
 
-            // Set result
-            $result = [
-                'result' => true,
-                'data'   => $result,
-                'error'  => [],
-            ];
-        }
+        // Set result
+        $result = [
+            'result' => true,
+            'data'   => $result,
+            'error'  => [],
+        ];
 
         return new JsonResponse($result);
     }

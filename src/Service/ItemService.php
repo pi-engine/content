@@ -3,6 +3,7 @@
 namespace Content\Service;
 
 use Content\Repository\ItemRepositoryInterface;
+use function json_decode;
 
 class ItemService implements ServiceInterface
 {
@@ -40,7 +41,7 @@ class ItemService implements ServiceInterface
             'order'  => $order,
             'offset' => $offset,
             'limit'  => $limit,
-            'type'   => isset($params['type']) ?? '',
+            'type'   => $params['type'],
             'status' => 1,
         ];
 
@@ -119,7 +120,8 @@ class ItemService implements ServiceInterface
             ];
         }
 
-        return $item;
+        // Set information
+        return !empty($item['information']) ? json_decode($item['information'], true) : [];
     }
 
 

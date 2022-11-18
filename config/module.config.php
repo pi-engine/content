@@ -16,6 +16,9 @@ return [
         'factories' => [
             Repository\ItemRepository::class       => Factory\Repository\ItemRepositoryFactory::class,
             Service\ItemService::class             => Factory\Service\ItemServiceFactory::class,
+            Middleware\ValidationMiddleware::class => Factory\Middleware\ValidationMiddlewareFactory::class,
+            Validator\SlugValidator::class         => Factory\Validator\SlugValidatorFactory::class,
+            Validator\TypeValidator::class         => Factory\Validator\TypeValidatorFactory::class,
             Handler\Api\ItemListHandler::class     => Factory\Handler\Api\ItemListHandlerFactory::class,
             Handler\Api\ItemDetailHandler::class   => Factory\Handler\Api\ItemDetailHandlerFactory::class,
             Handler\Admin\ItemAddHandler::class    => Factory\Handler\Admin\ItemAddHandlerFactory::class,
@@ -45,10 +48,12 @@ return [
                                 'module'     => 'content',
                                 'section'    => 'api',
                                 'package'    => 'item',
+                                'validator'  => 'list',
                                 'handler'    => 'list',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
+                                    Middleware\ValidationMiddleware::class,
                                     Handler\Api\ItemListHandler::class
                                 ),
                             ],
@@ -62,10 +67,12 @@ return [
                                 'module'     => 'content',
                                 'section'    => 'api',
                                 'package'    => 'item',
+                                'validator'  => 'detail',
                                 'handler'    => 'detail',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
+                                    Middleware\ValidationMiddleware::class,
                                     Handler\Api\ItemDetailHandler::class
                                 ),
                             ],

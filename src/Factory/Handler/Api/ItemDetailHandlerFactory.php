@@ -8,7 +8,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Content\Handler\Api\Item\ItemDetailHandler;
+use Content\Handler\Api\ItemDetailHandler;
 use Content\Service\ItemService;
 
 class ItemDetailHandlerFactory implements FactoryInterface

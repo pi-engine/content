@@ -1,15 +1,15 @@
 <?php
 
-namespace Request\Factory\Middleware;
+namespace Content\Factory\Middleware;
 
-use Interop\Container\ContainerInterface;
+use Content\Middleware\ValidationMiddleware;
+use Interop\Container\Containerinterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use User\Handler\ErrorHandler;
-use Request\Middleware\ValidationMiddleware;
 
 class ValidationMiddlewareFactory implements FactoryInterface
 {

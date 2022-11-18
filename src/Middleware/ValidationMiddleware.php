@@ -1,12 +1,12 @@
 <?php
 
-namespace Request\Middleware;
+namespace Content\Middleware;
 
+use Content\Validator\SlugValidator;
+use Content\Validator\TypeValidator;
 use Fig\Http\Message\StatusCodeInterface;
-use Laminas\Validator\File\Extension;
-use Laminas\Validator\File\MimeType;
-use Laminas\Validator\File\Size;
-use Laminas\Validator\File\UploadFile;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,6 +14,8 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use User\Handler\ErrorHandler;
+use function implode;
+use function var_dump;
 
 class ValidationMiddleware implements MiddlewareInterface
 {
@@ -23,6 +25,7 @@ class ValidationMiddleware implements MiddlewareInterface
             'code'    => StatusCodeInterface::STATUS_OK,
             'message' => '',
         ];
+
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
 
@@ -46,14 +49,17 @@ class ValidationMiddleware implements MiddlewareInterface
     {
         // Get information from request
         $parsedBody  = $request->getParsedBody();
-        $uploadFiles = $request->getUploadedFiles();
         $routeMatch  = $request->getAttribute('Laminas\Router\RouteMatch');
         $routeParams = $routeMatch->getParams();
 
         // Check parsedBody
         switch ($routeParams['validator']) {
-            case 'attache':
-                $this->attacheIsValid($parsedBody, $uploadFiles);
+            case 'list':
+                $this->listIsValid($parsedBody);
+                break;
+
+            case 'detail':
+                $this->detailIsValid($parsedBody);
                 break;
 
             default:
@@ -100,8 +106,31 @@ class ValidationMiddleware implements MiddlewareInterface
         ];
     }
 
-    protected function attacheIsValid($parsedBody, $uploadFiles)
+    protected function detailIsValid($params)
     {
+        $slug = new Input('slug');
+        $slug->getValidatorChain()->attach(new SlugValidator());
 
+        $inputFilter = new InputFilter();
+        $inputFilter->add($slug);
+        $inputFilter->setData($params);
+
+        if (!$inputFilter->isValid()) {
+            return $this->setErrorHandler($inputFilter);
+        }
+    }
+
+    protected function listIsValid($params)
+    {
+        $type = new Input('type');
+        $type->getValidatorChain()->attach(new TypeValidator());
+
+        $inputFilter = new InputFilter();
+        $inputFilter->add($type);
+        $inputFilter->setData($params);
+
+        if (!$inputFilter->isValid()) {
+            return $this->setErrorHandler($inputFilter);
+        }
     }
 }

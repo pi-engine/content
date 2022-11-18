@@ -2,13 +2,13 @@
 
 namespace Content\Handler\Api;
 
+use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Content\Service\ItemService;
 
 class ItemListHandler implements RequestHandlerInterface
 {
@@ -39,13 +39,6 @@ class ItemListHandler implements RequestHandlerInterface
 
         // Get order after store data
         $result = $this->itemService->getItemList($requestBody);
-
-        // Set result
-        $result = [
-            'result' => true,
-            'data'   => $result,
-            'error'  => [],
-        ];
 
         return new JsonResponse($result);
     }
