@@ -19,6 +19,7 @@ return [
             Middleware\ValidationMiddleware::class => Factory\Middleware\ValidationMiddlewareFactory::class,
             Validator\SlugValidator::class         => Factory\Validator\SlugValidatorFactory::class,
             Validator\TypeValidator::class         => Factory\Validator\TypeValidatorFactory::class,
+            Handler\Api\MainHandler::class         => Factory\Handler\Api\MainHandlerFactory::class,
             Handler\Api\ItemListHandler::class     => Factory\Handler\Api\ItemListHandlerFactory::class,
             Handler\Api\ItemDetailHandler::class   => Factory\Handler\Api\ItemDetailHandlerFactory::class,
             Handler\Admin\ItemAddHandler::class    => Factory\Handler\Admin\ItemAddHandlerFactory::class,
@@ -40,6 +41,24 @@ return [
                     'defaults' => [],
                 ],
                 'child_routes' => [
+                    'main'   => [
+                        'type'    => Literal::class,
+                        'options' => [
+                            'route'    => '/main',
+                            'defaults' => [
+                                'module'     => 'content',
+                                'section'    => 'api',
+                                'package'    => 'main',
+                                'validator'  => 'main',
+                                'handler'    => 'main',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    Handler\Api\MainHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
                     'list'   => [
                         'type'    => Literal::class,
                         'options' => [
