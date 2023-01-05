@@ -71,21 +71,6 @@ class Item
         return $this->type;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId(): int
-    {
-        return $this->user_id;
-    }
 
     /**
      * @return int
