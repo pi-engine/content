@@ -102,7 +102,9 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['id']) && !empty($params['id'])) {
             $where['id'] = $params['id'];
         }
-
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);

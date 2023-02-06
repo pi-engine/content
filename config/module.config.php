@@ -148,7 +148,7 @@ return [
                     'cart-list' => [
                         'type' => Literal::class,
                         'options' => [
-                            'route' => 'cart/list',
+                            'route' => '/cart/list',
                             'defaults' => [
                                 'module' => 'content',
                                 'section' => 'api',

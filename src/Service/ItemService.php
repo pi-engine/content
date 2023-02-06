@@ -93,6 +93,49 @@ class ItemService implements ServiceInterface
         ];
     }
 
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getCartList(array $params): array
+    {
+
+        $limit = $params['limit'] ?? 25;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+
+
+        // Set params
+        $params['order'] = $order;
+        $params['offset'] = $offset;
+        $params['limit'] = $limit;
+        $params['type'] = $params['type'];
+        $params['status'] = 1;
+
+
+        $rowSet = $this->itemRepository->getItemList($params);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+
+
+        $count = $this->itemRepository->getItemCount($params);
+
+        return [
+            'result' => true,
+            'data' => [
+                'list' => $list,
+                'paginator' => [
+                    'count' => $count,
+                ],
+            ],
+            'error' => [],
+        ];
+    }
+
     public function canonizeMetaItemID(object|array $meta): int
     {
         if (empty($meta)) {
@@ -235,13 +278,10 @@ class ItemService implements ServiceInterface
                 }
             }
         }
-
         return $filters;
     }
 
-
     // ToDo: update it
-
     public function editItem($params, $account)
     {
         $params["time_deleted"] = time();
@@ -254,7 +294,6 @@ class ItemService implements ServiceInterface
         return $this->itemRepository->addItem($params, $account);
     }
 
-
     // ToDo: update it
     public function deleteItem($params, $account)
     {
@@ -262,11 +301,10 @@ class ItemService implements ServiceInterface
         return $this->itemRepository->deleteItem($params, $account);
     }
 
-
     // ToDo: update it
     public function addCartItem($params, $account)
     {
-        $product = $this->getItem($params["information"]);
+        $product = $this->getItem($params["information"],"slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
         if (sizeof($cart) == 0) {
@@ -287,7 +325,7 @@ class ItemService implements ServiceInterface
 
             if ($index > -1) {
                 $cart[$index]["count"] = (int)$cart[$index]["count"] + (int)$params["count"];
-            }else{
+            } else {
                 $cart[] = $product;
             }
 
