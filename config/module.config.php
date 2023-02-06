@@ -10,47 +10,52 @@ use User\Middleware\SecurityMiddleware;
 
 return [
     'service_manager' => [
-        'aliases'   => [
+        'aliases' => [
             Repository\ItemRepositoryInterface::class => Repository\ItemRepository::class,
         ],
         'factories' => [
-            Repository\ItemRepository::class       => Factory\Repository\ItemRepositoryFactory::class,
-            Service\ItemService::class             => Factory\Service\ItemServiceFactory::class,
+            Repository\ItemRepository::class => Factory\Repository\ItemRepositoryFactory::class,
+            Service\ItemService::class => Factory\Service\ItemServiceFactory::class,
             Middleware\ValidationMiddleware::class => Factory\Middleware\ValidationMiddlewareFactory::class,
-            Validator\SlugValidator::class         => Factory\Validator\SlugValidatorFactory::class,
-            Validator\TypeValidator::class         => Factory\Validator\TypeValidatorFactory::class,
-            Handler\Api\MainHandler::class         => Factory\Handler\Api\MainHandlerFactory::class,
-            Handler\Api\ItemListHandler::class     => Factory\Handler\Api\ItemListHandlerFactory::class,
-            Handler\Api\ItemDetailHandler::class   => Factory\Handler\Api\ItemDetailHandlerFactory::class,
-            Handler\Admin\ItemAddHandler::class    => Factory\Handler\Admin\ItemAddHandlerFactory::class,
-            Handler\Admin\ItemListHandler::class   => Factory\Handler\Admin\ItemListHandlerFactory::class,
+            Validator\SlugValidator::class => Factory\Validator\SlugValidatorFactory::class,
+            Validator\TypeValidator::class => Factory\Validator\TypeValidatorFactory::class,
+            Handler\Api\MainHandler::class => Factory\Handler\Api\MainHandlerFactory::class,
+            Handler\Api\ItemListHandler::class => Factory\Handler\Api\ItemListHandlerFactory::class,
+            Handler\Api\ItemDetailHandler::class => Factory\Handler\Api\ItemDetailHandlerFactory::class,
+            Handler\Admin\ItemAddHandler::class => Factory\Handler\Admin\ItemAddHandlerFactory::class,
+            Handler\Admin\ItemListHandler::class => Factory\Handler\Admin\ItemListHandlerFactory::class,
             Handler\Admin\ItemDetailHandler::class => Factory\Handler\Admin\ItemDetailHandlerFactory::class,
-            Handler\Admin\ItemEditHandler::class   => Factory\Handler\Admin\ItemEditHandlerFactory::class,
+            Handler\Admin\ItemEditHandler::class => Factory\Handler\Admin\ItemEditHandlerFactory::class,
             Handler\Admin\ItemDeleteHandler::class => Factory\Handler\Admin\ItemDeleteHandlerFactory::class,
-            Handler\InstallerHandler::class        => Factory\Handler\InstallerHandlerFactory::class,
+            Handler\InstallerHandler::class => Factory\Handler\InstallerHandlerFactory::class,
+
+            // Cart services factory
+            Handler\Api\Cart\AddHandler::class => Factory\Handler\Api\Cart\AddHandlerFactory::class,
+            Handler\Api\Cart\ListHandler::class => Factory\Handler\Api\Cart\ListHandlerFactory::class,
+
         ],
     ],
 
     'router' => [
         'routes' => [
             // Api section
-            'api_content'   => [
-                'type'         => Literal::class,
-                'options'      => [
-                    'route'    => '/content',
+            'api_content' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/content',
                     'defaults' => [],
                 ],
                 'child_routes' => [
-                    'main'   => [
-                        'type'    => Literal::class,
+                    'main' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/main',
+                            'route' => '/main',
                             'defaults' => [
-                                'module'     => 'content',
-                                'section'    => 'api',
-                                'package'    => 'main',
-                                'validator'  => 'main',
-                                'handler'    => 'main',
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'main',
+                                'validator' => 'main',
+                                'handler' => 'main',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
@@ -59,16 +64,16 @@ return [
                             ],
                         ],
                     ],
-                    'list'   => [
-                        'type'    => Literal::class,
+                    'list' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/list',
+                            'route' => '/list',
                             'defaults' => [
-                                'module'     => 'content',
-                                'section'    => 'api',
-                                'package'    => 'item',
-                                'validator'  => 'list',
-                                'handler'    => 'list',
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
@@ -79,15 +84,15 @@ return [
                         ],
                     ],
                     'detail' => [
-                        'type'    => Literal::class,
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/detail',
+                            'route' => '/detail',
                             'defaults' => [
-                                'module'     => 'content',
-                                'section'    => 'api',
-                                'package'    => 'item',
-                                'validator'  => 'detail',
-                                'handler'    => 'detail',
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'detail',
+                                'handler' => 'detail',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
@@ -97,28 +102,93 @@ return [
                             ],
                         ],
                     ],
+
+
+                    // Cart services
+                    'add-cart' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/cart/add',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Cart\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'delete-cart' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/cart/delete',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'delete',
+                                'permissions' => 'item-delete',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Cart\DeleteHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'cart-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => 'cart/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Cart\ListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+
                 ],
             ],
             // Admin section
             'admin_content' => [
-                'type'         => Literal::class,
-                'options'      => [
-                    'route'    => '/admin/content',
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/admin/content',
                     'defaults' => [],
                 ],
                 'child_routes' => [
-                    'list'      => [
-                        'type'    => Literal::class,
+                    'list' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/list',
+                            'route' => '/list',
                             'defaults' => [
-                                'module'      => 'content',
-                                'section'     => 'admin',
-                                'package'     => 'item',
-                                'handler'     => 'list',
+                                'module' => 'content',
+                                'section' => 'admin',
+                                'package' => 'item',
+                                'handler' => 'list',
                                 'permissions' => 'item-list',
-                                'controller'  => PipeSpec::class,
-                                'middleware'  => new PipeSpec(
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
                                     AuthorizationMiddleware::class,
@@ -127,18 +197,18 @@ return [
                             ],
                         ],
                     ],
-                    'detail'    => [
-                        'type'    => Literal::class,
+                    'detail' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/detail',
+                            'route' => '/detail',
                             'defaults' => [
-                                'module'      => 'content',
-                                'section'     => 'api',
-                                'package'     => 'item',
-                                'handler'     => 'detail',
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'detail',
                                 'permissions' => 'item-detail',
-                                'controller'  => PipeSpec::class,
-                                'middleware'  => new PipeSpec(
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
                                     AuthorizationMiddleware::class,
@@ -147,18 +217,18 @@ return [
                             ],
                         ],
                     ],
-                    'add'       => [
-                        'type'    => Literal::class,
+                    'add' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/add',
+                            'route' => '/add',
                             'defaults' => [
-                                'module'      => 'content',
-                                'section'     => 'admin',
-                                'package'     => 'item',
-                                'handler'     => 'add',
+                                'module' => 'content',
+                                'section' => 'admin',
+                                'package' => 'item',
+                                'handler' => 'add',
                                 'permissions' => 'item-add',
-                                'controller'  => PipeSpec::class,
-                                'middleware'  => new PipeSpec(
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
                                     AuthorizationMiddleware::class,
@@ -167,18 +237,18 @@ return [
                             ],
                         ],
                     ],
-                    'edit'      => [
-                        'type'    => Literal::class,
+                    'edit' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/edit',
+                            'route' => '/edit',
                             'defaults' => [
-                                'module'      => 'content',
-                                'section'     => 'admin',
-                                'package'     => 'item',
-                                'handler'     => 'edit',
+                                'module' => 'content',
+                                'section' => 'admin',
+                                'package' => 'item',
+                                'handler' => 'edit',
                                 'permissions' => 'item-edit',
-                                'controller'  => PipeSpec::class,
-                                'middleware'  => new PipeSpec(
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
                                     AuthorizationMiddleware::class,
@@ -187,18 +257,18 @@ return [
                             ],
                         ],
                     ],
-                    'delete'    => [
-                        'type'    => Literal::class,
+                    'delete' => [
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/delete',
+                            'route' => '/delete',
                             'defaults' => [
-                                'module'      => 'content',
-                                'section'     => 'admin',
-                                'package'     => 'item',
-                                'handler'     => 'delete',
+                                'module' => 'content',
+                                'section' => 'admin',
+                                'package' => 'item',
+                                'handler' => 'delete',
                                 'permissions' => 'item-delete',
-                                'controller'  => PipeSpec::class,
-                                'middleware'  => new PipeSpec(
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
                                     AuthorizationMiddleware::class,
@@ -209,14 +279,14 @@ return [
                     ],
                     // Admin installer
                     'installer' => [
-                        'type'    => Literal::class,
+                        'type' => Literal::class,
                         'options' => [
-                            'route'    => '/installer',
+                            'route' => '/installer',
                             'defaults' => [
-                                'module'     => 'content',
-                                'section'    => 'admin',
-                                'package'    => 'installer',
-                                'handler'    => 'installer',
+                                'module' => 'content',
+                                'section' => 'admin',
+                                'package' => 'installer',
+                                'handler' => 'installer',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,

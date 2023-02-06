@@ -19,4 +19,8 @@ interface ItemRepositoryInterface
     public function deleteItem(array $params): void;
 
     public function getIDFromFilter(array $filters = []): HydratingResultSet|array;
+
+
+    public function addCartItem(array $params): object|array;
+
 }

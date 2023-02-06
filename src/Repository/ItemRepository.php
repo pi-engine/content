@@ -8,6 +8,7 @@ use Content\Model\Meta;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
+use Laminas\Db\Sql\Delete;
 use Laminas\Db\Sql\Insert;
 use Laminas\Db\Sql\Predicate\Expression;
 use Laminas\Db\Sql\Sql;
@@ -67,17 +68,18 @@ class ItemRepository implements ItemRepositoryInterface
 
 
     public function __construct(
-        AdapterInterface $db,
+        AdapterInterface  $db,
         HydratorInterface $hydrator,
-        Item $itemPrototype,
-        Meta $metaValuePrototype,
-        Key $metaKeyPrototype
-    ) {
-        $this->db                 = $db;
-        $this->hydrator           = $hydrator;
-        $this->itemPrototype      = $itemPrototype;
+        Item              $itemPrototype,
+        Meta              $metaValuePrototype,
+        Key               $metaKeyPrototype
+    )
+    {
+        $this->db = $db;
+        $this->hydrator = $hydrator;
+        $this->itemPrototype = $itemPrototype;
         $this->metaValuePrototype = $metaValuePrototype;
-        $this->metaKeyPrototype   = $metaKeyPrototype;
+        $this->metaKeyPrototype = $metaKeyPrototype;
     }
 
     /**
@@ -101,10 +103,10 @@ class ItemRepository implements ItemRepositoryInterface
             $where['id'] = $params['id'];
         }
 
-        $sql       = new Sql($this->db);
-        $select    = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result    = $statement->execute();
+        $result = $statement->execute();
 
         if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
             return [];
@@ -125,16 +127,16 @@ class ItemRepository implements ItemRepositoryInterface
     {
         // Set where
         $columns = ['count' => new Expression('count(*)')];
-        $where   = [];
+        $where = [];
 
         if (isset($params['status']) && is_numeric($params['status'])) {
             $where['status'] = $params['status'];
         }
 
-        $sql       = new Sql($this->db);
-        $select    = $sql->select($this->tableItem)->columns($columns)->where($where);
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableItem)->columns($columns)->where($where);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $row       = $statement->execute()->current();
+        $row = $statement->execute()->current();
 
         return (int)$row['count'];
     }
@@ -149,9 +151,9 @@ class ItemRepository implements ItemRepositoryInterface
         $insert = new Insert($this->tableItem);
         $insert->values($params);
 
-        $sql       = new Sql($this->db);
+        $sql = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($insert);
-        $result    = $statement->execute();
+        $result = $statement->execute();
 
         if (!$result instanceof ResultInterface) {
             throw new RuntimeException(
@@ -172,16 +174,51 @@ class ItemRepository implements ItemRepositoryInterface
     {
         $where = [$type => $parameter];
 
-        $sql       = new Sql($this->db);
-        $select    = $sql->select($this->tableItem)->where($where);
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableItem)->where($where);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result    = $statement->execute();
+        $result = $statement->execute();
 
         if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
             throw new RuntimeException(
                 sprintf(
                     'Failed retrieving blog post with identifier "%s"; unknown database error.',
                     $parameter
+                )
+            );
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
+        $resultSet->initialize($result);
+        $item = $resultSet->current();
+
+        if (!$item) {
+            return [];
+        }
+
+        return $item;
+    }
+
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return object|array
+     */
+
+    public function getItemFilter($where): object|array
+    {
+
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableItem)->where($where);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            throw new RuntimeException(
+                sprintf(
+                    'Failed retrieving blog post with identifier  ; unknown database error.',
+
                 )
             );
         }
@@ -208,9 +245,9 @@ class ItemRepository implements ItemRepositoryInterface
         $update->set($params);
         $update->where(['id' => $params["id"]]);
 
-        $sql       = new Sql($this->db);
+        $sql = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
-        $result    = $statement->execute();
+        $result = $statement->execute();
 
         if (!$result instanceof ResultInterface) {
             throw new RuntimeException(
@@ -231,7 +268,23 @@ class ItemRepository implements ItemRepositoryInterface
         $update->set($params);
         $update->where(['id' => $params["id"]]);
 
-        $sql       = new Sql($this->db);
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return void
+     */
+    public function deleteCart($parameter, $type = 'id'): void
+    {
+        $update = new Delete($this->tableItem);
+        $where = [$type => $parameter];
+        $update->where($where);
+
+        $sql = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
         $statement->execute();
     }
@@ -244,8 +297,8 @@ class ItemRepository implements ItemRepositoryInterface
     // ToDo: This is temp solution, need be improve
     public function getIDFromFilter(array $filters = []): HydratingResultSet|array
     {
-        $where  = ['status' => 1];
-        $sql    = new Sql($this->db);
+        $where = ['status' => 1];
+        $sql = new Sql($this->db);
         $select = $sql->select($this->tableMetaValue)->where($where);
 
         foreach ($filters as $filter) {
@@ -273,7 +326,7 @@ class ItemRepository implements ItemRepositoryInterface
         }
 
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result    = $statement->execute();
+        $result = $statement->execute();
 
         if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
             return [];
@@ -284,4 +337,29 @@ class ItemRepository implements ItemRepositoryInterface
 
         return $resultSet;
     }
+
+
+    /**
+     * @param array $params
+     *
+     * @return array|object
+     */
+    public function addCartItem(array $params): object|array
+    {
+        $insert = new Insert($this->tableItem);
+        $insert->values($params);
+
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface) {
+            throw new RuntimeException(
+                'Database error occurred during blog post insert operation'
+            );
+        }
+        $id = $result->getGeneratedValue();
+        return $this->getItem($id);
+    }
+
 }

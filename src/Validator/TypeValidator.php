@@ -17,7 +17,7 @@ class TypeValidator extends AbstractValidator
     /** @var array */
     protected array $typeList
         = [
-            'page', 'blog', 'article', 'product', 'video', 'category', 'location', 'business',
+            'page', 'blog', 'article', 'product', 'video', 'category', 'location', 'business','cart','order',
         ];
 
     /** @var array */

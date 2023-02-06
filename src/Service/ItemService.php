@@ -24,7 +24,8 @@ class ItemService implements ServiceInterface
      */
     public function __construct(
         ItemRepositoryInterface $itemRepository
-    ) {
+    )
+    {
         $this->itemRepository = $itemRepository;
     }
 
@@ -35,9 +36,9 @@ class ItemService implements ServiceInterface
      */
     public function getItemList(array $params): array
     {
-        $limit  = $params['limit'] ?? 25;
-        $page   = $params['page'] ?? 1;
-        $order  = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $limit = $params['limit'] ?? 25;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
 
         // Set filters
@@ -46,10 +47,10 @@ class ItemService implements ServiceInterface
 
         // Set params
         $listParams = [
-            'order'  => $order,
+            'order' => $order,
             'offset' => $offset,
-            'limit'  => $limit,
-            'type'   => $params['type'],
+            'limit' => $limit,
+            'type' => $params['type'],
             'status' => 1,
         ];
 
@@ -68,7 +69,7 @@ class ItemService implements ServiceInterface
         }
 
         // Get list
-        $list   = [];
+        $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
             $list[] = $this->canonizeItem($row);
@@ -79,16 +80,16 @@ class ItemService implements ServiceInterface
 
         return [
             'result' => true,
-            'data'   => [
-                'list'      => $list,
+            'data' => [
+                'list' => $list,
                 'paginator' => [
                     'count' => $count,
                     'limit' => $limit,
-                    'page'  => $page,
+                    'page' => $page,
                 ],
-                'filters'   => $filters,
+                'filters' => $filters,
             ],
-            'error'  => [],
+            'error' => [],
         ];
     }
 
@@ -120,12 +121,12 @@ class ItemService implements ServiceInterface
 
         if (is_object($item)) {
             $item = [
-                'id'          => $item->getId(),
-                'title'       => $item->getTitle(),
-                'slug'        => $item->getSlug(),
-                'type'        => $item->getType(),
-                'status'      => $item->getStatus(),
-                'user_id'     => $item->getUserId(),
+                'id' => $item->getId(),
+                'title' => $item->getTitle(),
+                'slug' => $item->getSlug(),
+                'type' => $item->getType(),
+                'status' => $item->getStatus(),
+                'user_id' => $item->getUserId(),
                 'time_create' => $item->getTimeCreate(),
                 'time_update' => $item->getTimeUpdate(),
                 'time_delete' => $item->getTimeDelete(),
@@ -133,12 +134,12 @@ class ItemService implements ServiceInterface
             ];
         } else {
             $item = [
-                'id'          => $item['id'],
-                'title'       => $item['title'],
-                'slug'        => $item['slug'],
-                'type'        => $item['type'],
-                'status'      => $item['status'],
-                'user_id'     => $item['user_id'],
+                'id' => $item['id'],
+                'title' => $item['title'],
+                'slug' => $item['slug'],
+                'type' => $item['type'],
+                'status' => $item['status'],
+                'user_id' => $item['user_id'],
                 'time_create' => $item['time_create'],
                 'time_update' => $item['time_update'],
                 'time_delete' => $item['time_delete'],
@@ -162,6 +163,18 @@ class ItemService implements ServiceInterface
         return $this->canonizeItem($item);
     }
 
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return array
+     */
+    public function getItemFilter($where): array
+    {
+        $item = $this->itemRepository->getItemFilter($where);
+        return $this->canonizeItem($item);
+    }
+
     public function prepareFilter($params): array
     {
         // Set filter list
@@ -173,50 +186,50 @@ class ItemService implements ServiceInterface
                     case 'color':
                     case 'size':
                         $filters[$key] = [
-                            'key'   => $key,
+                            'key' => $key,
                             'value' => explode(',', $value),
-                            'type'  => 'string',
+                            'type' => 'string',
                         ];
                         break;
 
                     case 'type':
                         $filters[$key] = [
-                            'key'   => $key,
+                            'key' => $key,
                             'value' => $value,
-                            'type'  => 'string',
+                            'type' => 'string',
                         ];
                         break;
 
                     case 'title':
                         $filters[$key] = [
-                            'key'   => $key,
+                            'key' => $key,
                             'value' => $value,
-                            'type'  => 'search',
+                            'type' => 'search',
                         ];
                         break;
 
                     case 'brand':
                     case 'category':
                         $filters[$key] = [
-                            'key'   => $key,
+                            'key' => $key,
                             'value' => $value,
-                            'type'  => 'int',
+                            'type' => 'int',
                         ];
                         break;
 
                     case 'max_price':
                         $filters[$key] = [
-                            'key'   => $key,
+                            'key' => $key,
                             'value' => $value,
-                            'type'  => 'rangeMax',
+                            'type' => 'rangeMax',
                         ];
                         break;
 
                     case 'min_price':
                         $filters[$key] = [
-                            'key'   => $key,
+                            'key' => $key,
                             'value' => $value,
-                            'type'  => 'rangeMin',
+                            'type' => 'rangeMin',
                         ];
                         break;
                 }
@@ -241,10 +254,69 @@ class ItemService implements ServiceInterface
         return $this->itemRepository->addItem($params, $account);
     }
 
+
     // ToDo: update it
     public function deleteItem($params, $account)
     {
         $params["time_deleted"] = time();
         return $this->itemRepository->deleteItem($params, $account);
+    }
+
+
+    // ToDo: update it
+    public function addCartItem($params, $account)
+    {
+        $product = $this->getItem($params["information"]);
+        $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
+        $product["count"] = (int)$params["count"];
+        if (sizeof($cart) == 0) {
+
+            $param = [
+                "id" => null,
+                "title" => "cart",
+                "slug" => "cart",
+                "type" => "cart",
+                "status" => 1,
+                "user_id" => $params["user_id"],
+                "information" => json_encode([$product]),
+            ];
+            $this->itemRepository->addCartItem($param);
+        } else {
+
+            $index = $this->checkObjectInArray($cart, $product);
+
+            if ($index > -1) {
+                $cart[$index]["count"] = (int)$cart[$index]["count"] + (int)$params["count"];
+            }else{
+                $cart[] = $product;
+            }
+
+
+            $param = [
+                "id" => null,
+                "title" => "cart",
+                "slug" => "cart",
+                "type" => "cart",
+                "status" => 1,
+                "user_id" => $params["user_id"],
+                "information" => json_encode($cart),
+            ];
+
+            $this->itemRepository->deleteCart("cart", "type");
+            $this->itemRepository->addCartItem($param);
+        }
+
+//        return $this->itemRepository->addCartItem($params, $account);
+    }
+
+    private function checkObjectInArray(array $array, array $object, $key = "id")
+    {
+        $index = -1;
+        foreach ($array as $item) {
+            $index++;
+            if ($item[$key] == $object[$key]) {
+                return $index;
+            }
+        }
     }
 }
