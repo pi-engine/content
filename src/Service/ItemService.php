@@ -127,7 +127,7 @@ class ItemService implements ServiceInterface
         return [
             'result' => true,
             'data' => [
-                'list' => $list??[],
+                'list' => $list ?? [],
                 'paginator' => [
                     'count' => $count,
                 ],
@@ -346,7 +346,7 @@ class ItemService implements ServiceInterface
 
     }
 
-// ToDo: update it
+    // ToDo: update it
     public function updateCart($params, $account)
     {
         $product = $this->getItem($params["slug"], "slug");
@@ -356,7 +356,7 @@ class ItemService implements ServiceInterface
         $index = $this->checkObjectInArray($cart, $product);
 
         if ($index > -1) {
-            $cart[$index]["count"] =  $params["count"];
+            $cart[$index]["count"] = $params["count"];
         } else {
             $cart[] = $product;
         }
@@ -372,6 +372,42 @@ class ItemService implements ServiceInterface
 
         $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
         $this->itemRepository->addCartItem($param);
+
+    }
+
+    // ToDo: update it
+    public function deleteCartItem($params, $account)
+    {
+        $product = $this->getItem($params["slug"], "slug");
+        $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
+        $product["count"] = (int)$params["count"];
+
+        if(sizeof($cart)<2){
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+        }else{
+            $index = $this->checkObjectInArray($cart, $product);
+
+            if ($index > -1) {
+                unset($cart[$index]);
+            } else {
+                $cart[] = [];
+                var_dump(1);
+            }
+            $param = [
+                "id" => null,
+                "title" => "cart",
+                "slug" => "cart",
+                "type" => "cart",
+                "status" => 1,
+                "user_id" => $params["user_id"],
+                "information" => json_encode($cart),
+            ];
+
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+            if (sizeof($cart))
+                $this->itemRepository->addCartItem($param);
+        }
+
 
     }
 

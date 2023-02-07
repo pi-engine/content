@@ -44,7 +44,7 @@ class UpdateHandler implements RequestHandlerInterface
 
         $params["user_id"] = $account['id'];
         $params["count"] = $requestBody['count'];
-        $params["type"] = "type";
+        $params["type"] = "cart";
         $params["product_id"] = $requestBody['id'];
         $params["slug"] = $requestBody['slug'];
 
