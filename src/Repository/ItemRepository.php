@@ -280,10 +280,9 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return void
      */
-    public function deleteCart($parameter, $type = 'id'): void
+    public function deleteCart($where): void
     {
         $update = new Delete($this->tableItem);
-        $where = [$type => $parameter];
         $update->where($where);
 
         $sql = new Sql($this->db);

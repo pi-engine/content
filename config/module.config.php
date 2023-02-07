@@ -32,6 +32,7 @@ return [
             // Cart services factory
             Handler\Api\Cart\AddHandler::class => Factory\Handler\Api\Cart\AddHandlerFactory::class,
             Handler\Api\Cart\ListHandler::class => Factory\Handler\Api\Cart\ListHandlerFactory::class,
+            Handler\Api\Cart\UpdateHandler::class => Factory\Handler\Api\Cart\UpdateHandlerFactory::class,
 
         ],
     ],
@@ -121,6 +122,26 @@ return [
                                     AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Cart\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'update-cart' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/cart/update',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Cart\UpdateHandler::class
                                 ),
                             ],
                         ],

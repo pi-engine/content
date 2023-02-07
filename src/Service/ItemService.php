@@ -127,7 +127,7 @@ class ItemService implements ServiceInterface
         return [
             'result' => true,
             'data' => [
-                'list' => $list,
+                'list' => $list??[],
                 'paginator' => [
                     'count' => $count,
                 ],
@@ -304,7 +304,7 @@ class ItemService implements ServiceInterface
     // ToDo: update it
     public function addCartItem($params, $account)
     {
-        $product = $this->getItem($params["information"],"slug");
+        $product = $this->getItem($params["information"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
         if (sizeof($cart) == 0) {
@@ -340,11 +340,39 @@ class ItemService implements ServiceInterface
                 "information" => json_encode($cart),
             ];
 
-            $this->itemRepository->deleteCart("cart", "type");
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
             $this->itemRepository->addCartItem($param);
         }
 
-//        return $this->itemRepository->addCartItem($params, $account);
+    }
+
+// ToDo: update it
+    public function updateCart($params, $account)
+    {
+        $product = $this->getItem($params["slug"], "slug");
+        $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
+        $product["count"] = (int)$params["count"];
+
+        $index = $this->checkObjectInArray($cart, $product);
+
+        if ($index > -1) {
+            $cart[$index]["count"] =  $params["count"];
+        } else {
+            $cart[] = $product;
+        }
+        $param = [
+            "id" => null,
+            "title" => "cart",
+            "slug" => "cart",
+            "type" => "cart",
+            "status" => 1,
+            "user_id" => $params["user_id"],
+            "information" => json_encode($cart),
+        ];
+
+        $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+        $this->itemRepository->addCartItem($param);
+
     }
 
     private function checkObjectInArray(array $array, array $object, $key = "id")
