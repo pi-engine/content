@@ -312,7 +312,7 @@ class ItemService implements ServiceInterface
             $param = [
                 "id" => null,
                 "title" => "cart",
-                "slug" => "cart",
+                "slug" => "cart-{$account["id"]}",
                 "type" => "cart",
                 "status" => 1,
                 "user_id" => $params["user_id"],
@@ -349,7 +349,7 @@ class ItemService implements ServiceInterface
     // ToDo: update it
     public function updateCart($params, $account)
     {
-        $product = $this->getItem($params["slug"], "slug");
+        $product = $this->getItem($params["type"], "type");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
 
@@ -378,7 +378,7 @@ class ItemService implements ServiceInterface
     // ToDo: update it
     public function deleteCartItem($params, $account)
     {
-        $product = $this->getItem($params["slug"], "slug");
+        $product = $this->getItem($params["type"], "cart");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
 
