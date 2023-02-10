@@ -349,7 +349,7 @@ class ItemService implements ServiceInterface
     // ToDo: update it
     public function updateCart($params, $account)
     {
-        $product = $this->getItem($params["type"], "type");
+        $product = $this->getItem($params["slug"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
 
@@ -378,20 +378,24 @@ class ItemService implements ServiceInterface
     // ToDo: update it
     public function deleteCartItem($params, $account)
     {
-        $product = $this->getItem($params["type"], "cart");
+        $product = $this->getItem($params["slug"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
-        $product["count"] = (int)$params["count"];
-
+        echo sizeof($cart);
         if(sizeof($cart)<2){
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
         }else{
             $index = $this->checkObjectInArray($cart, $product);
 
             if ($index > -1) {
-                unset($cart[$index]);
+//                unset($cart[$index]);
+                $list = [];
+                foreach ($cart as $item){
+                    if($item["id"]!= $cart[$index]["id"])
+                        $list[]=$item;
+                }
+                $cart = $list;
             } else {
                 $cart[] = [];
-                var_dump(1);
             }
             $param = [
                 "id" => null,
@@ -403,7 +407,7 @@ class ItemService implements ServiceInterface
                 "information" => json_encode($cart),
             ];
 
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" =>  $account["id"]]);
             if (sizeof($cart))
                 $this->itemRepository->addCartItem($param);
         }
