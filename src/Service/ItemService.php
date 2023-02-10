@@ -136,6 +136,35 @@ class ItemService implements ServiceInterface
         ];
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getCart(array $params): array
+    {
+
+        $limit = $params['limit'] ?? 25;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+
+
+        // Set params
+        $params['order'] = $order;
+        $params['offset'] = $offset;
+        $params['limit'] = $limit;
+        $params['type'] = $params['type'];
+        $params['status'] = 1;
+
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($params);
+        foreach ($rowSet as $row) {
+            $list = $this->canonizeItem($row);
+        }
+        return $list;
+    }
+
     public function canonizeMetaItemID(object|array $meta): int
     {
         if (empty($meta)) {
@@ -381,17 +410,17 @@ class ItemService implements ServiceInterface
         $product = $this->getItem($params["slug"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         echo sizeof($cart);
-        if(sizeof($cart)<2){
+        if (sizeof($cart) < 2) {
             $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
-        }else{
+        } else {
             $index = $this->checkObjectInArray($cart, $product);
 
             if ($index > -1) {
 //                unset($cart[$index]);
                 $list = [];
-                foreach ($cart as $item){
-                    if($item["id"]!= $cart[$index]["id"])
-                        $list[]=$item;
+                foreach ($cart as $item) {
+                    if ($item["id"] != $cart[$index]["id"])
+                        $list[] = $item;
                 }
                 $cart = $list;
             } else {
@@ -407,7 +436,7 @@ class ItemService implements ServiceInterface
                 "information" => json_encode($cart),
             ];
 
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" =>  $account["id"]]);
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
             if (sizeof($cart))
                 $this->itemRepository->addCartItem($param);
         }
@@ -425,4 +454,145 @@ class ItemService implements ServiceInterface
             }
         }
     }
+
+
+    // ToDo: update it
+    public function addOrderItem($params, $account)
+    {
+
+        $address = [];
+        if (isset($params["address_id"]) && ($params["address_id"] != null) && ($params["address_id"] != "null")) {
+            ///TODO:get address by address_id from db
+            $address = [];
+        } else {
+            $address = [
+                "id" => null,
+                "name" => $params["name"],
+                "phone" => $params["phone"],
+                "address" => $params["address"],
+                "state" => $params["state"],
+                "city" => $params["city"],
+                "zip_code" => $params["zip_code"],
+            ];
+            $address_request = [
+                "type" => "address",
+                "slug" => "address-{$account["id"]}-" . time(),
+                "user_id" => $account["id"],
+                "status" => 1,
+                "title" => "address-{$account["id"]}",
+                "information" => json_encode($address),
+            ];
+            $address["id"] = $this->addItem($address_request, $account)->getId();
+
+
+            $limit = $params['limit'] ?? 25;
+            $page = $params['page'] ?? 1;
+            $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+            $offset = ($page - 1) * $limit;
+
+            $cart_request = [
+                "user_id" => $account["id"],
+                "type" => "cart",
+                "order" => $order,
+                "offset" => $offset,
+                "limit" => $limit,
+                "status" => 1,
+
+            ];
+            $cart = [];
+            $cart["items"] =  $this->getCart($cart_request);
+            $cart["address"] =   ($address);
+
+            $order_information = [
+                "user_id" => $account["id"],
+                "status" => "created",
+                "date_time" =>  date('m/d/Y h:i', time()),
+                "description" => $params["description"],
+                "items" =>  ($cart),
+            ];
+
+            $order_request = [
+                "type" => "order",
+                "slug" => "order-{$account["id"]}-" . time(),
+                "user_id" => $account["id"],
+                "status" => 1,
+                "title" => "order-{$account["id"]}",
+                "information" =>  json_encode($order_information),
+            ];
+
+            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
+            return $this->addItem($order_request, $account);
+
+
+        }
+
+
+    }
+
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getOrderList(array $params): array
+    {
+        $limit = $params['limit'] ?? 25;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+
+        // Set filters
+        //$filters = $this->prepareFilter($params);
+        $filters = [];
+
+        // Set params
+        $listParams = [
+            'order' => $order,
+            'offset' => $offset,
+            'limit' => $limit,
+            'type' => $params['type'],
+            'status' => 1,
+        ];
+
+        // Get filtered IDs
+        $itemIdList = [];
+        if (!empty($filters)) {
+            $rowSet = $this->itemRepository->getIDFromFilter($filters);
+            foreach ($rowSet as $row) {
+                $itemIdList[] = $this->canonizeMetaItemID($row);
+            }
+        }
+
+        // Set filtered IDs to params
+        if (!empty($itemIdList)) {
+            $listParams['id'] = $itemIdList;
+        }
+
+        // Get list
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+
+        // Get count
+        $count = $this->itemRepository->getItemCount($listParams);
+
+        return [
+            'result' => true,
+            'data' => [
+                'list' => $list,
+                'paginator' => [
+                    'count' => $count,
+                    'limit' => $limit,
+                    'page' => $page,
+                ],
+                'filters' => $filters,
+            ],
+            'error' => [],
+        ];
+    }
+
+
 }

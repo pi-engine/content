@@ -34,6 +34,10 @@ return [
             Handler\Api\Cart\ListHandler::class => Factory\Handler\Api\Cart\ListHandlerFactory::class,
             Handler\Api\Cart\UpdateHandler::class => Factory\Handler\Api\Cart\UpdateHandlerFactory::class,
 
+            // Order services factory
+            Handler\Api\Order\AddHandler::class => Factory\Handler\Api\Order\AddHandlerFactory::class,
+            Handler\Api\Order\ListHandler::class => Factory\Handler\Api\Order\ListHandlerFactory::class,
+
         ],
     ],
 
@@ -187,6 +191,89 @@ return [
                         ],
                     ],
 
+                    // Order services
+                    'add-order' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/order/add',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Order\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'order-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/order/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Order\ListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    // Address services
+                    'add-address' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/address/add',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Address\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'address-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/address/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Address\ListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
 
                 ],
             ],
