@@ -36,7 +36,8 @@ class ItemService implements ServiceInterface
      */
     public function getItemList(array $params): array
     {
-        $limit = $params['limit'] ?? 25;
+        ///TODO:update limit count
+        $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
