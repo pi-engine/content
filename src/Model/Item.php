@@ -9,6 +9,7 @@ class Item
     private string $slug;
     private string $type;
     private int    $status;
+
     private int    $user_id;
     private int    $time_create;
     private int    $time_update;
@@ -102,5 +103,36 @@ class Item
     public function getInformation(): string
     {
         return $this->information;
+    }
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus(int $status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param int $user_id
+     */
+    public function setUserId(int $user_id): void
+    {
+        $this->user_id = $user_id;
     }
 }
