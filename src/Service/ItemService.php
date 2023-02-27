@@ -627,9 +627,12 @@ class ItemService implements ServiceInterface
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
         $question = $this->itemRepository->getItem($params["slug"], "slug");
 
-        $information = $this->canonizeItem($question);
-        $information["body"]["answer"][] = $params;
 
+        $information = $this->canonizeItem($question);
+        if (sizeof($information) == 0)
+            return [];
+
+        array_unshift($information["body"]["answer"], $params);
         $editedQuestion = [
             "id" => $question->getId(),
             "time_update" => time(),
