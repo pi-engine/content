@@ -40,7 +40,7 @@ return [
 
             // Question services factory
             Handler\Api\Question\AddHandler::class => Factory\Handler\Api\Question\AddHandlerFactory::class,
-//            Handler\Api\Order\ListHandler::class => Factory\Handler\Api\Order\ListHandlerFactory::class,
+            Handler\Api\Question\ListHandler::class => Factory\Handler\Api\Question\ListHandlerFactory::class,
 
         ],
     ],
@@ -281,7 +281,7 @@ return [
 
 
                     // Question services
-                    'add-address' => [
+                    'add-question' => [
                         'type' => Literal::class,
                         'options' => [
                             'route' => '/question/add',
@@ -297,6 +297,26 @@ return [
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'question-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/question/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Question\ListHandler::class
                                 ),
                             ],
                         ],
