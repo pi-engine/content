@@ -42,6 +42,7 @@ return [
             Handler\Api\Question\AddHandler::class => Factory\Handler\Api\Question\AddHandlerFactory::class,
             Handler\Api\Question\ListHandler::class => Factory\Handler\Api\Question\ListHandlerFactory::class,
             Handler\Api\Question\ReplyHandler::class => Factory\Handler\Api\Question\ReplyHandlerFactory::class,
+            Handler\Api\Question\GetHandler::class => Factory\Handler\Api\Question\GetHandlerFactory::class,
 
         ],
     ],
@@ -338,6 +339,26 @@ return [
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\ListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'get-question' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/question/get',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Question\GetHandler::class
                                 ),
                             ],
                         ],
