@@ -618,7 +618,6 @@ class ItemService implements ServiceInterface
         $information["body"]["answer"] = $nullObject;
         $params["information"] = json_encode($information,JSON_UNESCAPED_UNICODE);
 
-
         return $this->canonizeItem($this->itemRepository->addItem($params));
     }
 
