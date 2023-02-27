@@ -50,10 +50,6 @@ class AddHandler implements RequestHandlerInterface
             "type" => 'question',
             'time_create' => time()
         ];
-        $information = $params;
-        $information["body"] =  new \stdClass();
-        $params["information"] = json_encode($information,JSON_UNESCAPED_UNICODE);
-
 
         // Get list of notifications
         $result = $this->itemService->addQuestion($params);
