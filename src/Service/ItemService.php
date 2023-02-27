@@ -3,6 +3,7 @@
 namespace Content\Service;
 
 use Content\Repository\ItemRepositoryInterface;
+use User\Service\AccountService;
 use function explode;
 use function in_array;
 use function is_object;
@@ -10,6 +11,11 @@ use function json_decode;
 
 class ItemService implements ServiceInterface
 {
+
+
+    /** @var AccountService */
+    protected AccountService $accountService;
+
     /* @var ItemRepositoryInterface */
     protected ItemRepositoryInterface $itemRepository;
     protected array $allowKey
@@ -23,13 +29,16 @@ class ItemService implements ServiceInterface
      * @param ItemRepositoryInterface $itemRepository
      */
     public function __construct(
-        ItemRepositoryInterface $itemRepository
+        ItemRepositoryInterface $itemRepository,
+        AccountService           $accountService
     )
     {
         $this->itemRepository = $itemRepository;
+        $this->accountService = $accountService;
     }
 
-    /**
+
+/**
      * @param array $params
      *
      * @return array
@@ -602,6 +611,14 @@ class ItemService implements ServiceInterface
 // TODO: update it
     public function addQuestion($params): object|array
     {
+        $nullObject =  [];// new \stdClass();
+        $information = $params;
+        $information["body"] = $nullObject;
+        $information["body"]["user"] = $params["user_id"]==0? $nullObject:$this->accountService->getProfile($params);
+        $information["body"]["answer"] = $nullObject;
+        $params["information"] = json_encode($information,JSON_UNESCAPED_UNICODE);
+
+
         return $this->canonizeItem($this->itemRepository->addItem($params));
     }
 
