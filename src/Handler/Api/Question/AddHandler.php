@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Address;
+namespace Content\Handler\Api\Question;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -24,12 +24,13 @@ class AddHandler implements RequestHandlerInterface
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface $streamFactory,
-        ItemService $itemService
-    ) {
+        StreamFactoryInterface   $streamFactory,
+        ItemService              $itemService
+    )
+    {
         $this->responseFactory = $responseFactory;
-        $this->streamFactory   = $streamFactory;
-        $this->itemService     = $itemService;
+        $this->streamFactory = $streamFactory;
+        $this->itemService = $itemService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -41,11 +42,21 @@ class AddHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
 
-        $requestBody["user_id"] =  $account['id'];
+        $params = [
+            "user_id" => $requestBody['user_id'] ?? 0,
+            "title" => $requestBody['title'],
+            "slug" => uniqid(),
+            "status" => 1,
+            "type" => 'question',
+            'time_create' => time()
+        ];
+        $information = $params;
+        $information["body"] =  new \stdClass();
+        $params["information"] = json_encode($information,JSON_UNESCAPED_UNICODE);
 
-        ///TODO: build this
+
         // Get list of notifications
-        $result = $this->itemService->addAddressItem($requestBody,$account);
+        $result = $this->itemService->addQuestion($params);
 
 
         // Get record
@@ -54,8 +65,8 @@ class AddHandler implements RequestHandlerInterface
         // Set result
         $result = [
             'result' => true,
-            'data'   => $result,
-            'error'  => [],
+            'data' => $result,
+            'error' => [],
         ];
 
         return new JsonResponse($result);

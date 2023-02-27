@@ -311,27 +311,27 @@ class ItemService implements ServiceInterface
         return $filters;
     }
 
-    // ToDo: update it
+    // TODO: update it
     public function editItem($params, $account)
     {
         $params["time_deleted"] = time();
         return $this->itemRepository->editItem($params, $account);
     }
 
-    // ToDo: update it
+    // TODO: update it
     public function addItem($params, $account)
     {
         return $this->itemRepository->addItem($params, $account);
     }
 
-    // ToDo: update it
+    // TODO: update it
     public function deleteItem($params, $account)
     {
         $params["time_deleted"] = time();
         return $this->itemRepository->deleteItem($params, $account);
     }
 
-    // ToDo: update it
+    ///TODO: update it
     public function addCartItem($params, $account)
     {
         $product = $this->getItem($params["information"], "slug");
@@ -501,15 +501,15 @@ class ItemService implements ServiceInterface
 
             ];
             $cart = [];
-            $cart["items"] =  $this->getCart($cart_request);
-            $cart["address"] =   ($address);
+            $cart["items"] = $this->getCart($cart_request);
+            $cart["address"] = ($address);
 
             $order_information = [
                 "user_id" => $account["id"],
                 "status" => "created",
-                "date_time" =>  date('m/d/Y h:i', time()),
+                "date_time" => date('m/d/Y h:i', time()),
                 "description" => $params["description"],
-                "items" =>  ($cart),
+                "items" => ($cart),
             ];
 
             $order_request = [
@@ -518,7 +518,7 @@ class ItemService implements ServiceInterface
                 "user_id" => $account["id"],
                 "status" => 1,
                 "title" => "order-{$account["id"]}",
-                "information" =>  json_encode($order_information),
+                "information" => json_encode($order_information),
             ];
 
             $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
@@ -594,6 +594,18 @@ class ItemService implements ServiceInterface
             'error' => [],
         ];
     }
+
+
+    ///// Start Question Section /////
+    /// services of question type
+
+// TODO: update it
+    public function addQuestion($params): object|array
+    {
+        return $this->canonizeItem($this->itemRepository->addItem($params));
+    }
+
+    ///// End Question Section /////
 
 
 }

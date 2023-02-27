@@ -38,6 +38,10 @@ return [
             Handler\Api\Order\AddHandler::class => Factory\Handler\Api\Order\AddHandlerFactory::class,
             Handler\Api\Order\ListHandler::class => Factory\Handler\Api\Order\ListHandlerFactory::class,
 
+            // Question services factory
+            Handler\Api\Question\AddHandler::class => Factory\Handler\Api\Question\AddHandlerFactory::class,
+//            Handler\Api\Order\ListHandler::class => Factory\Handler\Api\Order\ListHandlerFactory::class,
+
         ],
     ],
 
@@ -270,6 +274,29 @@ return [
                                     AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Address\ListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+
+                    // Question services
+                    'add-address' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/question/add',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Question\AddHandler::class
                                 ),
                             ],
                         ],
