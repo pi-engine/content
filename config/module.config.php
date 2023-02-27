@@ -41,6 +41,7 @@ return [
             // Question services factory
             Handler\Api\Question\AddHandler::class => Factory\Handler\Api\Question\AddHandlerFactory::class,
             Handler\Api\Question\ListHandler::class => Factory\Handler\Api\Question\ListHandlerFactory::class,
+            Handler\Api\Question\ReplyHandler::class => Factory\Handler\Api\Question\ReplyHandlerFactory::class,
 
         ],
     ],
@@ -297,6 +298,26 @@ return [
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'reply-question' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/question/reply',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Question\ReplyHandler::class
                                 ),
                             ],
                         ],

@@ -45,18 +45,13 @@ class ReplyHandler implements RequestHandlerInterface
         $params = [
             "user_id" => $requestBody['user_id'] ?? 0,
             "title" => $requestBody['title'],
-            "slug" => uniqid(),
-            "status" => 1,
-            "type" => 'question',
+            "slug" => $requestBody['slug'],
             'time_create' => time()
         ];
-        $information = $params;
-        $information["body"] =  new \stdClass();
-        $params["information"] = json_encode($information,JSON_UNESCAPED_UNICODE);
 
 
         // Get list of notifications
-//        $result = $this->itemService->ReplyQuestion($params);
+        $result = $this->itemService->replyQuestion($params);
 
 
         // Get record

@@ -30,7 +30,7 @@ class ItemService implements ServiceInterface
      */
     public function __construct(
         ItemRepositoryInterface $itemRepository,
-        AccountService           $accountService
+        AccountService          $accountService
     )
     {
         $this->itemRepository = $itemRepository;
@@ -38,7 +38,7 @@ class ItemService implements ServiceInterface
     }
 
 
-/**
+    /**
      * @param array $params
      *
      * @return array
@@ -611,14 +611,32 @@ class ItemService implements ServiceInterface
 // TODO: update it
     public function addQuestion($params): object|array
     {
-        $nullObject =  [];// new \stdClass();
+        $nullObject = [];// new \stdClass();
         $information = $params;
         $information["body"] = $nullObject;
-        $information["body"]["user"] = $params["user_id"]==0? $nullObject:$this->accountService->getProfile($params);
+        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
         $information["body"]["answer"] = $nullObject;
-        $params["information"] = json_encode($information,JSON_UNESCAPED_UNICODE);
+        $params["information"] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
         return $this->canonizeItem($this->itemRepository->addItem($params));
+    }
+
+    public function replyQuestion($params): object|array
+    {
+        $nullObject = [];// new \stdClass();
+        $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $question = $this->itemRepository->getItem($params["slug"], "slug");
+
+        $information = $this->canonizeItem($question);
+        $information["body"]["answer"][] = $params;
+
+        $editedQuestion = [
+            "id" => $question->getId(),
+            "time_update" => time(),
+            "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+
+        return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
     }
 
     ///// End Question Section /////
