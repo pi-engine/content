@@ -36,23 +36,14 @@ class AddHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
 
-        // Get account
-        $account = $request->getAttribute('account');
+
 
         // Get request body
         $requestBody = $request->getParsedBody();
 
-        $params = [
-            "user_id" => $requestBody['user_id'] ?? 0,
-            "title" => $requestBody['title'],
-            "slug" => uniqid(),
-            "status" => 1,
-            "type" => 'question',
-            'time_create' => time()
-        ];
 
         // Get list of notifications
-        $result = $this->itemService->addQuestion($params);
+        $result = $this->itemService->addQuestion($requestBody);
 
 
         // Get record

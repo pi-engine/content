@@ -609,12 +609,24 @@ class ItemService implements ServiceInterface
     /// services of question type
 
 // TODO: update it
-    public function addQuestion($params): object|array
+    public function addQuestion($requestBody): object|array
     {
+
         $nullObject = [];// new \stdClass();
+
+        $params = [
+            "user_id" => $requestBody['user_id'] ?? 0,
+            "title" => $requestBody['title'],
+            "slug" => uniqid(),
+            "status" => 1,
+            "type" => 'question',
+            'time_create' => time()
+        ];
+
         $information = $params;
         $information["body"] = $nullObject;
         $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $information["body"] ["description"]= $requestBody['description'] ?? "";
         $information["body"]["answer"] = $nullObject;
         $params["information"] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
@@ -623,6 +635,7 @@ class ItemService implements ServiceInterface
 
     public function replyQuestion($params): object|array
     {
+
         $nullObject = [];// new \stdClass();
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
         $question = $this->itemRepository->getItem($params["slug"], "slug");
