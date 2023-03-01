@@ -355,7 +355,7 @@ return [
                                 'handler' => 'list',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
-//                                    SecurityMiddleware::class,
+                                    SecurityMiddleware::class,
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\GetHandler::class
