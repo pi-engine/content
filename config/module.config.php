@@ -44,6 +44,8 @@ return [
             Handler\Api\Question\ReplyHandler::class => Factory\Handler\Api\Question\ReplyHandlerFactory::class,
             Handler\Api\Question\GetHandler::class => Factory\Handler\Api\Question\GetHandlerFactory::class,
 
+            // Setting services factory
+            Handler\Api\Setting\VersionHandler::class => Factory\Handler\Api\Setting\VersionHandlerFactory::class,
         ],
     ],
 
@@ -281,7 +283,6 @@ return [
                         ],
                     ],
 
-
                     // Question services
                     'add-question' => [
                         'type' => Literal::class,
@@ -359,6 +360,28 @@ return [
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\GetHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    // Setting services
+                    'setting' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/setting/version',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Setting\VersionHandler::class
                                 ),
                             ],
                         ],

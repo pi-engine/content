@@ -23,9 +23,12 @@ class ItemServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ItemService
     {
+        $config = $container->get('config');
+
         return new ItemService(
             $container->get(ItemRepositoryInterface::class),
-            $container->get(AccountService::class)
+            $container->get(AccountService::class),
+            $config['client']
         );
     }
 }

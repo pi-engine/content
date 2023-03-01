@@ -3,6 +3,7 @@
 namespace Content\Service;
 
 use Content\Repository\ItemRepositoryInterface;
+use mysql_xdevapi\Exception;
 use User\Service\AccountService;
 use function explode;
 use function in_array;
@@ -25,16 +26,21 @@ class ItemService implements ServiceInterface
 
     // ToDo: get it from DB and cache
 
+    /* @var array */
+    protected array $config;
+
     /**
      * @param ItemRepositoryInterface $itemRepository
      */
     public function __construct(
         ItemRepositoryInterface $itemRepository,
-        AccountService          $accountService
+        AccountService          $accountService,
+                                $config
     )
     {
         $this->itemRepository = $itemRepository;
         $this->accountService = $accountService;
+        $this->config = $config;
     }
 
 
@@ -626,7 +632,7 @@ class ItemService implements ServiceInterface
         $information = $params;
         $information["body"] = $nullObject;
         $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $information["body"] ["description"]= $requestBody['description'] ?? "";
+        $information["body"] ["description"] = $requestBody['description'] ?? "";
         $information["body"]["answer"] = $nullObject;
         $params["information"] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
@@ -656,6 +662,32 @@ class ItemService implements ServiceInterface
     }
 
     ///// End Question Section /////
+
+
+    ///// Start Setting Section /////
+    ///// Config variable of engin
+    ///
+    public function getVersion($params): object|array
+    {
+        try {
+            $platform = $params["platform"];
+            $config =
+                $platform == "api" ?
+                    $this->config[$platform] :
+                    $this->config["application"][$platform];
+            return [
+                "last_version" => $config["last_version"],
+                "url" => $config["url"],
+                "is_force" => !in_array($params["version"],$config["authorized_versions"]),
+                "message" => $config["message"],
+                "current_version" => $params["version"],
+
+            ];
+
+        } catch (Exception $error) {
+            return [];
+        }
+    }
 
 
 }
