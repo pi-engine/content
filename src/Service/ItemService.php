@@ -676,6 +676,7 @@ class ItemService implements ServiceInterface
                     $this->config[$platform] :
                     $this->config["application"][$platform];
             return [
+                "status" => $config["status"],
                 "last_version" => $config["last_version"],
                 "url" => $config["url"],
                 "is_force" => !in_array($params["version"],$config["authorized_versions"]),
