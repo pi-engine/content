@@ -682,6 +682,8 @@ class ItemService implements ServiceInterface
                 "is_force" => !in_array($params["version"],$config["authorized_versions"]),
                 "message" => $config["message"],
                 "current_version" => $params["version"],
+                "button_text" => $params["button_text"],
+                "header_text" => $params["header_text"],
 
             ];
 
