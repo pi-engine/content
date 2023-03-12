@@ -660,9 +660,73 @@ class ItemService implements ServiceInterface
 
         return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
     }
-
     ///// End Question Section /////
 
+
+    ///// Start Location Section /////
+    ///// services of location type
+    ///
+    public function getMarks($params): array
+    {
+        $limit = (int)$params['limit'] ?? 1000;
+        $page = (int)$params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+
+        // Set params
+        $listParams = [
+            'page' => $page,
+            'limit' => $limit,
+            'order' => $order,
+            'offset' => $offset,
+            'type' => "marks",
+        ];
+
+        // Get list
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+        return $list;
+    }
+
+    public function getMark(array $params): array|object
+    {
+        return $this->itemRepository->getItem($params['slug'], 'slug');
+    }
+    ///// End Location Section /////
+
+
+    ///// Start Category Section /////
+    ///// services of location type
+    ///
+
+    ///// End Category Section /////
+    public function getCategories($params): array
+    {
+        $limit = (int)$params['limit'] ?? 1000;
+        $page = (int)$params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+
+        // Set params
+        $listParams = [
+            'page' => $page,
+            'limit' => $limit,
+            'order' => $order,
+            'offset' => $offset,
+            'type' => "categories",
+        ];
+
+        // Get list
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+        return $list;
+    }
 
     ///// Start Setting Section /////
     ///// Config variable of engin
@@ -679,7 +743,7 @@ class ItemService implements ServiceInterface
                 "status" => $config["status"],
                 "last_version" => $config["last_version"],
                 "url" => $config["url"],
-                "is_force" => !in_array($params["version"],$config["authorized_versions"]),
+                "is_force" => !in_array($params["version"], $config["authorized_versions"]),
                 "message" => $config["message"],
                 "current_version" => $params["version"],
                 "button_text" => $config["button_text"],
@@ -692,5 +756,6 @@ class ItemService implements ServiceInterface
         }
     }
 
+    ///// End Setting Section /////
 
 }

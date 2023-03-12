@@ -44,6 +44,13 @@ return [
             Handler\Api\Question\ReplyHandler::class => Factory\Handler\Api\Question\ReplyHandlerFactory::class,
             Handler\Api\Question\GetHandler::class => Factory\Handler\Api\Question\GetHandlerFactory::class,
 
+            // Location services factory
+            Handler\Api\Location\MarkListHandler::class => Factory\Handler\Api\Location\MarkListHandlerFactory::class,
+            Handler\Api\Location\MarkDetailHandler::class => Factory\Handler\Api\Location\MarkDetailHandlerFactory::class,
+
+            // Category services factory
+            Handler\Api\Category\CategoryListHandler::class => Factory\Handler\Api\Category\CategoryListHandlerFactory::class,
+
             // Setting services factory
             Handler\Api\Setting\VersionHandler::class => Factory\Handler\Api\Setting\VersionHandlerFactory::class,
         ],
@@ -117,7 +124,8 @@ return [
                     ],
 
 
-                    // Cart services
+                    /// Cart services
+                    ///
                     'add-cart' => [
                         'type' => Literal::class,
                         'options' => [
@@ -199,7 +207,8 @@ return [
                         ],
                     ],
 
-                    // Order services
+                    /// Order services
+                    ///
                     'add-order' => [
                         'type' => Literal::class,
                         'options' => [
@@ -241,7 +250,8 @@ return [
                         ],
                     ],
 
-                    // Address services
+                    /// Address services
+                    ///
                     'add-address' => [
                         'type' => Literal::class,
                         'options' => [
@@ -283,7 +293,8 @@ return [
                         ],
                     ],
 
-                    // Question services
+                    /// Question services
+                    ///
                     'add-question' => [
                         'type' => Literal::class,
                         'options' => [
@@ -365,7 +376,74 @@ return [
                         ],
                     ],
 
-                    // Setting services
+                    /// Location services
+                    ///
+                    'location-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/location/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Location\MarkListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'get-location' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/location/get',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Location\MarkDetailHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    /// Category services
+                    ///
+                    'category-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/category/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Category\CategoryListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    /// Setting services
+                    ///
                     'setting' => [
                         'type' => Literal::class,
                         'options' => [
