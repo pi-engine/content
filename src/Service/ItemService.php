@@ -694,6 +694,7 @@ class ItemService implements ServiceInterface
         foreach ($rowSet as $row) {
             $list[] = $this->canonizeItem($row);
         }
+        return $this->scoreService->getScoreListGroupByItem();
         return $list;
     }
 
