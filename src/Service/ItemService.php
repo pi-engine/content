@@ -688,20 +688,37 @@ class ItemService implements ServiceInterface
             'type' => "marks",
         ];
 
+
+        $scores = [];
+        foreach ($this->scoreService->getScoreListGroupByItem() as $score) {
+            $scores[$score["item_id"]] = $score;
+        }
         // Get list
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
             $list[] = $this->canonizeItem($row);
+
         }
-        return $this->scoreService->getScoreListGroupByItem();
-        return $list;
+
+        $ll = array();
+        for ($i = 0; $i < sizeof($list[0]); $i++) {
+            $ll[$i] = $list[0][$i];
+            $ll[$i]["score"] = isset($scores[$ll[$i]["id"]]) ? $scores[$ll[$i]["id"]]["score"] : 0;
+        }
+        return $ll;
     }
 
     public function getMark(array $params): array|object
     {
         $item = $this->itemRepository->getItem($params['slug'], 'slug');
-        return $this->canonizeItem($item);
+        $item =  $this->canonizeItem($item);
+        $scores = [];
+        foreach ($this->scoreService->getScoreListGroupByItem() as $score) {
+            $scores[$score["item_id"]] = $score;
+        }
+        $item["score"] = isset($scores[$item["id"]]) ? $scores[$item["id"]]["score"] : 0;;
+        return $item;
     }
     ///// End Location Section /////
 

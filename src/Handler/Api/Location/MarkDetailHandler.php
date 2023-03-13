@@ -35,6 +35,9 @@ class MarkDetailHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+
+        // Get request body
+        $requestBody = $request->getParsedBody();
         $params = [
             "slug" => $requestBody["slug"]??0,
         ];
