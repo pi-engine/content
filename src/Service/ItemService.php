@@ -2,6 +2,7 @@
 
 namespace Content\Service;
 
+use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
 use mysql_xdevapi\Exception;
 use User\Service\AccountService;
@@ -16,6 +17,9 @@ class ItemService implements ServiceInterface
 
     /** @var AccountService */
     protected AccountService $accountService;
+
+    /** @var ScoreService */
+    protected ScoreService $scoreService;
 
     /* @var ItemRepositoryInterface */
     protected ItemRepositoryInterface $itemRepository;
@@ -35,11 +39,13 @@ class ItemService implements ServiceInterface
     public function __construct(
         ItemRepositoryInterface $itemRepository,
         AccountService          $accountService,
+        ScoreService            $scoreService,
                                 $config
     )
     {
         $this->itemRepository = $itemRepository;
         $this->accountService = $accountService;
+        $this->scoreService = $scoreService;
         $this->config = $config;
     }
 

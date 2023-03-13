@@ -2,6 +2,7 @@
 
 namespace Content\Factory\Service;
 
+use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
 use Content\Service\ItemService;
 use Interop\Container\ContainerInterface;
@@ -28,6 +29,7 @@ class ItemServiceFactory implements FactoryInterface
         return new ItemService(
             $container->get(ItemRepositoryInterface::class),
             $container->get(AccountService::class),
+            $container->get(ScoreService::class),
             $config['client']
         );
     }
