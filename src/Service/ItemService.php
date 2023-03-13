@@ -693,7 +693,8 @@ class ItemService implements ServiceInterface
 
     public function getMark(array $params): array|object
     {
-        return $this->itemRepository->getItem($params['slug'], 'slug');
+        $item = $this->itemRepository->getItem($params['slug'], 'slug');
+        return $this->canonizeItem($item);
     }
     ///// End Location Section /////
 

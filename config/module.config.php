@@ -412,7 +412,7 @@ return [
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
-                                    AuthorizationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
                                     Handler\Api\Location\MarkDetailHandler::class
                                 ),
                             ],
