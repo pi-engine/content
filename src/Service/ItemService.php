@@ -688,7 +688,6 @@ class ItemService implements ServiceInterface
             'type' => "marks",
         ];
 
-
         $scores = [];
         foreach ($this->scoreService->getScoreListGroupByItem() as $score) {
             $scores[$score["item_id"]] = $score;
@@ -698,13 +697,13 @@ class ItemService implements ServiceInterface
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
             $list[] = $this->canonizeItem($row);
-
         }
 
         $ll = array();
         for ($i = 0; $i < sizeof($list[0]); $i++) {
             $ll[$i] = $list[0][$i];
             $ll[$i]["score"] = isset($scores[$ll[$i]["id"]]) ? $scores[$ll[$i]["id"]]["score"] : 0;
+            $ll[$i]["classification"] = $this->calculateClassification((int)$ll[$i]["score"]);
         }
         return $ll;
     }
@@ -712,12 +711,13 @@ class ItemService implements ServiceInterface
     public function getMark(array $params): array|object
     {
         $item = $this->itemRepository->getItem($params['slug'], 'slug');
-        $item =  $this->canonizeItem($item);
+        $item = $this->canonizeItem($item);
         $scores = [];
         foreach ($this->scoreService->getScoreListGroupByItem() as $score) {
             $scores[$score["item_id"]] = $score;
         }
-        $item["score"] = isset($scores[$item["id"]]) ? $scores[$item["id"]]["score"] : 0;;
+        $item["score"] = isset($scores[$item["id"]]) ? $scores[$item["id"]]["score"] : 0;
+        $item["classification"] = $this->calculateClassification((int)$item["score"]);
         return $item;
     }
     ///// End Location Section /////
@@ -726,8 +726,6 @@ class ItemService implements ServiceInterface
     ///// Start Category Section /////
     ///// services of location type
     ///
-
-    ///// End Category Section /////
     public function getCategories($params): array
     {
         $limit = (int)$params['limit'] ?? 1000;
@@ -748,10 +746,11 @@ class ItemService implements ServiceInterface
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
-            $list[] = $this->canonizeItem($row);
+            $list  = $this->canonizeItem($row);
         }
         return $list;
     }
+    ///// End Category Section /////
 
     ///// Start Setting Section /////
     ///// Config variable of engin
@@ -771,8 +770,8 @@ class ItemService implements ServiceInterface
                 "is_force" => !in_array($params["version"], $config["authorized_versions"]),
                 "message" => $config["message"],
                 "current_version" => $params["version"],
-                "button_text" => $config["button_text"],
-                "header_text" => $config["header_text"],
+                "button_title" => $config["button_title"],
+                "title" => $config["title"],
 
             ];
 
@@ -782,5 +781,17 @@ class ItemService implements ServiceInterface
     }
 
     ///// End Setting Section /////
+    private function calculateClassification(mixed $score): string
+    {
+        if ($score < 100) {
+            return "metal";
+        } elseif ($score < 300) {
+            return "bronze";
+        } elseif ($score < 700) {
+            return "silver";
+        } else {
+            return "golden";
+        }
+    }
 
 }
