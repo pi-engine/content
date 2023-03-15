@@ -53,6 +53,12 @@ return [
 
             // Setting services factory
             Handler\Api\Setting\VersionHandler::class => Factory\Handler\Api\Setting\VersionHandlerFactory::class,
+
+            // Reservation services factory
+            Handler\Api\Reservation\ReserveHandler::class => Factory\Handler\Api\Reservation\ReserveHandlerFactory::class,
+            Handler\Api\Reservation\ReservationRemoveHandler::class => Factory\Handler\Api\Reservation\ReservationRemoveHandlerFactory::class,
+            Handler\Api\Reservation\ReservationListHandler::class => Factory\Handler\Api\Reservation\ReservationListHandlerFactory::class,
+
         ],
     ],
 
@@ -465,6 +471,72 @@ return [
                         ],
                     ],
 
+
+                    /// Reservation service
+                    ///
+
+                    /// Category services
+                    ///
+                    'reserve' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/reserve',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Reservation\ReserveHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'reserve-remove' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/reserve/remove',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Reservation\ReservationRemoveHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'reserve-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/reserve/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Reservation\ReservationListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
                 ],
             ],
             // Admin section

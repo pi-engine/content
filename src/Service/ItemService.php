@@ -794,4 +794,15 @@ class ItemService implements ServiceInterface
         }
     }
 
+
+    ///// Start Reservation Section /////
+    ///// Config variable of engin
+    ///
+    public function reserve(object|array|null $requestBody)
+    {
+
+    }
+
+    //// End Setting Section /////
+
 }
