@@ -35,26 +35,27 @@ class ReserveHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        // Get account
+        $account = $request->getAttribute('account');
 
         // Get request body
         $requestBody = $request->getParsedBody();
 
         $params = [
-            "user_id" => $requestBody["user_id"] ?? 0,
+            "user_id" => $account["id"],
             "item_id" => $requestBody["item_id"] ?? 0,
             "role" => $requestBody["role"] ?? "customer",
             "type" => "reservation"
         ];
         // Get list of notifications
-        $result = $this->itemService->reserve($requestBody);
-
+        $result = $this->itemService->reserve($params,$account);
 
         // Get record
         // $result = [];
 
         // Set result
         $result = [
-            'result' => true,
+            'result' =>true,
             'data' => $result,
             'error' => [],
         ];

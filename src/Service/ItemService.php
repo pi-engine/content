@@ -333,10 +333,10 @@ class ItemService implements ServiceInterface
     }
 
     // TODO: update it
-    public function editItem($params, $account)
+    public function editItem($params, $account = null)
     {
-        $params["time_deleted"] = time();
-        return $this->itemRepository->editItem($params, $account);
+        $params["time_update"] = time();
+        return $this->itemRepository->editItem($params);
     }
 
     // TODO: update it
@@ -746,7 +746,7 @@ class ItemService implements ServiceInterface
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
-            $list  = $this->canonizeItem($row);
+            $list = $this->canonizeItem($row);
         }
         return $list;
     }
@@ -798,8 +798,136 @@ class ItemService implements ServiceInterface
     ///// Start Reservation Section /////
     ///// Config variable of engin
     ///
-    public function reserve(object|array|null $requestBody)
+    public function reserve(object|array|null $params, $account): array
     {
+        $flag = true;
+        $customList = $this->scoreService->getActiveCustomList(["item_id" => $params["item_id"]]);
+
+        if (sizeof($customList) == 0) {
+            return ["id" => -1];
+        }
+        $custom = $customList[0];
+
+        $customerSlug = $params["type"] . "_customer_" . $params["user_id"];
+        $ownerSlug = $params["type"] . "_owner_" . $params["item_id"];
+
+        $customerReserve = $this->itemRepository->getItem($customerSlug, "slug");
+        $ownerReserve = $this->itemRepository->getItem($ownerSlug, "slug");
+
+        $expired = strtotime("+1 hour");
+
+        $customerNewReserve = [
+            "slug" => $customerSlug,
+            "time" => time(),
+            "user_id" => $params["user_id"],
+            "item_id" => $params["item_id"],
+            "code" => $custom["code"],
+            "expired_at" => $expired,
+        ];
+
+        $ownerNewReserve = [
+            "slug" => $ownerSlug,
+            "time" => time(),
+            "user_id" => $params["user_id"],
+            "item_id" => $params["item_id"],
+            "code" => $custom["code"],
+            "expired_at" => $expired,
+        ];
+
+
+        if (empty($customerReserve)) {
+            $list[] = $customerNewReserve;
+            $param = [
+                "id" => null,
+                "title" => $customerSlug,
+                "slug" => $customerSlug,
+                "type" => "reservation",
+                "status" => 1,
+                "user_id" => $params["user_id"],
+                "information" => json_encode($list),
+            ];
+            $item = $this->canonizeItem($this->itemRepository->addItem($param));
+            $this->scoreService->updateCustom(
+                [
+                    'id' => $custom['id'],
+                ],
+                [
+                    'count_used' => $custom['count_used'] + 1,
+                ]
+            );
+
+        } else {
+            $list = $this->canonizeItem($customerReserve);
+            foreach ($list as $object) {
+
+                if ($object["item_id"] == $params["item_id"])
+                    $flag = false;
+            }
+            if ($flag) {
+                $list[] = $customerNewReserve;
+                $param = [
+
+                    "title" => $customerSlug,
+                    "slug" => $customerSlug,
+                    "type" => "reservation",
+                    "status" => 1,
+                    "user_id" => $params["user_id"],
+                    "information" => json_encode($list),
+                ];
+                $item = $this->canonizeItem($this->editItem($param));
+                $this->scoreService->updateCustom(
+                    [
+                        'id' => $custom['id'],
+                    ],
+                    [
+                        'count_used' => $custom['count_used'] + 1,
+                    ]
+                );
+            }
+        }
+
+
+        $reserveResult = $list;
+        $list = [];
+
+
+        if (empty($ownerReserve)) {
+            $list[] = $ownerNewReserve;
+            $param = [
+                "id" => null,
+                "title" => $ownerSlug,
+                "slug" => $ownerSlug,
+                "type" => "reservation",
+                "status" => 1,
+                "user_id" => $params["user_id"],
+                "information" => json_encode($list),
+            ];
+            $this->canonizeItem($this->itemRepository->addItem($param));
+
+        } else {
+            $list = $this->canonizeItem($ownerReserve);
+            $flag = true;
+            foreach ($list as $object) {
+
+                if ($object["user_id"] == $params["user_id"])
+                    $flag = false;
+            }
+            if ($flag) {
+                $list[] = $ownerNewReserve;
+                $param = [
+                    "title" => $ownerSlug,
+                    "slug" => $ownerSlug,
+                    "type" => "reservation",
+                    "status" => 1,
+                    "user_id" => $params["user_id"],
+                    "information" => json_encode($list),
+                ];
+                $this->canonizeItem($this->editItem($param));
+
+            }
+        }
+
+        return $reserveResult;
 
     }
 

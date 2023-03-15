@@ -245,7 +245,11 @@ class ItemRepository implements ItemRepositoryInterface
     {
         $update = new Update($this->tableItem);
         $update->set($params);
-        $update->where(['id' => $params["id"]]);
+        if (isset($params["id"]))
+            $update->where(['id' => $params["id"]]);
+
+        if (isset($params["slug"]))
+            $update->where(['slug' => $params["slug"]]);
 
         $sql = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
@@ -256,7 +260,8 @@ class ItemRepository implements ItemRepositoryInterface
                 'Database error occurred during update operation'
             );
         }
-        return $this->getItem($params["id"]);
+
+        return (isset($params["id"]))?$this->getItem($params["id"]):$this->getItem($params["slug"],"slug");
     }
 
     /**
