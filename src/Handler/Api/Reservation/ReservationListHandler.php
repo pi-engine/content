@@ -35,6 +35,7 @@ class  ReservationListHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $account = $request->getAttribute('account');
         // Get request body
         $requestBody = $request->getParsedBody();
         $params = [
@@ -45,8 +46,13 @@ class  ReservationListHandler implements RequestHandlerInterface
         ];
 
         // Get Reservation list
-        $result = $this->itemService->getItemList($params);
+        $result = $this->itemService->getReserveList($params,$account);
 
+        $result = [
+            'result' =>true,
+            'data' => $result,
+            'error' => [],
+        ];
         return new JsonResponse($result);
     }
 }

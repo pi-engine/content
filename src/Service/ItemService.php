@@ -798,6 +798,48 @@ class ItemService implements ServiceInterface
     ///// Start Reservation Section /////
     ///// Config variable of engin
     ///
+
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function getReserveList(array $params, $account): array
+    {
+        ///TODO:update limit count
+        $limit = $params['limit'] ?? 125;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+        if ($params["role"] == "owner") {
+            $slug = "reservation_owner_" . $this->accountService->getProfile(["user_id" => $account["id"]])["item_id"];
+        } else {
+            $slug = "reservation_customer_" . $account["id"];
+        }
+
+        // Set params
+        $listParams = [
+            'order' => $order,
+            'offset' => $offset,
+            'limit' => $limit,
+            'type' => $params['type'],
+            'status' => 1,
+            'slug' => $slug,
+        ];
+
+
+        // Get list
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list = $this->canonizeItem($row);
+        }
+
+
+        return $list;
+    }
+
+
     public function reserve(object|array|null $params, $account): array
     {
         $flag = true;
@@ -931,6 +973,11 @@ class ItemService implements ServiceInterface
 
     }
 
-    //// End Setting Section /////
+
+    public function removeReserve(array $params)
+    {
+    }
+
+    //// End Reservation Section /////
 
 }
