@@ -19,15 +19,17 @@ CREATE TABLE `content_meta_key` (
                                     `key` varchar(64) NOT NULL DEFAULT '',
                                     `value` varchar(255) DEFAULT NULL,
                                     `type` varchar(64) NOT NULL DEFAULT 'string',
+                                    `suffix` varchar(255) NOT NULL DEFAULT '',
+                                    `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
                                     `status` int(10) UNSIGNED NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `content_meta_key` (`id`, `key`, `value`, `type`, `status`) VALUES
-                                                                            (1, 'like', 'Like', 'int', 1),
-                                                                            (2, 'dislike', 'Dislike', 'int', 1),
-                                                                            (3, 'comment_count', 'Number of comments', 'int', 1),
-                                                                            (4, 'category', 'Category', 'string', 1),
-                                                                            (5, 'tag', 'Tag', 'string', 1);
+INSERT INTO `content_meta_key` (`id`, `key`, `value`, `type`, `suffix`, `logo`, `status`) VALUES
+                                                                                              (1, 'like', 'Like', 'int', '', 'no-image.png', 1),
+                                                                                              (2, 'dislike', 'Dislike', 'int', '', 'no-image.png', 1),
+                                                                                              (3, 'comment_count', 'Number of comments', 'int', '', 'no-image.png', 1),
+                                                                                              (4, 'category', 'Category', 'string', '', 'no-image.png', 1),
+                                                                                              (5, 'tag', 'Tag', 'string', '', 'no-image.png', 1);
 
 ALTER TABLE `content_meta_key`
     ADD PRIMARY KEY (`id`);
@@ -44,6 +46,7 @@ CREATE TABLE `content_meta_value` (
                                       `value_string` varchar(255) NOT NULL DEFAULT '''''',
                                       `value_number` int(10) UNSIGNED NOT NULL DEFAULT 0,
                                       `status` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
                                       `time_create` int(10) UNSIGNED NOT NULL DEFAULT 0,
                                       `time_update` int(11) NOT NULL DEFAULT 0,
                                       `time_delete` int(11) NOT NULL DEFAULT 0
