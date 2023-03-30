@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Question;
+namespace Content\Handler\Api\Support;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class GetHandler implements RequestHandlerInterface
+class ReplyHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -35,12 +35,28 @@ class GetHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+
+        // Get account
+        $account = $request->getAttribute('account');
+
         // Get request body
         $requestBody = $request->getParsedBody();
-        $requestBody["type"] = "question";
+        $requestBody["type"] = "support";
+
+        $params = [
+            "user_id" => $requestBody['user_id'] ?? 0,
+            "title" => $requestBody['title'],
+            "slug" => $requestBody['slug'],
+            'time_create' => time()
+        ];
+
 
         // Get list of notifications
-        $result = $this->itemService->getItem($requestBody['slug'], 'slug');
+        $result = $this->itemService->replyQuestion($params);
+
+
+        // Get record
+        // $result = [];
 
         // Set result
         $result = [

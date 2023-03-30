@@ -44,6 +44,12 @@ return [
             Handler\Api\Question\ReplyHandler::class => Factory\Handler\Api\Question\ReplyHandlerFactory::class,
             Handler\Api\Question\GetHandler::class => Factory\Handler\Api\Question\GetHandlerFactory::class,
 
+            // Support services factory
+            Handler\Api\Support\AddHandler::class => Factory\Handler\Api\Support\AddHandlerFactory::class,
+            Handler\Api\Support\ListHandler::class => Factory\Handler\Api\Support\ListHandlerFactory::class,
+            Handler\Api\Support\ReplyHandler::class => Factory\Handler\Api\Support\ReplyHandlerFactory::class,
+            Handler\Api\Support\GetHandler::class => Factory\Handler\Api\Support\GetHandlerFactory::class,
+
             // Location services factory
             Handler\Api\Location\MarkListHandler::class => Factory\Handler\Api\Location\MarkListHandlerFactory::class,
             Handler\Api\Location\MarkDetailHandler::class => Factory\Handler\Api\Location\MarkDetailHandlerFactory::class,
@@ -377,6 +383,89 @@ return [
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\GetHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    /// Support services
+                    ///
+                    'add-support' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/support/add',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Support\AddHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'reply-support' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/support/reply',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'handler' => 'add',
+                                'permissions' => 'item-add',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Support\ReplyHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'support-list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/support/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+//                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Support\ListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'get-support' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/support/get',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+//                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Support\GetHandler::class
                                 ),
                             ],
                         ],

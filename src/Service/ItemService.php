@@ -631,7 +631,7 @@ class ItemService implements ServiceInterface
             "title" => $requestBody['title'],
             "slug" => uniqid(),
             "status" => 1,
-            "type" => 'question',
+            "type" => $requestBody['type'] ??'question',
             'time_create' => time()
         ];
 

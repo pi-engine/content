@@ -41,6 +41,7 @@ class ReplyHandler implements RequestHandlerInterface
 
         // Get request body
         $requestBody = $request->getParsedBody();
+        $requestBody["type"] = "question";
 
         $params = [
             "user_id" => $requestBody['user_id'] ?? 0,

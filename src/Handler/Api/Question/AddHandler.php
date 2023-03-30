@@ -44,6 +44,7 @@ class AddHandler implements RequestHandlerInterface
 
         // Get list of notifications
         $result = $this->itemService->addQuestion($requestBody);
+        $requestBody["type"] = "question";
 
 
         // Get record

@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Question;
+namespace Content\Handler\Api\Support;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -37,7 +37,7 @@ class GetHandler implements RequestHandlerInterface
     {
         // Get request body
         $requestBody = $request->getParsedBody();
-        $requestBody["type"] = "question";
+        $requestBody["type"] = "support";
 
         // Get list of notifications
         $result = $this->itemService->getItem($requestBody['slug'], 'slug');
