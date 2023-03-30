@@ -14,23 +14,37 @@ CREATE TABLE IF NOT EXISTS `content_item`
     UNIQUE KEY `slug` (`slug`)
 );
 
-CREATE TABLE IF NOT EXISTS `content_meta_key`
-(
-    `id`     INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `key`    VARCHAR(64)      NOT NULL DEFAULT '',
-    `type`   VARCHAR(64)      NOT NULL DEFAULT 'string',
-    `status` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-    PRIMARY KEY (`id`)
-);
+CREATE TABLE `content_meta_key` (
+                                    `id` int(10) UNSIGNED NOT NULL,
+                                    `key` varchar(64) NOT NULL DEFAULT '',
+                                    `value` varchar(255) DEFAULT NULL,
+                                    `type` varchar(64) NOT NULL DEFAULT 'string',
+                                    `status` int(10) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `content_meta_value`
-(
-    `id`           INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `item_id`      INT(10) UNSIGNED NOT NULL DEFAULT '0',
-    `time_create`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
-    `status`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
-    `key`          VARCHAR(64)      NOT NULL DEFAULT '',
-    `value_string` VARCHAR(255)     NOT NULL DEFAULT '',
-    `value_number` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-    PRIMARY KEY (`id`)
-);
+INSERT INTO `content_meta_key` (`id`, `key`, `value`, `type`, `status`) VALUES
+                                                                            (1, 'like', 'Like', 'int', 1),
+                                                                            (2, 'dislike', 'Dislike', 'int', 1),
+                                                                            (3, 'comment_count', 'Number of comments', 'int', 1),
+                                                                            (4, 'category', 'Category', 'string', 1),
+                                                                            (5, 'tag', 'Tag', 'string', 1);
+
+ALTER TABLE `content_meta_key`
+    ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `content_meta_key`
+    MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+COMMIT;
+
+
+CREATE TABLE `content_meta_value` (
+                                      `id` int(10) UNSIGNED NOT NULL,
+                                      `item_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `key` varchar(64) NOT NULL DEFAULT '''''',
+                                      `value_string` varchar(255) NOT NULL DEFAULT '''''',
+                                      `value_number` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `status` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `time_create` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `time_update` int(11) NOT NULL DEFAULT 0,
+                                      `time_delete` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
