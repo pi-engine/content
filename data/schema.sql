@@ -45,6 +45,7 @@ CREATE TABLE `content_meta_value` (
                                       `key` varchar(64) NOT NULL DEFAULT '''''',
                                       `value_string` varchar(255) NOT NULL DEFAULT '''''',
                                       `value_number` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `value_id` varchar(255) NOT NULL DEFAULT '''''',
                                       `status` int(10) UNSIGNED NOT NULL DEFAULT 0,
                                       `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
                                       `time_create` int(10) UNSIGNED NOT NULL DEFAULT 0,
