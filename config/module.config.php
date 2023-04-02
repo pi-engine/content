@@ -16,6 +16,8 @@ return [
         'factories' => [
             Repository\ItemRepository::class => Factory\Repository\ItemRepositoryFactory::class,
             Service\ItemService::class => Factory\Service\ItemServiceFactory::class,
+            Repository\LogRepository::class => Factory\Repository\LogRepositoryFactory::class,
+            Service\LogService::class => Factory\Service\LogServiceFactory::class,
             Middleware\ValidationMiddleware::class => Factory\Middleware\ValidationMiddlewareFactory::class,
             Validator\SlugValidator::class => Factory\Validator\SlugValidatorFactory::class,
             Validator\TypeValidator::class => Factory\Validator\TypeValidatorFactory::class,
@@ -64,6 +66,7 @@ return [
             Handler\Api\Reservation\ReserveHandler::class => Factory\Handler\Api\Reservation\ReserveHandlerFactory::class,
             Handler\Api\Reservation\ReservationRemoveHandler::class => Factory\Handler\Api\Reservation\ReservationRemoveHandlerFactory::class,
             Handler\Api\Reservation\ReservationListHandler::class => Factory\Handler\Api\Reservation\ReservationListHandlerFactory::class,
+
 
         ],
     ],

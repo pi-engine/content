@@ -4,7 +4,6 @@ namespace Content\Factory\Service;
 
 use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
-use Content\Service\ItemService;
 use Content\Service\LogService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -12,27 +11,25 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Service\AccountService;
 
-class ItemServiceFactory implements FactoryInterface
+class LogServiceFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param null|array         $options
      *
-     * @return ItemService
+     * @return LogService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ItemService
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): LogService
     {
         $config = $container->get('config');
 
-        return new ItemService(
-            $container->get(ItemRepositoryInterface::class),
+        return new LogService(
             $container->get(AccountService::class),
-            $container->get(ScoreService::class),
-            $container->get(LogService::class),
-            $config['client']
+            $container->get(ItemRepositoryInterface::class),
+            $config['log']
         );
     }
 }

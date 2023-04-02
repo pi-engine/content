@@ -21,6 +21,9 @@ class ItemService implements ServiceInterface
     /** @var ScoreService */
     protected ScoreService $scoreService;
 
+    /** @var LogService */
+    protected LogService $logService;
+
     /* @var ItemRepositoryInterface */
     protected ItemRepositoryInterface $itemRepository;
     protected array $allowKey
@@ -40,12 +43,14 @@ class ItemService implements ServiceInterface
         ItemRepositoryInterface $itemRepository,
         AccountService          $accountService,
         ScoreService            $scoreService,
+        LogService              $logService,
                                 $config
     )
     {
         $this->itemRepository = $itemRepository;
         $this->accountService = $accountService;
         $this->scoreService = $scoreService;
+        $this->logService = $logService;
         $this->config = $config;
     }
 
@@ -631,7 +636,7 @@ class ItemService implements ServiceInterface
             "title" => $requestBody['title'],
             "slug" => uniqid(),
             "status" => 1,
-            "type" => $requestBody['type'] ??'question',
+            "type" => $requestBody['type'] ?? 'question',
             'time_create' => time()
         ];
 
@@ -748,6 +753,7 @@ class ItemService implements ServiceInterface
         foreach ($rowSet as $row) {
             $list = $this->canonizeItem($row);
         }
+        $this->logService->writeTestLog();
         return $list;
     }
     ///// End Category Section /////
