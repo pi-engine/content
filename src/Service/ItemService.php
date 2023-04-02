@@ -753,7 +753,6 @@ class ItemService implements ServiceInterface
         foreach ($rowSet as $row) {
             $list = $this->canonizeItem($row);
         }
-        $this->logService->writeTestLog();
         return $list;
     }
     ///// End Category Section /////
