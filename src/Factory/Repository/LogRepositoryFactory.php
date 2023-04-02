@@ -30,7 +30,7 @@ class LogRepositoryFactory implements FactoryInterface
         return new LogRepository(
             $container->get(AdapterInterface::class),
             new ReflectionHydrator(),
-            new Log('', '', '', 0, 0, 0, 0),
+            new Log('', 0, '', 0, 0, 0, 0),
         );
     }
 }

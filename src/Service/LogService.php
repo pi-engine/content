@@ -3,7 +3,6 @@
 namespace Content\Service;
 
 use Club\Service\ScoreService;
-use Content\Repository\ItemRepositoryInterface;
 use Content\Repository\LogRepositoryInterface;
 use mysql_xdevapi\Exception;
 use User\Service\AccountService;
@@ -28,9 +27,9 @@ class LogService implements ServiceInterface
 
 
     public function __construct(
-        AccountService $accountService,
         LogRepositoryInterface $logRepository,
-        $log
+        AccountService         $accountService,
+                               $log
     )
     {
         $this->accountService = $accountService;
@@ -48,6 +47,7 @@ class LogService implements ServiceInterface
     {
 //        $this->log['logger']->info('Informational message');
 //        $this->log['logger']->emerg('Informational message');
+        $this->logRepository->addLog(["user_id" => 5]);
     }
 
 //    /**

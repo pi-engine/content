@@ -12,6 +12,7 @@ return [
     'service_manager' => [
         'aliases' => [
             Repository\ItemRepositoryInterface::class => Repository\ItemRepository::class,
+            Repository\LogRepositoryInterface::class => Repository\LogRepository::class,
         ],
         'factories' => [
             Repository\ItemRepository::class => Factory\Repository\ItemRepositoryFactory::class,

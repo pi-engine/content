@@ -25,7 +25,7 @@ class LogRepository implements LogRepositoryInterface
      *
      * @var string
      */
-    private string $tableLog = 'content_Log';
+    private string $tableLog = 'content_log';
 
     /**
      * Meta Value Table name
@@ -47,9 +47,10 @@ class LogRepository implements LogRepositoryInterface
     private AdapterInterface $db;
 
     /**
-     * @var Key
+     * @var Log
      */
-    private Key $metaKeyPrototype;
+    private Log $logPrototype;
+
 
     /**
      * @var HydratorInterface
@@ -60,77 +61,14 @@ class LogRepository implements LogRepositoryInterface
     public function __construct(
         AdapterInterface  $db,
         HydratorInterface $hydrator,
-        Log              $LogPrototype,
+        Log              $logPrototype,
     )
     {
         $this->db = $db;
         $this->hydrator = $hydrator;
-        $this->LogPrototype = $LogPrototype;
+        $this->logPrototype = $logPrototype;
     }
 
-    /**
-     * @param array $params
-     *
-     * @return HydratingResultSet|array
-     */
-    public function getLogList(array $params = []): HydratingResultSet|array
-    {
-        $where = [];
-        if (isset($params['user_id']) && !empty($params['user_id'])) {
-            $where['user_id'] = $params['user_id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['status']) && !empty($params['status'])) {
-            $where['status'] = $params['status'];
-        }
-        if (isset($params['id']) && !empty($params['id'])) {
-            $where['id'] = $params['id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['slug']) && !empty($params['slug'])) {
-            $where['slug'] = $params['slug'];
-        }
-        $sql = new Sql($this->db);
-        $select = $sql->select($this->tableLog)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            return [];
-        }
-
-        $resultSet = new HydratingResultSet($this->hydrator, $this->LogPrototype);
-        $resultSet->initialize($result);
-
-        return $resultSet;
-    }
-
-    /**
-     * @param array $params
-     *
-     * @return int
-     */
-    public function getLogCount(array $params = []): int
-    {
-        // Set where
-        $columns = ['count' => new Expression('count(*)')];
-        $where = [];
-
-        if (isset($params['status']) && is_numeric($params['status'])) {
-            $where['status'] = $params['status'];
-        }
-
-        $sql = new Sql($this->db);
-        $select = $sql->select($this->tableLog)->columns($columns)->where($where);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $row = $statement->execute()->current();
-
-        return (int)$row['count'];
-    }
 
     /**
      * @param array $params
@@ -154,75 +92,4 @@ class LogRepository implements LogRepositoryInterface
         $id = $result->getGeneratedValue();
         return $this->getLog($id);
     }
-
-    /**
-     * @param string $parameter
-     * @param string $type
-     *
-     * @return object|array
-     */
-    public function getLog($parameter, $type = 'id'): object|array
-    {
-        $where = [$type => $parameter];
-
-        $sql = new Sql($this->db);
-        $select = $sql->select($this->tableLog)->where($where);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            throw new RuntimeException(
-                sprintf(
-                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
-                    $parameter
-                )
-            );
-        }
-
-        $resultSet = new HydratingResultSet($this->hydrator, $this->LogPrototype);
-        $resultSet->initialize($result);
-        $Log = $resultSet->current();
-
-        if (!$Log) {
-            return [];
-        }
-
-        return $Log;
-    }
-
-    /**
-     * @param string $parameter
-     * @param string $type
-     *
-     * @return object|array
-     */
-
-    public function getLogFilter($where): object|array
-    {
-
-        $sql = new Sql($this->db);
-        $select = $sql->select($this->tableLog)->where($where);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
-            throw new RuntimeException(
-                sprintf(
-                    'Failed retrieving blog post with identifier  ; unknown database error.',
-
-                )
-            );
-        }
-
-        $resultSet = new HydratingResultSet($this->hydrator, $this->LogPrototype);
-        $resultSet->initialize($result);
-        $Log = $resultSet->current();
-
-        if (!$Log) {
-            return [];
-        }
-
-        return $Log;
-    }
-
 }

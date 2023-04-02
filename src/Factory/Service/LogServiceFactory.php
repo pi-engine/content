@@ -2,8 +2,7 @@
 
 namespace Content\Factory\Service;
 
-use Club\Service\ScoreService;
-use Content\Repository\ItemRepositoryInterface;
+use Content\Repository\LogRepositoryInterface;
 use Content\Service\LogService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -27,8 +26,8 @@ class LogServiceFactory implements FactoryInterface
         $config = $container->get('config');
 
         return new LogService(
+            $container->get(LogRepositoryInterface::class),
             $container->get(AccountService::class),
-            $container->get(ItemRepositoryInterface::class),
             $config['log']
         );
     }
