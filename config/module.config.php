@@ -572,9 +572,6 @@ return [
 
                     /// Reservation service
                     ///
-
-                    /// Category services
-                    ///
                     'reserve' => [
                         'type' => Literal::class,
                         'options' => [
@@ -635,6 +632,51 @@ return [
                             ],
                         ],
                     ],
+
+                    /// Opinion service
+                    ///
+                    'opinion-like' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/opinion/like',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Opinion\LikeHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'opinion-dislike' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/opinion/dislike',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
+                                    Handler\Api\Opinion\DislikeHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+
+
                 ],
             ],
             // Admin section
