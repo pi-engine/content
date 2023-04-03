@@ -2,7 +2,7 @@
 
 namespace Content\Handler\Api\Opinion;
 
-use Content\Service\ItemService;
+use Content\Service\MetaService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -18,19 +18,19 @@ class LikeHandler implements RequestHandlerInterface
     /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
 
-    /** @var ItemService */
-    protected ItemService $itemService;
+    /** @var MetaService */
+    protected MetaService $metaService;
 
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface   $streamFactory,
-        ItemService              $itemService
+        MetaService              $metaService
     )
     {
         $this->responseFactory = $responseFactory;
         $this->streamFactory = $streamFactory;
-        $this->itemService = $itemService;
+        $this->metaService = $metaService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -41,11 +41,16 @@ class LikeHandler implements RequestHandlerInterface
 
         // Get request body
         $requestBody = $request->getParsedBody();
-
         $requestBody["user_id"] =  $account['id'];
 
+        $log=[
+            "hasLog"=>true,
+            "action"=>"like",
+            "user_id"=>$account['id'],
+        ];
+
         // Get list of notifications
-        $result = $this->itemService->addOpinion($requestBody);
+        $result = $this->metaService->like($requestBody,$log);
         $requestBody["type"] = "question";
 
 

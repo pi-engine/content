@@ -982,7 +982,16 @@ class ItemService implements ServiceInterface
     public function removeReserve(array $params)
     {
     }
+    //// End Reservation Section /////
 
+    ///// Start Opinion Section /////
+    ///
+    public function like(object|array $requestBody, array $log)
+    {
+    }
+    public function Dislike(object|array $requestBody, $log = null)
+    {
+    }
     //// End Reservation Section /////
 
 }
