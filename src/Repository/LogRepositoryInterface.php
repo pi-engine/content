@@ -14,9 +14,7 @@ interface LogRepositoryInterface
 
     public function addLog(array $params): object|array;
 
-
-
-
+    public function updateLog(array $params): object|array;
 
 
 }

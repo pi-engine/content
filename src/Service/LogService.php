@@ -93,6 +93,11 @@ class LogService implements ServiceInterface
         $this->logRepository->addLog($log);
     }
 
+    public function updateLog(array $log)
+    {
+        $this->logRepository->updateLog($log);
+    }
+
     public function getLog(array $log): array
     {
 

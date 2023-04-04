@@ -2,7 +2,7 @@
 
 namespace Content\Handler\Api\Opinion;
 
-use Content\Service\MetaService; 
+use Content\Service\MetaService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -41,16 +41,19 @@ class DislikeHandler implements RequestHandlerInterface
 
         // Get request body
         $requestBody = $request->getParsedBody();
-        $requestBody["user_id"] =  $account['id'];
+        $requestBody["user_id"] = $account['id'];
+        $requestBody["action"] = "dislike";
 
-        $log=[
-            "hasLog"=>true,
-            "action"=>"like",
-            "user_id"=>$account['id'],
+        $log = [
+//            "hasLog"=>true,
+            "action" => "dislike",
+            "user_id" => $account['id'],
+            "item_id" => $requestBody['item_id'],
+            "time_create" => time(),
         ];
 
         // Get list of notifications
-        $result = $this->metaService->Dislike($requestBody,$log);
+        $result = $this->metaService->opinion($requestBody, $log);
 
         // Set result
         $result = [

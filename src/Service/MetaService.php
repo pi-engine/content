@@ -97,11 +97,8 @@ class MetaService implements ServiceInterface
 
     ///// Start Opinion Section /////
     ///
-    public function like(object|array $requestBody, array $log): array
+    public function opinion(object|array $requestBody, array $log): array
     {
-        $requestBody["meta_key"] = "like";
-        $requestBody["value_number"] = 1;
-
 
         ///check that user like this item  in before
         $hasLike = !empty($this->logService->getLog(
@@ -125,66 +122,106 @@ class MetaService implements ServiceInterface
 
         $metaPrams = [
             "item_id" => $requestBody["item_id"],
-            "meta_key" => "like",
+            "meta_key" => $requestBody["action"],
         ];
 
 
         $row = $this->itemRepository->getMetaValue($metaPrams, "object");
         $currentMeta = $this->canonizeMeta($row);
 
-        /// add first like for item
-        if (empty($currentMeta)) {
+        $isFirstOpinion = empty($currentMeta);
+
+        /// add first opinion for item
+        if ($isFirstOpinion) {
             $metaPrams["value_number"] = 1;
-            $result = $this->addLike($metaPrams);
+            $currentMeta = $this->addMetaValue($metaPrams);
             $this->logService->addLog($log);
-            return $result;
+
         }
 
-        if ($hasLike)
+        if ($requestBody["action"] == "like") {
+            if ($hasLike)
+                return $currentMeta;
+            if ($hasDislike) {
+                $this->minusDislike($metaPrams, $log);
+            }
+        }
+
+        if ($requestBody["action"] == "dislike") {
+
+
+            if ($hasDislike)
+                return $currentMeta;
+
+            if ($hasLike) {
+                $this->minusLike($metaPrams, $log);
+            }
+        }
+
+        if ($isFirstOpinion)
             return $currentMeta;
 
-        if ($hasDislike){
-            $this->minusDislike($metaPrams);
-        }
-
-
-        $metaPrams["value_number"] = $currentMeta["value_number"]+1;
-        $result = $this->updateLike($metaPrams);
+        $metaPrams["value_number"] = $currentMeta["value_number"] + 1;
+        $metaPrams["id"] = $currentMeta["id"];
+        $result = $this->updateMeta($metaPrams);
         $this->logService->addLog($log);
         return $result;
 
-        return [
-            "like" => $hasLike,
-            "dislike" => $hasDislike,
-        ];
-
-
-//        if (!empty($log)) {
-//            $this->logService->addLog($log);
-//        }
-
-        return [];
 
     }
 
-    public function Dislike(object|array $requestBody, $log = null)
-    {
-        return 0;
-    }
-
-    public function addLike(array $metaPrams)
+    public function addMetaValue(array $metaPrams): array
     {
         $row = $this->itemRepository->addMetaValue($metaPrams);
         return $this->canonizeMeta($row);
     }
-    public function updateLike(array $metaPrams)
+
+    public function updateMeta(array $metaPrams): array
     {
         $row = $this->itemRepository->updateMetaValue($metaPrams);
         return $this->canonizeMeta($row);
     }
 
-    private function minusDislike(array $metaPrams)
+    private function minusDislike(array $metaPrams, array $log)
     {
+        $log["time_delete"] = time();
+        $log["action"] = "dislike";
+        $prams = [
+            "item_id" => $metaPrams["item_id"],
+            "meta_key" => "dislike",
+        ];
+
+        $this->extracted($prams, $log);
     }
+
+    private function minusLike(array $metaPrams, array $log)
+    {
+        $log["time_delete"] = time();
+        $log["action"] = "like";
+        $prams = [
+            "item_id" => $metaPrams["item_id"],
+            "meta_key" => "like",
+        ];
+
+        $this->extracted($prams, $log);
+    }
+
+    /**
+     * @param array $prams
+     * @param array $log
+     * @return void
+     */
+    private function extracted(array $prams, array $log): void
+    {
+        $row = $this->itemRepository->getMetaValue($prams, "object");
+        $currentMeta = $this->canonizeMeta($row);
+        if (!empty($currentMeta)) {
+            $prams["value_number"] = $currentMeta["value_number"] > 0 ? $currentMeta["value_number"] - 1 : 0;
+            $prams["id"] = $currentMeta["id"];
+            $this->itemRepository->updateMetaValue($prams);
+        }
+        $this->logService->updateLog($log);
+    }
+
 
 }
