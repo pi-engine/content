@@ -149,7 +149,6 @@ class MetaService implements ServiceInterface
 
         if ($requestBody["action"] == "dislike") {
 
-
             if ($hasDislike)
                 return $currentMeta;
 
@@ -158,15 +157,15 @@ class MetaService implements ServiceInterface
             }
         }
 
-        if ($isFirstOpinion)
-            return $currentMeta;
+        if (!$isFirstOpinion) {
 
-        $metaPrams["value_number"] = $currentMeta["value_number"] + 1;
-        $metaPrams["id"] = $currentMeta["id"];
-        $result = $this->updateMeta($metaPrams);
-        $this->logService->addLog($log);
-        return $result;
+            $metaPrams["value_number"] = $currentMeta["value_number"] + 1;
+            $metaPrams["id"] = $currentMeta["id"];
+            $currentMeta = $this->updateMeta($metaPrams);
+            $this->logService->addLog($log);
+        }
 
+        return $currentMeta;
 
     }
 
