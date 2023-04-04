@@ -6,30 +6,39 @@ class Log
 {
     private mixed  $id;
     private int    $user_id;
+    private int    $item_id;
     private string $action;
     private string $event;
     private string $type;
     private string $date;
     private int    $time_create;
+    private int    $time_update;
+    private int    $time_delete;
 
     /**
      * @param mixed $id
      * @param int $user_id
+     * @param int $item_id
      * @param string $action
      * @param string $event
      * @param string $type
      * @param string $date
      * @param int $time_create
+     * @param int $time_update
+     * @param int $time_delete
      */
-    public function __construct(mixed $id, int $user_id, string $action, string $event, string $type, string $date, int $time_create)
+    public function __construct(mixed $id, int $user_id, int $item_id, string $action, string $event, string $type, string $date, int $time_create, int $time_update, int $time_delete)
     {
         $this->id = $id;
         $this->user_id = $user_id;
+        $this->item_id = $item_id;
         $this->action = $action;
         $this->event = $event;
         $this->type = $type;
         $this->date = $date;
         $this->time_create = $time_create;
+        $this->time_update = $time_update;
+        $this->time_delete = $time_delete;
     }
 
     /**
@@ -62,6 +71,22 @@ class Log
     public function setUserId(int $user_id): void
     {
         $this->user_id = $user_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getItemId(): int
+    {
+        return $this->item_id;
+    }
+
+    /**
+     * @param int $item_id
+     */
+    public function setItemId(int $item_id): void
+    {
+        $this->item_id = $item_id;
     }
 
     /**
@@ -143,5 +168,39 @@ class Log
     {
         $this->time_create = $time_create;
     }
+
+    /**
+     * @return int
+     */
+    public function getTimeUpdate(): int
+    {
+        return $this->time_update;
+    }
+
+    /**
+     * @param int $time_update
+     */
+    public function setTimeUpdate(int $time_update): void
+    {
+        $this->time_update = $time_update;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeDelete(): int
+    {
+        return $this->time_delete;
+    }
+
+    /**
+     * @param int $time_delete
+     */
+    public function setTimeDelete(int $time_delete): void
+    {
+        $this->time_delete = $time_delete;
+    }
+
+
 
 }

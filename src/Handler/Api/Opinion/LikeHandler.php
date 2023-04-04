@@ -41,16 +41,18 @@ class LikeHandler implements RequestHandlerInterface
 
         // Get request body
         $requestBody = $request->getParsedBody();
-        $requestBody["user_id"] =  $account['id'];
+        $requestBody["user_id"] = $account['id'];
 
-        $log=[
-            "hasLog"=>true,
-            "action"=>"like",
-            "user_id"=>$account['id'],
+        $log = [
+//            "hasLog"=>true,
+            "action" => "like",
+            "user_id" => $account['id'],
+            "item_id" => $requestBody['item_id'],
+            "time_create" => time(),
         ];
 
         // Get list of notifications
-        $result = $this->metaService->like($requestBody,$log);
+        $result = $this->metaService->like($requestBody, $log);
         $requestBody["type"] = "question";
 
 

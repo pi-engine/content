@@ -18,8 +18,8 @@ class LogRepositoryFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param null|array         $options
+     * @param string $requestedName
+     * @param null|array $options
      *
      * @return LogRepository
      * @throws ContainerExceptionInterface
@@ -30,7 +30,7 @@ class LogRepositoryFactory implements FactoryInterface
         return new LogRepository(
             $container->get(AdapterInterface::class),
             new ReflectionHydrator(),
-            new Log('', 0, '', 0, 0, 0, 0),
+            new Log(0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         );
     }
 }
