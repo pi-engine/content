@@ -2,7 +2,6 @@
 
 namespace Content\Service;
 
-use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
 use mysql_xdevapi\Exception;
 use User\Service\AccountService;
@@ -18,8 +17,8 @@ class MetaService implements ServiceInterface
     /** @var AccountService */
     protected AccountService $accountService;
 
-    /** @var ScoreService */
-    protected ScoreService $scoreService;
+    /** @var ItemService */
+    protected ItemService $itemService;
 
     /** @var LogService */
     protected LogService $logService;
@@ -42,14 +41,14 @@ class MetaService implements ServiceInterface
     public function __construct(
         ItemRepositoryInterface $itemRepository,
         AccountService          $accountService,
-        ScoreService            $scoreService,
+        ItemService             $itemService,
         LogService              $logService,
                                 $config
     )
     {
         $this->itemRepository = $itemRepository;
         $this->accountService = $accountService;
-        $this->scoreService = $scoreService;
+        $this->itemService = $itemService;
         $this->logService = $logService;
         $this->config = $config;
     }
@@ -158,7 +157,6 @@ class MetaService implements ServiceInterface
         }
 
         if (!$isFirstOpinion) {
-
             $metaPrams["value_number"] = $currentMeta["value_number"] + 1;
             $metaPrams["id"] = $currentMeta["id"];
             $currentMeta = $this->updateMeta($metaPrams);
