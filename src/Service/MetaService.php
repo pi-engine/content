@@ -163,6 +163,13 @@ class MetaService implements ServiceInterface
             $this->logService->addLog($log);
         }
 
+        ///TODO: complete this
+        $this->itemService->updateItemMeta(
+            [
+                "meta_key" => $requestBody["action"],
+                "meta_value" => $currentMeta["value_number"]
+            ]
+        );
         return $currentMeta;
 
     }

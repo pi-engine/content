@@ -654,14 +654,34 @@ class ItemService implements ServiceInterface
     {
 
         $nullObject = [];// new \stdClass();
+
+        $answer = [
+            "user_id" => $params['user_id'] ?? 0,
+            "title" => $params['question_slug'],
+            "slug" => $params['slug'],
+            "status" => 1,
+            "type" => $requestBody['type'] ?? 'answer',
+            'time_create' => time()
+        ];
+
+        $information = $params;
+        $information["body"] = $nullObject;
+        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $information["body"] ["description"] = $requestBody['description'] ?? "";
+        $information["body"]["answer"] = $nullObject;
+        $answer["information"] = json_encode($information, JSON_UNESCAPED_UNICODE);
+        $answer = $this->itemRepository->addItem($answer);
+
+
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $question = $this->itemRepository->getItem($params["slug"], "slug");
+        $question = $this->itemRepository->getItem($params["question_slug"], "slug");
 
 
         $information = $this->canonizeItem($question);
         if (sizeof($information) == 0)
             return [];
 
+        $params["id"] = $answer->getId();
         array_unshift($information["body"]["answer"], $params);
         $editedQuestion = [
             "id" => $question->getId(),
@@ -982,16 +1002,13 @@ class ItemService implements ServiceInterface
     public function removeReserve(array $params)
     {
     }
+
     //// End Reservation Section /////
 
-    ///// Start Opinion Section /////
-    ///
-    public function like(object|array $requestBody, array $log)
+
+    public function updateItemMeta(array $array)
     {
+
     }
-    public function Dislike(object|array $requestBody, $log = null)
-    {
-    }
-    //// End Reservation Section /////
 
 }

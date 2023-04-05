@@ -46,7 +46,8 @@ class ReplyHandler implements RequestHandlerInterface
         $params = [
             "user_id" => $requestBody['user_id'] ?? 0,
             "title" => $requestBody['title'],
-            "slug" => $requestBody['slug'],
+            "question_slug" => $requestBody['slug'],
+            "slug" => uniqid(),
             'time_create' => time()
         ];
 
