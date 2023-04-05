@@ -195,7 +195,7 @@ class MetaService implements ServiceInterface
             "meta_key" => "dislike",
         ];
 
-        $this->extracted($prams, $log);
+        $this->update($prams, $log);
     }
 
     private function minusLike(array $metaPrams, array $log)
@@ -207,7 +207,7 @@ class MetaService implements ServiceInterface
             "meta_key" => "like",
         ];
 
-        $this->extracted($prams, $log);
+        $this->update($prams, $log);
     }
 
     /**
@@ -215,7 +215,7 @@ class MetaService implements ServiceInterface
      * @param array $log
      * @return void
      */
-    private function extracted(array $prams, array $log): void
+    private function update(array $prams, array $log): void
     {
         $row = $this->itemRepository->getMetaValue($prams, "object");
         $currentMeta = $this->canonizeMeta($row);
