@@ -1006,9 +1006,19 @@ class ItemService implements ServiceInterface
     //// End Reservation Section /////
 
 
-    public function updateItemMeta(array $array)
+    public function updateItemMeta(array $params)
     {
-
+        $nullObject = [];
+        $item = $this->itemRepository->getItem($params['id'], 'id');
+        $information = json_decode($item->getInformation(),true);
+//        $information['meta'] = $nullObject;
+        $information['meta'][$params['meta_key']] = $params['meta_value'];
+        $editedMeta = [
+            'id' => $item->getId(),
+            'time_update' => time(),
+            'information' => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+        $this->itemRepository->editItem($editedMeta);
     }
 
 }

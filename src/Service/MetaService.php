@@ -166,6 +166,7 @@ class MetaService implements ServiceInterface
         ///TODO: complete this
         $this->itemService->updateItemMeta(
             [
+                "id" => $requestBody["item_id"],
                 "meta_key" => $requestBody["action"],
                 "meta_value" => $currentMeta["value_number"]
             ]
@@ -195,7 +196,7 @@ class MetaService implements ServiceInterface
             "meta_key" => "dislike",
         ];
 
-        $this->update($prams, $log);
+        $this->updateOpinion($prams, $log);
     }
 
     private function minusLike(array $metaPrams, array $log)
@@ -207,7 +208,7 @@ class MetaService implements ServiceInterface
             "meta_key" => "like",
         ];
 
-        $this->update($prams, $log);
+        $this->updateOpinion($prams, $log);
     }
 
     /**
@@ -215,7 +216,7 @@ class MetaService implements ServiceInterface
      * @param array $log
      * @return void
      */
-    private function update(array $prams, array $log): void
+    private function updateOpinion(array $prams, array $log): void
     {
         $row = $this->itemRepository->getMetaValue($prams, "object");
         $currentMeta = $this->canonizeMeta($row);
@@ -223,6 +224,13 @@ class MetaService implements ServiceInterface
             $prams["value_number"] = $currentMeta["value_number"] > 0 ? $currentMeta["value_number"] - 1 : 0;
             $prams["id"] = $currentMeta["id"];
             $this->itemRepository->updateMetaValue($prams);
+            $this->itemService->updateItemMeta(
+                [
+                    "id" => $prams["item_id"],
+                    "meta_key" => $prams["meta_key"],
+                    "meta_value" => $prams["value_number"]
+                ]
+            );
         }
         $this->logService->updateLog($log);
     }
