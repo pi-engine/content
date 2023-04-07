@@ -329,7 +329,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
 //                                    SecurityMiddleware::class,
-//                                    AuthenticationMiddleware::class,
+                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\AddHandler::class
                                 ),
@@ -349,7 +349,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
 //                                    SecurityMiddleware::class,
-//                                    AuthenticationMiddleware::class,
+                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Question\ReplyHandler::class
                                 ),

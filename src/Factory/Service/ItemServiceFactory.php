@@ -6,6 +6,7 @@ use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
 use Content\Service\ItemService;
 use Content\Service\LogService;
+use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;

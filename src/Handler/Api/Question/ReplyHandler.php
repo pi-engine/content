@@ -45,7 +45,7 @@ class ReplyHandler implements RequestHandlerInterface
 
         // Set child_slug_ prefix to title of answer for find parent in per update of it
         $params = [
-            "user_id" => $requestBody['user_id'] ?? 0,
+            "user_id" =>$account['id'],
             "title" => $requestBody['title'],
             "question_slug" => 'child_slug_'.$requestBody['slug'],
             "slug" => uniqid(),
