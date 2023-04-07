@@ -674,7 +674,7 @@ class ItemService implements ServiceInterface
 
 
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $question = $this->itemRepository->getItem($params["question_slug"], "slug");
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["question_slug"]), "slug");
 
 
         $information = $this->canonizeItem($question);
@@ -1006,9 +1006,9 @@ class ItemService implements ServiceInterface
 
     public function updateItemMeta(array $params)
     {
-        $nullObject = [];
+
         $item = $this->itemRepository->getItem($params['id'], 'id');
-        $information = json_decode($item->getInformation(),true);
+        $information = json_decode($item->getInformation(), true);
 //        $information['meta'] = $nullObject;
         $information['meta'][$params['meta_key']] = $params['meta_value'];
         $editedMeta = [
@@ -1016,7 +1016,30 @@ class ItemService implements ServiceInterface
             'time_update' => time(),
             'information' => json_encode($information, JSON_UNESCAPED_UNICODE)
         ];
-        $this->itemRepository->editItem($editedMeta);
+        $newInformationObject = json_decode($this->itemRepository->editItem($editedMeta)->getInformation(), true);
+
+        /// check that this record has a parent or no
+        if (str_contains($item->getTitle(), 'child_slug_')) {
+            $parent = $this->itemRepository->getItem(str_replace("child_slug_", "", $item->getTitle()), 'slug');
+            $oldInformation = json_decode($parent->getInformation(), true);
+            $i = 0;
+            foreach ($oldInformation["body"]["answer"] as $answer) {
+                if (isset($answer["id"])) {
+                    if ($answer["id"] == $item->getId()) {
+                        $oldInformation["body"]["answer"][$i] = $newInformationObject;
+                    }
+                }
+                $i++;
+            }
+
+            $editedParent = [
+                "id" => $parent->getId(),
+                "time_update" => time(),
+                "information" => json_encode($oldInformation, JSON_UNESCAPED_UNICODE)
+            ];
+            $this->itemRepository->editItem($editedParent);
+
+        }
     }
 
 }
