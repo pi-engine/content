@@ -666,6 +666,15 @@ class ItemService implements ServiceInterface
         $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
         $question = $this->itemRepository->addItem($params);
+        $information = $this->canonizeItem($question) ;
+        $information["id"] = $question->getId();
+        $editedQuestion = [
+            "id" => $question->getId(),
+            "time_update" => time(),
+            "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+
+       $question = $this->itemRepository->editItem($editedQuestion);
 
         // add meta record for this question if isset categories parameter
         if (isset($requestBody['categories'])) {
