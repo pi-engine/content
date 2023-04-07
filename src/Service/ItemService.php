@@ -625,6 +625,17 @@ class ItemService implements ServiceInterface
     ///// Start Question Section /////
     /// services of question type
 
+    public function getGroupItem($params, $type = "id"): array
+    {
+        $list = [];
+        $rowSet = $this->itemRepository->getGroupList($params);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+        return $list;
+    }
+
+
     // TODO: update it
     public function addQuestion($requestBody): object|array
     {
@@ -648,7 +659,8 @@ class ItemService implements ServiceInterface
         $information['body'] ['description'] = $requestBody['description'] ?? '';
         $information['body']['answer'] = $nullObject;
         $information['meta'] = $nullObject;
-        $information['meta']['categories'] = $hasCategories ? $requestBody['categories'] : '';
+//        $information['meta']['categories'] = $hasCategories ? $requestBody['categories'] : '';
+        $information['meta']['categories'] = $hasCategories ? $this->getGroupItem($requestBody['categories'], 'id') : [];
         $information['meta']['like'] = 0;
         $information['meta']['dislike'] = 0;
         $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
@@ -692,7 +704,8 @@ class ItemService implements ServiceInterface
 //        $information = $params;
         $answerInformation = $answer;
         $answerInformation['title'] = $params['title'];
-        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
+//        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
+        $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
         $answerInformation['meta']['like'] = 0;
         $answerInformation['meta']['dislike'] = 0;
 

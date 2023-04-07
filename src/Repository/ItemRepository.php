@@ -460,4 +460,37 @@ class ItemRepository implements ItemRepositoryInterface
         }
         return $this->getMetaValue($params ,"object");
     }
+
+
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return object|array
+     */
+    public function getGroupList($parameter, $type = 'id'): object|array
+    {
+
+
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableItem)->where("$type IN ($parameter)");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            throw new RuntimeException(
+                sprintf(
+                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
+                    $parameter
+                )
+            );
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
+        $resultSet->initialize($result);
+
+
+        return $resultSet;
+    }
+
 }
