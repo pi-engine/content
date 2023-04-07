@@ -993,9 +993,7 @@ class ItemService implements ServiceInterface
 
             }
         }
-
         return $reserveResult;
-
     }
 
 

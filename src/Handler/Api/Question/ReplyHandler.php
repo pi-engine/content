@@ -43,10 +43,11 @@ class ReplyHandler implements RequestHandlerInterface
         $requestBody = $request->getParsedBody();
         $requestBody["type"] = "question";
 
+        // Set child_slug_ prefix to title of answer for find parent in per update of it
         $params = [
             "user_id" => $requestBody['user_id'] ?? 0,
             "title" => $requestBody['title'],
-            "question_slug" => $requestBody['slug'],
+            "question_slug" => 'child_slug_'.$requestBody['slug'],
             "slug" => uniqid(),
             'time_create' => time()
         ];
