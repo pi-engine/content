@@ -748,6 +748,58 @@ class ItemService implements ServiceInterface
     ///// End Question Section /////
 
 
+
+    public function replySupport($params): object|array
+    {
+
+        $nullObject = [];// new \stdClass();
+        $hasCategories = isset($params['categories']);
+
+        $answer = [
+            "user_id" => $params['user_id'] ?? 0,
+            "title" => $params['support_slug'],
+            "slug" => $params['slug'],
+            "status" => 1,
+            "type" => $requestBody['type'] ?? 'answer',
+            'time_create' => time()
+        ];
+
+//        $information = $params;
+        $answerInformation = $answer;
+        $answerInformation['title'] = $params['title'];
+//        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
+        $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
+        $answerInformation['meta']['like'] = 0;
+        $answerInformation['meta']['dislike'] = 0;
+
+
+//        $information["body"] = $nullObject;
+//        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+//        $information["body"] ["description"] = $requestBody['description'] ?? "";
+//        $information["body"]["answer"] = $nullObject;
+        $answer["information"] = json_encode($answerInformation, JSON_UNESCAPED_UNICODE);
+        $answer = $this->itemRepository->addItem($answer);
+
+
+        $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
+
+
+        $information = $this->canonizeItem($question);
+        if (sizeof($information) == 0)
+            return [];
+
+        $answerInformation["id"] = $answer->getId();
+        array_unshift($information["body"]["answer"], $answerInformation);
+        $editedQuestion = [
+            "id" => $question->getId(),
+            "time_update" => time(),
+            "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+
+        return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
+    }
+
     ///// Start Location Section /////
     ///// services of location type
     ///

@@ -412,7 +412,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
 //                                    SecurityMiddleware::class,
-//                                    AuthenticationMiddleware::class,
+                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Support\AddHandler::class
                                 ),
@@ -432,7 +432,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
 //                                    SecurityMiddleware::class,
-//                                    AuthenticationMiddleware::class,
+                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Support\ReplyHandler::class
                                 ),
@@ -452,7 +452,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
 //                                    SecurityMiddleware::class,
-//                                    AuthenticationMiddleware::class,
+                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Support\ListHandler::class
                                 ),
@@ -472,7 +472,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
-//                                    AuthenticationMiddleware::class,
+                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                     Handler\Api\Support\GetHandler::class
                                 ),

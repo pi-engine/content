@@ -44,15 +44,16 @@ class ReplyHandler implements RequestHandlerInterface
         $requestBody["type"] = "support";
 
         $params = [
-            "user_id" => $requestBody['user_id'] ?? 0,
+            "user_id" =>$account["id"],
             "title" => $requestBody['title'],
-            "slug" => $requestBody['slug'],
+            "support_slug" => 'child_slug_'.$requestBody['slug'],
+            "slug" => uniqid(),
             'time_create' => time()
         ];
 
 
         // Get list of notifications
-        $result = $this->itemService->replyQuestion($params);
+        $result = $this->itemService->replySupport($params);
 
 
         // Get record
