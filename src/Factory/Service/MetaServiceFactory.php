@@ -2,7 +2,6 @@
 
 namespace Content\Factory\Service;
 
-use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
 use Content\Service\ItemService;
 use Content\Service\LogService;
@@ -31,7 +30,7 @@ class MetaServiceFactory implements FactoryInterface
         return new MetaService(
             $container->get(ItemRepositoryInterface::class),
             $container->get(AccountService::class),
-            $container->get(ScoreService::class),
+            $container->get(ItemService::class),
             $container->get(LogService::class),
             $config['client']
         );

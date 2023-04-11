@@ -23,4 +23,6 @@ interface ItemRepositoryInterface
 
     public function addCartItem(array $params): object|array;
 
+    public function getGroupList($params);
+
 }

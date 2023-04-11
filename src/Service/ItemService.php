@@ -625,44 +625,118 @@ class ItemService implements ServiceInterface
     ///// Start Question Section /////
     /// services of question type
 
-// TODO: update it
+    public function getGroupItem($params, $type = "id"): array
+    {
+        $list = [];
+        $rowSet = $this->itemRepository->getGroupList($params);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+        return $list;
+    }
+
+
+    // TODO: update it
     public function addQuestion($requestBody): object|array
     {
 
         $nullObject = [];// new \stdClass();
 
+        $hasCategories = isset($requestBody['categories']);
+
         $params = [
-            "user_id" => $requestBody['user_id'] ?? 0,
-            "title" => $requestBody['title'],
-            "slug" => uniqid(),
-            "status" => 1,
-            "type" => $requestBody['type'] ?? 'question',
+            'user_id' => $requestBody['user_id'] ?? 0,
+            'title' => $requestBody['title'],
+            'slug' => uniqid(),
+            'status' => 1,
+            'type' => $requestBody['type'] ?? 'question',
             'time_create' => time()
         ];
 
         $information = $params;
-        $information["body"] = $nullObject;
-        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $information["body"] ["description"] = $requestBody['description'] ?? "";
-        $information["body"]["answer"] = $nullObject;
-        $params["information"] = json_encode($information, JSON_UNESCAPED_UNICODE);
+        $information['body'] = $nullObject;
+        $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $information['body'] ['description'] = $requestBody['description'] ?? '';
+        $information['body']['answer'] = $nullObject;
+        $information['meta'] = $nullObject;
+//        $information['meta']['categories'] = $hasCategories ? $requestBody['categories'] : '';
+        $information['meta']['categories'] = $hasCategories ? $this->getGroupItem($requestBody['categories'], 'id') : [];
+        $information['meta']['like'] = 0;
+        $information['meta']['dislike'] = 0;
+        $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
-        return $this->canonizeItem($this->itemRepository->addItem($params));
+        $question = $this->itemRepository->addItem($params);
+        $information = $this->canonizeItem($question) ;
+        $information["id"] = $question->getId();
+        $editedQuestion = [
+            "id" => $question->getId(),
+            "time_update" => time(),
+            "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+
+       $question = $this->itemRepository->editItem($editedQuestion);
+
+        // add meta record for this question if isset categories parameter
+        if (isset($requestBody['categories'])) {
+
+            $metaParams = [
+                'item_id' => $question->getId(),
+                'meta_key' => 'category',
+                'time_create' => time(),
+            ];
+
+            $categories = explode(',', $requestBody['categories']);
+            foreach ($categories as $category) {
+                $metaParams['value_id'] = $category;
+                $this->itemRepository->addMetaValue($metaParams);
+            }
+        }
+
+        return $this->canonizeItem($question);
     }
 
     public function replyQuestion($params): object|array
     {
 
         $nullObject = [];// new \stdClass();
+        $hasCategories = isset($params['categories']);
+
+        $answer = [
+            "user_id" => $params['user_id'] ?? 0,
+            "title" => $params['question_slug'],
+            "slug" => $params['slug'],
+            "status" => 1,
+            "type" => $requestBody['type'] ?? 'answer',
+            'time_create' => time()
+        ];
+
+//        $information = $params;
+        $answerInformation = $answer;
+        $answerInformation['title'] = $params['title'];
+//        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
+        $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
+        $answerInformation['meta']['like'] = 0;
+        $answerInformation['meta']['dislike'] = 0;
+
+
+//        $information["body"] = $nullObject;
+//        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+//        $information["body"] ["description"] = $requestBody['description'] ?? "";
+//        $information["body"]["answer"] = $nullObject;
+        $answer["information"] = json_encode($answerInformation, JSON_UNESCAPED_UNICODE);
+        $answer = $this->itemRepository->addItem($answer);
+
+
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $question = $this->itemRepository->getItem($params["slug"], "slug");
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["question_slug"]), "slug");
 
 
         $information = $this->canonizeItem($question);
         if (sizeof($information) == 0)
             return [];
 
-        array_unshift($information["body"]["answer"], $params);
+        $answerInformation["id"] = $answer->getId();
+        array_unshift($information["body"]["answer"], $answerInformation);
         $editedQuestion = [
             "id" => $question->getId(),
             "time_update" => time(),
@@ -673,6 +747,58 @@ class ItemService implements ServiceInterface
     }
     ///// End Question Section /////
 
+
+
+    public function replySupport($params): object|array
+    {
+
+        $nullObject = [];// new \stdClass();
+        $hasCategories = isset($params['categories']);
+
+        $answer = [
+            "user_id" => $params['user_id'] ?? 0,
+            "title" => $params['support_slug'],
+            "slug" => $params['slug'],
+            "status" => 1,
+            "type" => $requestBody['type'] ?? 'answer',
+            'time_create' => time()
+        ];
+
+//        $information = $params;
+        $answerInformation = $answer;
+        $answerInformation['title'] = $params['title'];
+//        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
+        $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
+        $answerInformation['meta']['like'] = 0;
+        $answerInformation['meta']['dislike'] = 0;
+
+
+//        $information["body"] = $nullObject;
+//        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+//        $information["body"] ["description"] = $requestBody['description'] ?? "";
+//        $information["body"]["answer"] = $nullObject;
+        $answer["information"] = json_encode($answerInformation, JSON_UNESCAPED_UNICODE);
+        $answer = $this->itemRepository->addItem($answer);
+
+
+        $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
+
+
+        $information = $this->canonizeItem($question);
+        if (sizeof($information) == 0)
+            return [];
+
+        $answerInformation["id"] = $answer->getId();
+        array_unshift($information["body"]["answer"], $answerInformation);
+        $editedQuestion = [
+            "id" => $question->getId(),
+            "time_update" => time(),
+            "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+
+        return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
+    }
 
     ///// Start Location Section /////
     ///// services of location type
@@ -973,25 +1099,53 @@ class ItemService implements ServiceInterface
 
             }
         }
-
         return $reserveResult;
-
     }
 
 
     public function removeReserve(array $params)
     {
     }
+
     //// End Reservation Section /////
 
-    ///// Start Opinion Section /////
-    ///
-    public function like(object|array $requestBody, array $log)
+
+    public function updateItemMeta(array $params)
     {
+
+        $item = $this->itemRepository->getItem($params['id'], 'id');
+        $information = json_decode($item->getInformation(), true);
+//        $information['meta'] = $nullObject;
+        $information['meta'][$params['meta_key']] = $params['meta_value'];
+        $editedMeta = [
+            'id' => $item->getId(),
+            'time_update' => time(),
+            'information' => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+        $newInformationObject = json_decode($this->itemRepository->editItem($editedMeta)->getInformation(), true);
+        $newInformationObject['id'] = $item->getId();
+        /// check that this record has a parent or no
+        if (str_contains($item->getTitle(), 'child_slug_')) {
+            $parent = $this->itemRepository->getItem(str_replace("child_slug_", "", $item->getTitle()), 'slug');
+            $oldInformation = json_decode($parent->getInformation(), true);
+            $i = 0;
+            foreach ($oldInformation["body"]["answer"] as $answer) {
+                if (isset($answer["id"])) {
+                    if ($answer["id"] == $item->getId()) {
+                        $oldInformation["body"]["answer"][$i] = $newInformationObject;
+                    }
+                }
+                $i++;
+            }
+
+            $editedParent = [
+                "id" => $parent->getId(),
+                "time_update" => time(),
+                "information" => json_encode($oldInformation, JSON_UNESCAPED_UNICODE)
+            ];
+            $this->itemRepository->editItem($editedParent);
+
+        }
     }
-    public function Dislike(object|array $requestBody, $log = null)
-    {
-    }
-    //// End Reservation Section /////
 
 }

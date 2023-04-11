@@ -264,7 +264,7 @@ class ItemRepository implements ItemRepositoryInterface
             );
         }
 
-        return (isset($params["id"]))?$this->getItem($params["id"]):$this->getItem($params["slug"],"slug");
+        return (isset($params["id"])) ? $this->getItem($params["id"]) : $this->getItem($params["slug"], "slug");
     }
 
     /**
@@ -369,6 +369,128 @@ class ItemRepository implements ItemRepositoryInterface
         }
         $id = $result->getGeneratedValue();
         return $this->getItem($id);
+    }
+
+
+    ///     META SECTION
+    ///
+
+    /**
+     * @param array $params
+     *
+     * @return HydratingResultSet|array
+     */
+    public function getMetaValue(array $params = [], $return = "array")
+    {
+        $where = [];
+        if (isset($params['id']) && !empty($params['id'])) {
+            $where['id'] = $params['id'];
+        }
+        if (isset($params['item_id']) && !empty($params['item_id'])) {
+            $where['item_id'] = $params['item_id'];
+        }
+        if (isset($params['meta_key']) && !empty($params['meta_key'])) {
+            $where['meta_key'] = $params['meta_key'];
+        }
+
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableMetaValue)->where($where);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            return [];
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->metaValuePrototype);
+        $resultSet->initialize($result);
+        $item = $resultSet->current();
+
+        if (!$item) {
+            return [];
+        }
+
+        return $return == "object" ? $item : $resultSet;
+
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array|object
+     */
+    public function addMetaValue(array $params): object|array
+    {
+        $insert = new Insert($this->tableMetaValue);
+        $insert->values($params);
+
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface) {
+            throw new RuntimeException(
+                'Database error occurred during blog post insert operation'
+            );
+        }
+        $id = $result->getGeneratedValue();
+        return $this->getMetaValue(["id" => $id],"object");
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array|object
+     */
+    public function updateMetaValue(array $params): object|array
+    {
+        $update = new Update($this->tableMetaValue);
+        $update->set($params);
+        if (isset($params["id"]))
+            $update->where(['id' => $params["id"]]);
+
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface) {
+            throw new RuntimeException(
+                'Database error occurred during update operation'
+            );
+        }
+        return $this->getMetaValue($params ,"object");
+    }
+
+
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return object|array
+     */
+    public function getGroupList($parameter, $type = 'id'): object|array
+    {
+
+
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableItem)->where("$type IN ($parameter)");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            throw new RuntimeException(
+                sprintf(
+                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
+                    $parameter
+                )
+            );
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->itemPrototype);
+        $resultSet->initialize($result);
+
+
+        return $resultSet;
     }
 
 }

@@ -37,15 +37,15 @@ class AddHandler implements RequestHandlerInterface
     {
 
 
-
+        $account = $request->getAttribute('account');
         // Get request body
         $requestBody = $request->getParsedBody();
 
 
+        $requestBody["type"] = "question";
+        $requestBody["user_id"] = $account['id'];
         // Get list of notifications
         $result = $this->itemService->addQuestion($requestBody);
-        $requestBody["type"] = "question";
-
 
         // Get record
         // $result = [];
