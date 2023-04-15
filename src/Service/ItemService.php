@@ -1105,11 +1105,11 @@ class ItemService implements ServiceInterface
 
             }
         }
+
+        ///Send notification to owner
         $ownerProfile= $this->accountService->getProfile(['item_id' =>$params["item_id"]]);
         $owner = $this->accountService->getUser( ['id'=>$ownerProfile['user_id']]);
 
-
-        ///Send notification to owner
         $notificationParams = [
             'information' =>
                 [
@@ -1131,6 +1131,30 @@ class ItemService implements ServiceInterface
         $notificationParams['push'] = $notificationParams['information'];
         $this->notificationService->send($notificationParams,'owner');
 
+
+        ///Send notification to customer
+        $customer = $this->accountService->getUser( ['id'=>$params["user_id"]]);
+
+        $notificationParams = [
+            'information' =>
+                [
+                    "device_token" =>$customer['device_tokens'],
+                    "in_app" => true,
+                    "in_app_title" => 'Reservation',
+                    "title" => 'Reservation',
+                    "in_app_body" => 'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
+                    "body" =>  'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
+                    "event" => 'reservation',
+                    "user_id" => (int)$params["user_id"],
+                    "item_id" => (int)$params['item_id'],
+                    "sender_id" => 0,
+                    "type" => 'info',
+                    "image_url" => '',
+                    "receiver_id" => (int)$params["user_id"],
+                ],
+        ];
+        $notificationParams['push'] = $notificationParams['information'];
+        $this->notificationService->send($notificationParams,'customer');
 
         return $reserveResult;
     }
