@@ -9,6 +9,7 @@ use Content\Service\LogService;
 use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Notification\Service\NotificationService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Service\AccountService;
@@ -32,6 +33,7 @@ class ItemServiceFactory implements FactoryInterface
             $container->get(ItemRepositoryInterface::class),
             $container->get(AccountService::class),
             $container->get(ScoreService::class),
+            $container->get(NotificationService::class),
             $container->get(LogService::class),
             $config['client']
         );

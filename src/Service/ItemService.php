@@ -5,6 +5,7 @@ namespace Content\Service;
 use Club\Service\ScoreService;
 use Content\Repository\ItemRepositoryInterface;
 use mysql_xdevapi\Exception;
+use Notification\Service\NotificationService;
 use User\Service\AccountService;
 use function explode;
 use function in_array;
@@ -23,6 +24,9 @@ class ItemService implements ServiceInterface
 
     /** @var LogService */
     protected LogService $logService;
+
+    /** @var NotificationService */
+    protected NotificationService $notificationService;
 
     /* @var ItemRepositoryInterface */
     protected ItemRepositoryInterface $itemRepository;
@@ -43,6 +47,7 @@ class ItemService implements ServiceInterface
         ItemRepositoryInterface $itemRepository,
         AccountService          $accountService,
         ScoreService            $scoreService,
+        NotificationService     $notificationService,
         LogService              $logService,
                                 $config
     )
@@ -50,6 +55,7 @@ class ItemService implements ServiceInterface
         $this->itemRepository = $itemRepository;
         $this->accountService = $accountService;
         $this->scoreService = $scoreService;
+        $this->notificationService = $notificationService;
         $this->logService = $logService;
         $this->config = $config;
     }
@@ -1099,6 +1105,33 @@ class ItemService implements ServiceInterface
 
             }
         }
+        $ownerProfile= $this->accountService->getProfile(['item_id' =>$params["item_id"]]);
+        $owner = $this->accountService->getUser( ['id'=>$ownerProfile['user_id']]);
+
+
+        ///Send notification to owner
+        $notificationParams = [
+            'information' =>
+                [
+                    "device_token" =>$owner['device_tokens'],
+                    "in_app" => true,
+                    "in_app_title" => 'Reservation',
+                    "title" => 'Reservation',
+                    "in_app_body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
+                    "body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
+                    "event" => 'reservation',
+                    "user_id" => (int)$ownerProfile['user_id'],
+                    "item_id" => (int)$params['item_id'],
+                    "sender_id" => 0,
+                    "type" => 'info',
+                    "image_url" => '',
+                    "receiver_id" => (int)$ownerProfile['user_id'],
+                ],
+        ];
+        $notificationParams['push'] = $notificationParams['information'];
+        $this->notificationService->send($notificationParams,'owner');
+
+
         return $reserveResult;
     }
 
