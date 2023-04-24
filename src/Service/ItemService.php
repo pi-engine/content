@@ -74,6 +74,8 @@ class ItemService implements ServiceInterface
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
 
+
+
         // Set filters
         //$filters = $this->prepareFilter($params);
         $filters = [];
@@ -85,6 +87,16 @@ class ItemService implements ServiceInterface
             'limit' => $limit,
             'type' => $params['type'],
             'status' => 1,
+            'data_from' => strtotime(
+                isset($params['data_from'])
+                    ? sprintf('%s 00:00:00', $params['data_from'])
+                    : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
+            ),
+            'data_to'   => strtotime(
+                isset($params['data_to'])
+                    ? sprintf('%s 23:59:59', $params['data_to'])
+                    : sprintf('%s 23:59:59', date('Y-m-d'))
+            ),
         ];
 
         // Get filtered IDs

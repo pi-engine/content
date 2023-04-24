@@ -108,6 +108,14 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['slug']) && !empty($params['slug'])) {
             $where['slug'] = $params['slug'];
         }
+
+        if (isset($params['data_from']) && !empty($params['data_from'])) {
+            $where['time_create >= ?'] = $params['data_from'];
+        }
+        if (isset($params['data_to']) && !empty($params['data_to'])) {
+            $where['time_create <= ?'] = $params['data_to'];
+        }
+
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -134,9 +142,32 @@ class ItemRepository implements ItemRepositoryInterface
         $columns = ['count' => new Expression('count(*)')];
         $where = [];
 
-        if (isset($params['status']) && is_numeric($params['status'])) {
+        if (isset($params['user_id']) && !empty($params['user_id'])) {
+            $where['user_id'] = $params['user_id'];
+        }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
+        if (isset($params['status']) && !empty($params['status'])) {
             $where['status'] = $params['status'];
         }
+        if (isset($params['id']) && !empty($params['id'])) {
+            $where['id'] = $params['id'];
+        }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $where['slug'] = $params['slug'];
+        }
+
+        if (isset($params['data_from']) && !empty($params['data_from'])) {
+            $where['time_create >= ?'] = $params['data_from'];
+        }
+        if (isset($params['data_to']) && !empty($params['data_to'])) {
+            $where['time_create <= ?'] = $params['data_to'];
+        }
+
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->columns($columns)->where($where);
