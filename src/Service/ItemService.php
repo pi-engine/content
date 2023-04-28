@@ -75,7 +75,6 @@ class ItemService implements ServiceInterface
         $offset = ($page - 1) * $limit;
 
 
-
         // Set filters
         //$filters = $this->prepareFilter($params);
         $filters = [];
@@ -92,7 +91,7 @@ class ItemService implements ServiceInterface
                     ? sprintf('%s 00:00:00', $params['data_from'])
                     : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
             ),
-            'data_to'   => strtotime(
+            'data_to' => strtotime(
                 isset($params['data_to'])
                     ? sprintf('%s 23:59:59', $params['data_to'])
                     : sprintf('%s 23:59:59', date('Y-m-d'))
@@ -672,19 +671,19 @@ class ItemService implements ServiceInterface
         ];
 
         $information = $params;
+        $information['extra'] = $requestBody['extra'] ? json_decode($requestBody['extra']): new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
         $information['body'] ['description'] = $requestBody['description'] ?? '';
         $information['body']['answer'] = $nullObject;
         $information['meta'] = $nullObject;
-//        $information['meta']['categories'] = $hasCategories ? $requestBody['categories'] : '';
         $information['meta']['categories'] = $hasCategories ? $this->getGroupItem($requestBody['categories'], 'id') : [];
         $information['meta']['like'] = 0;
         $information['meta']['dislike'] = 0;
         $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
         $question = $this->itemRepository->addItem($params);
-        $information = $this->canonizeItem($question) ;
+        $information = $this->canonizeItem($question);
         $information["id"] = $question->getId();
         $editedQuestion = [
             "id" => $question->getId(),
@@ -692,7 +691,7 @@ class ItemService implements ServiceInterface
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
         ];
 
-       $question = $this->itemRepository->editItem($editedQuestion);
+        $question = $this->itemRepository->editItem($editedQuestion);
 
         // add meta record for this question if isset categories parameter
         if (isset($requestBody['categories'])) {
@@ -763,8 +762,8 @@ class ItemService implements ServiceInterface
 
         return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
     }
-    ///// End Question Section /////
 
+    ///// End Question Section /////
 
 
     public function replySupport($params): object|array
@@ -1119,13 +1118,13 @@ class ItemService implements ServiceInterface
         }
 
         ///Send notification to owner
-        $ownerProfile= $this->accountService->getProfile(['item_id' =>$params["item_id"]]);
-        $owner = $this->accountService->getUser( ['id'=>$ownerProfile['user_id']]);
+        $ownerProfile = $this->accountService->getProfile(['item_id' => $params["item_id"]]);
+        $owner = $this->accountService->getUser(['id' => $ownerProfile['user_id']]);
 
         $notificationParams = [
             'information' =>
                 [
-                    "device_token" =>$owner['device_tokens'],
+                    "device_token" => $owner['device_tokens'],
                     "in_app" => true,
                     "in_app_title" => 'Reservation',
                     "title" => 'Reservation',
@@ -1141,21 +1140,21 @@ class ItemService implements ServiceInterface
                 ],
         ];
         $notificationParams['push'] = $notificationParams['information'];
-        $this->notificationService->send($notificationParams,'owner');
+        $this->notificationService->send($notificationParams, 'owner');
 
 
         ///Send notification to customer
-        $customer = $this->accountService->getUser( ['id'=>$params["user_id"]]);
+        $customer = $this->accountService->getUser(['id' => $params["user_id"]]);
 
         $notificationParams = [
             'information' =>
                 [
-                    "device_token" =>$customer['device_tokens'],
+                    "device_token" => $customer['device_tokens'],
                     "in_app" => true,
                     "in_app_title" => 'Reservation',
                     "title" => 'Reservation',
                     "in_app_body" => 'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
-                    "body" =>  'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
+                    "body" => 'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
                     "event" => 'reservation',
                     "user_id" => (int)$params["user_id"],
                     "item_id" => (int)$params['item_id'],
@@ -1166,7 +1165,7 @@ class ItemService implements ServiceInterface
                 ],
         ];
         $notificationParams['push'] = $notificationParams['information'];
-        $this->notificationService->send($notificationParams,'customer');
+        $this->notificationService->send($notificationParams, 'customer');
 
         return $reserveResult;
     }
