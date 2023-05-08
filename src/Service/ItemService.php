@@ -645,7 +645,8 @@ class ItemService implements ServiceInterface
     public function getGroupItem($params, $type = "id"): array
     {
         $list = [];
-        $rowSet = $this->itemRepository->getGroupList($params);
+        $params = "'" . str_replace(',', "','", $params) . "'";
+        $rowSet = $this->itemRepository->getGroupList($params, $type);
         foreach ($rowSet as $row) {
             $list[] = $this->canonizeItem($row);
         }
@@ -660,6 +661,7 @@ class ItemService implements ServiceInterface
         $nullObject = [];// new \stdClass();
 
         $hasCategories = isset($requestBody['categories']);
+        $categoryKeyType = $requestBody['category_key_type'] ?? 'id';
 
         $params = [
             'user_id' => $requestBody['user_id'] ?? 0,
@@ -671,22 +673,22 @@ class ItemService implements ServiceInterface
         ];
 
         $information = $params;
-        $information['extra'] = $requestBody['extra'] ? json_decode($requestBody['extra']): new \stdClass();
+        $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
         $information['body'] ['description'] = $requestBody['description'] ?? '';
         $information['body']['answer'] = $nullObject;
         $information['meta'] = $nullObject;
-        $information['meta']['categories'] = $hasCategories ? $this->getGroupItem($requestBody['categories'], 'id') : [];
+        $information['meta']['categories'] = $hasCategories ? $this->getGroupItem($requestBody['categories'], $categoryKeyType) : [];
         $information['meta']['like'] = 0;
         $information['meta']['dislike'] = 0;
         $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
         $question = $this->itemRepository->addItem($params);
         $information = $this->canonizeItem($question);
-        $information["id"] = $question->getId();
+        $information["id"] = (int)$question->getId();
         $editedQuestion = [
-            "id" => $question->getId(),
+            "id" => (int)$question->getId(),
             "time_update" => time(),
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
         ];
