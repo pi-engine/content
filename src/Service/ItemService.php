@@ -676,6 +676,7 @@ class ItemService implements ServiceInterface
         $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $information['body']['name'] =  $params['user_id'] == 0 ? '' : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
         $information['body'] ['description'] = $requestBody['description'] ?? '';
         $information['body']['answer'] = $nullObject;
         $information['meta'] = $nullObject;
@@ -754,10 +755,10 @@ class ItemService implements ServiceInterface
         if (sizeof($information) == 0)
             return [];
 
-        $answerInformation["id"] = $answer->getId();
+        $answerInformation["id"] = (int)$answer->getId();
         array_unshift($information["body"]["answer"], $answerInformation);
         $editedQuestion = [
-            "id" => $question->getId(),
+            "id" => (int)$question->getId(),
             "time_update" => time(),
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
         ];
@@ -783,19 +784,14 @@ class ItemService implements ServiceInterface
             'time_create' => time()
         ];
 
-//        $information = $params;
         $answerInformation = $answer;
+        $answerInformation['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);;
+        $answerInformation['name'] = $params['user_id'] == 0 ? '' : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
         $answerInformation['title'] = $params['title'];
-//        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
         $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
         $answerInformation['meta']['like'] = 0;
         $answerInformation['meta']['dislike'] = 0;
 
-
-//        $information["body"] = $nullObject;
-//        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-//        $information["body"] ["description"] = $requestBody['description'] ?? "";
-//        $information["body"]["answer"] = $nullObject;
         $answer["information"] = json_encode($answerInformation, JSON_UNESCAPED_UNICODE);
         $answer = $this->itemRepository->addItem($answer);
 
@@ -808,10 +804,10 @@ class ItemService implements ServiceInterface
         if (sizeof($information) == 0)
             return [];
 
-        $answerInformation["id"] = $answer->getId();
+        $answerInformation["id"] = (int)$answer->getId();
         array_unshift($information["body"]["answer"], $answerInformation);
         $editedQuestion = [
-            "id" => $question->getId(),
+            "id" => (int)$question->getId(),
             "time_update" => time(),
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
         ];
@@ -1188,12 +1184,12 @@ class ItemService implements ServiceInterface
 //        $information['meta'] = $nullObject;
         $information['meta'][$params['meta_key']] = $params['meta_value'];
         $editedMeta = [
-            'id' => $item->getId(),
+            'id' => (int)$item->getId(),
             'time_update' => time(),
             'information' => json_encode($information, JSON_UNESCAPED_UNICODE)
         ];
         $newInformationObject = json_decode($this->itemRepository->editItem($editedMeta)->getInformation(), true);
-        $newInformationObject['id'] = $item->getId();
+        $newInformationObject['id'] = (int)$item->getId();
         /// check that this record has a parent or no
         if (str_contains($item->getTitle(), 'child_slug_')) {
             $parent = $this->itemRepository->getItem(str_replace("child_slug_", "", $item->getTitle()), 'slug');
@@ -1201,7 +1197,7 @@ class ItemService implements ServiceInterface
             $i = 0;
             foreach ($oldInformation["body"]["answer"] as $answer) {
                 if (isset($answer["id"])) {
-                    if ($answer["id"] == $item->getId()) {
+                    if ($answer["id"] == (int)$item->getId()) {
                         $oldInformation["body"]["answer"][$i] = $newInformationObject;
                     }
                 }
@@ -1209,7 +1205,7 @@ class ItemService implements ServiceInterface
             }
 
             $editedParent = [
-                "id" => $parent->getId(),
+                "id" => (int)$parent->getId(),
                 "time_update" => time(),
                 "information" => json_encode($oldInformation, JSON_UNESCAPED_UNICODE)
             ];
