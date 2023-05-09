@@ -119,6 +119,8 @@ return [
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
                                     Middleware\ValidationMiddleware::class,
+                                    AuthenticationMiddleware::class,
+//                                    AuthorizationMiddleware::class,
                                     Handler\Api\ItemListHandler::class
                                 ),
                             ],
