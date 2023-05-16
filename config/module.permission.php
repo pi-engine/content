@@ -477,6 +477,47 @@ return [
                 'admin',
             ],
         ],
+
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'support',
+            'handler' => 'add',
+            'permission' => 'admin-content-support-add',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'support',
+            'handler' => 'reply',
+            'permission' => 'admin-content-support-reply',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'support',
+            'handler' => 'list',
+            'permission' => 'admin-content-support-list',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'support',
+            'handler' => 'get',
+            'permission' => 'admin-content-support-get',
+            'role' => [
+                'admin',
+            ],
+        ],
     ],
 
 ];

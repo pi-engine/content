@@ -74,6 +74,17 @@ return [
             Handler\Api\Opinion\DislikeHandler::class => Factory\Handler\Api\Opinion\DislikeHandlerFactory::class,
 
 
+            //Admin
+            // Support services factory
+            Handler\Admin\Support\AddHandler::class => Factory\Handler\Admin\Support\AddHandlerFactory::class,
+            Handler\Admin\Support\ListHandler::class => Factory\Handler\Admin\Support\ListHandlerFactory::class,
+            Handler\Admin\Support\ReplyHandler::class => Factory\Handler\Admin\Support\ReplyHandlerFactory::class,
+            Handler\Admin\Support\GetHandler::class => Factory\Handler\Admin\Support\GetHandlerFactory::class,
+
+            // Order services factory
+            Handler\Admin\Order\ListHandler::class => Factory\Handler\Admin\Order\ListHandlerFactory::class,
+
+
         ],
     ],
 
@@ -878,6 +889,127 @@ return [
                             ],
                         ],
                     ],
+
+                    'support' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/support',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'support',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-support-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Support\AddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'reply' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/reply',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'support',
+                                        'handler' => 'reply',
+                                        'permission' => 'admin-content-support-reply',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Support\ReplyHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'support',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-support-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Support\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'support',
+                                        'handler' => 'get',
+                                        'permission' => 'admin-content-support-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Support\GetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+
+                    'order' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/order',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'order',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-order-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Order\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+
                 ],
             ],
         ],
