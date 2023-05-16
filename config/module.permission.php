@@ -518,6 +518,17 @@ return [
                 'admin',
             ],
         ],
+
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'order',
+            'handler' => 'list',
+            'permission' => 'admin-content-order-list',
+            'role' => [
+                'admin',
+            ],
+        ],
     ],
 
 ];
