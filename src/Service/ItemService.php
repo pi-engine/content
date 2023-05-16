@@ -776,6 +776,10 @@ class ItemService implements ServiceInterface
     public function replySupport($params): object|array
     {
 
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug",$params);
+        if($question==null)
+            return [];
+
         $nullObject = [];// new \stdClass();
         $hasCategories = isset($params['categories']);
 
@@ -784,7 +788,7 @@ class ItemService implements ServiceInterface
             "title" => $params['support_slug'],
             "slug" => $params['slug'],
             "status" => 1,
-            "type" => $requestBody['type'] ?? 'answer',
+            "type" => $params['type'] ?? 'answer',
             'time_create' => time()
         ];
 
@@ -792,7 +796,7 @@ class ItemService implements ServiceInterface
         $answerInformation['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);;
         $answerInformation['name'] = $params['user_id'] == 0 ? '' : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
         $answerInformation['title'] = $params['title'];
-        $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
+        $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($params['categories'], 'id')) : [];
         $answerInformation['meta']['like'] = 0;
         $answerInformation['meta']['dislike'] = 0;
 
@@ -801,7 +805,6 @@ class ItemService implements ServiceInterface
 
 
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
 
 
         $information = $this->canonizeItem($question);
