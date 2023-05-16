@@ -117,48 +117,48 @@ return [
                             ],
                         ],
                     ],
-//                    'list' => [
-//                        'type' => Literal::class,
-//                        'options' => [
-//                            'route' => '/list',
-//                            'defaults' => [
-//                                'module' => 'content',
-//                                'section' => 'api',
-//                                'package' => 'item',
-//                                'validator' => 'list',
-//                                'handler' => 'list',
-//                                'permissions' => 'api-item-list',
-//                                'controller' => PipeSpec::class,
-//                                'middleware' => new PipeSpec(
-//                                    SecurityMiddleware::class,
-//                                    Middleware\ValidationMiddleware::class,
-//                                    AuthenticationMiddleware::class,
-//                                    AuthorizationMiddleware::class,
-//                                    Handler\Api\ItemListHandler::class
-//                                ),
-//                            ],
-//                        ],
-//                    ],
-//                    'detail' => [
-//                        'type' => Literal::class,
-//                        'options' => [
-//                            'route' => '/detail',
-//                            'defaults' => [
-//                                'module' => 'content',
-//                                'section' => 'api',
-//                                'package' => 'item',
-//                                'validator' => 'detail',
-//                                'handler' => 'detail',
-//                                'permission' => 'api-content-detail',
-//                                'controller' => PipeSpec::class,
-//                                'middleware' => new PipeSpec(
-//                                    SecurityMiddleware::class,
-//                                    Middleware\ValidationMiddleware::class,
-//                                    Handler\Api\ItemDetailHandler::class
-//                                ),
-//                            ],
-//                        ],
-//                    ],
+                    'list' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/list',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'list',
+                                'handler' => 'list',
+                                'permissions' => 'api-item-list',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    Middleware\ValidationMiddleware::class,
+                                    AuthenticationMiddleware::class,
+                                    AuthorizationMiddleware::class,
+                                    Handler\Api\ItemListHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
+                    'detail' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/detail',
+                            'defaults' => [
+                                'module' => 'content',
+                                'section' => 'api',
+                                'package' => 'item',
+                                'validator' => 'detail',
+                                'handler' => 'detail',
+                                'permission' => 'api-content-detail',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    SecurityMiddleware::class,
+                                    Middleware\ValidationMiddleware::class,
+                                    Handler\Api\ItemDetailHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
 
                     'cart' => [
                         'type' => Literal::class,

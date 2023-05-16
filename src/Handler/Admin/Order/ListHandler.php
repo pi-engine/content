@@ -37,7 +37,6 @@ class ListHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
         $account     = $request->getAttribute('account');
-        $requestBody["user_id"] = $account["id"];
 
         // Get order after store data
         $result = $this->itemService->getOrderList($requestBody);

@@ -585,10 +585,12 @@ class ItemService implements ServiceInterface
      */
     public function getOrderList(array $params): array
     {
-        $limit = $params['limit'] ?? 25;
+        ///TODO:update limit count
+        $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
+
 
         // Set filters
         //$filters = $this->prepareFilter($params);
@@ -601,7 +603,21 @@ class ItemService implements ServiceInterface
             'limit' => $limit,
             'type' => $params['type'],
             'status' => 1,
+            'data_from' => strtotime(
+                isset($params['data_from'])
+                    ? sprintf('%s 00:00:00', $params['data_from'])
+                    : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
+            ),
+            'data_to' => strtotime(
+                isset($params['data_to'])
+                    ? sprintf('%s 23:59:59', $params['data_to'])
+                    : sprintf('%s 23:59:59', date('Y-m-d'))
+            ),
         ];
+
+        if (isset($params['user_id'])) {
+            $listParams['user_id'] = $params['user_id'];
+        }
 
         // Get filtered IDs
         $itemIdList = [];
