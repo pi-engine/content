@@ -277,9 +277,9 @@ class ItemService implements ServiceInterface
      *
      * @return array
      */
-    public function getItem(string $parameter, string $type = 'id'): array
+    public function getItem(string $parameter, string $type = 'id',$params=[]): array
     {
-        $item = $this->itemRepository->getItem($parameter, $type);
+        $item = $this->itemRepository->getItem($parameter, $type,$params);
         return $this->canonizeItem($item);
     }
 

@@ -206,9 +206,13 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return object|array
      */
-    public function getItem($parameter, $type = 'id'): object|array
+    public function getItem($parameter, $type = 'id',$params=[]): object|array
     {
         $where = [$type => $parameter];
+
+        if (isset($params['user_id']) && !empty($params['user_id'])) {
+            $where['user_id'] = $params['user_id'];
+        }
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where);

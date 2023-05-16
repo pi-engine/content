@@ -35,12 +35,17 @@ class GetHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        // Get account
+        $account = $request->getAttribute('account');
+
         // Get request body
         $requestBody = $request->getParsedBody();
         $requestBody["type"] = "support";
 
+        $requestBody["user_id"] = $account['id'];
+
         // Get list of notifications
-        $result = $this->itemService->getItem($requestBody['slug'], 'slug');
+        $result = $this->itemService->getItem($requestBody['slug'], 'slug',$requestBody);
 
         // Set result
         $result = [
