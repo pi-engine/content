@@ -37,13 +37,16 @@ class ListHandler implements RequestHandlerInterface
     {
         // Get request body
         $requestBody = $request->getParsedBody();
-        $params = [
-            "user_id" => $requestBody["user_id"] ?? 0,
-            "type" => "support"
-        ];
+        $account = $request->getAttribute('account');
+//        $params = [
+//            "user_id" => $requestBody["user_id"] ?? 0,
+//            "type" => "support"
+//        ];
+        $requestBody["user_id"] = $account['id'];
+        $requestBody["type"] ="support";
 
         // Get Question list
-        $result = $this->itemService->getItemList($params);
+        $result = $this->itemService->getItemList($requestBody);
 
         return new JsonResponse($result);
     }

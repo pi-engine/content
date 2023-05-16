@@ -98,6 +98,10 @@ class ItemService implements ServiceInterface
             ),
         ];
 
+        if (isset($params['user_id'])) {
+            $listParams['user_id'] = $params['user_id'];
+        }
+
         // Get filtered IDs
         $itemIdList = [];
         if (!empty($filters)) {
@@ -676,7 +680,7 @@ class ItemService implements ServiceInterface
         $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
-        $information['body']['name'] =  $params['user_id'] == 0 ? '' : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
+        $information['body']['name'] = $params['user_id'] == 0 ? '' : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
         $information['body'] ['description'] = $requestBody['description'] ?? '';
         $information['body']['answer'] = $nullObject;
         $information['meta'] = $nullObject;
