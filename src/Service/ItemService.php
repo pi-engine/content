@@ -794,6 +794,68 @@ class ItemService implements ServiceInterface
     ///// End Question Section /////
 
 
+
+    // TODO: update it
+    public function addSupport($requestBody): object|array
+    {
+
+        $nullObject = [];// new \stdClass();
+
+        $hasCategories = isset($requestBody['categories']);
+        $categoryKeyType = $requestBody['category_key_type'] ?? 'id';
+
+        $params = [
+            'user_id' => $requestBody['user_id'] ?? 0,
+            'title' => $requestBody['title'],
+            'slug' => uniqid(),
+            'status' => 1,
+            'type' => $requestBody['type'] ?? 'question',
+            'time_create' => time()
+        ];
+
+        $information = $params;
+        $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
+        $information['body'] = $nullObject;
+        $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
+        $information['body']['name'] = $params['user_id'] == 0 ? '' : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
+        $information['body'] ['description'] = $requestBody['description'] ?? '';
+        $information['body']['answer'] = $nullObject;
+        $information['meta'] = $nullObject;
+        $information['meta']['categories'] = $hasCategories ? $this->getGroupItem($requestBody['categories'], $categoryKeyType) : [];
+        $information['meta']['like'] = 0;
+        $information['meta']['dislike'] = 0;
+        $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
+
+        $question = $this->itemRepository->addItem($params);
+        $information = $this->canonizeItem($question);
+        $information["id"] = (int)$question->getId();
+        $editedQuestion = [
+            "id" => (int)$question->getId(),
+            "time_update" => time(),
+            "information" => json_encode($information, JSON_UNESCAPED_UNICODE)
+        ];
+
+        $question = $this->itemRepository->editItem($editedQuestion);
+
+        // add meta record for this question if isset categories parameter
+        if (isset($requestBody['categories'])) {
+
+            $metaParams = [
+                'item_id' => $question->getId(),
+                'meta_key' => 'category',
+                'time_create' => time(),
+            ];
+
+            $categories = explode(',', $requestBody['categories']);
+            foreach ($categories as $category) {
+                $metaParams['value_id'] = $category;
+//                $this->itemRepository->addMetaValue($metaParams);
+            }
+        }
+
+        return $metaParams;
+    }
+
     public function replySupport($params): object|array
     {
 

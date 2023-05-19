@@ -46,7 +46,7 @@ class AddHandler implements RequestHandlerInterface
         $requestBody["user_id"] = $account['id'];
 
         // Get list of notifications
-        $result = $this->itemService->addQuestion($requestBody);
+        $result = $this->itemService->addSupport($requestBody);
 
 
         // Get record

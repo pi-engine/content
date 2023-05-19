@@ -14,14 +14,19 @@ CREATE TABLE IF NOT EXISTS `content_item`
     UNIQUE KEY `slug` (`slug`)
 );
 
-CREATE TABLE `content_meta_key` (
-                                    `id` int(10) UNSIGNED NOT NULL,
-                                    `key` varchar(64) NOT NULL DEFAULT '',
-                                    `value` varchar(255) DEFAULT NULL,
-                                    `type` varchar(64) NOT NULL DEFAULT 'string',
-                                    `suffix` varchar(255) NOT NULL DEFAULT '',
-                                    `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
-                                    `status` int(10) UNSIGNED NOT NULL DEFAULT 0
+
+CREATE TABLE `content_meta_value` (
+                                      `id` int(10) UNSIGNED NOT NULL,
+                                      `item_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `meta_key` varchar(64) NOT NULL DEFAULT '''''',
+                                      `value_string` varchar(255) NOT NULL DEFAULT '''''',
+                                      `value_id` varchar(255) NOT NULL DEFAULT '',
+                                      `value_number` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `status` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
+                                      `time_create` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `time_update` int(11) NOT NULL DEFAULT 0,
+                                      `time_delete` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `content_meta_key` (`id`, `key`, `value`, `type`, `suffix`, `logo`, `status`) VALUES
