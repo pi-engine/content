@@ -38,11 +38,6 @@ class ListHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
         $account = $request->getAttribute('account');
-//        $params = [
-//            "user_id" => $requestBody["user_id"] ?? 0,
-//            "type" => "support"
-//        ];
-        $requestBody["user_id"] = $account['id'];
         $requestBody["type"] ="support";
 
         // Get Question list
