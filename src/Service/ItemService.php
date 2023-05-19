@@ -849,11 +849,11 @@ class ItemService implements ServiceInterface
             $categories = explode(',', $requestBody['categories']);
             foreach ($categories as $category) {
                 $metaParams['value_id'] = $category;
-//                $this->itemRepository->addMetaValue($metaParams);
+                $this->itemRepository->addMetaValue($metaParams);
             }
         }
 
-        return $metaParams;
+        return $this->canonizeItem($question);
     }
 
     public function replySupport($params): object|array
