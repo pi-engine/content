@@ -277,9 +277,9 @@ class ItemService implements ServiceInterface
      *
      * @return array
      */
-    public function getItem(string $parameter, string $type = 'id',$params=[]): array
+    public function getItem(string $parameter, string $type = 'id', $params = []): array
     {
-        $item = $this->itemRepository->getItem($parameter, $type,$params);
+        $item = $this->itemRepository->getItem($parameter, $type, $params);
         return $this->canonizeItem($item);
     }
 
@@ -368,7 +368,12 @@ class ItemService implements ServiceInterface
     // TODO: update it
     public function addItem($params, $account)
     {
-        return $this->itemRepository->addItem($params, $account);
+        $paramsBase = $params;
+        $params['information'] = json_encode($params);
+        $response = $this->itemRepository->addItem($params, $account);
+        $paramsBase['id'] =(int)$response->getId();
+        $paramsBase['information'] = json_encode($paramsBase);
+        return $this->canonizeItem($this->itemRepository->editItem($paramsBase));
     }
 
     // TODO: update it
@@ -792,8 +797,8 @@ class ItemService implements ServiceInterface
     public function replySupport($params): object|array
     {
 
-        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug",$params);
-        if($question==null)
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug", $params);
+        if ($question == null)
             return [];
 
         $nullObject = [];// new \stdClass();

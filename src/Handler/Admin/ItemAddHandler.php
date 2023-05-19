@@ -41,10 +41,10 @@ class ItemAddHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
 
-        $requestBody["code"] = ItemStoreHandler . phptime();
+//        $requestBody["code"] = ItemStoreHandler . phptime();
 
         // Get list of notifications
-        $result = $this->itemService->addItem($requestBody);
+        $result = $this->itemService->addItem($requestBody,$account);
 
 
         // Get record
