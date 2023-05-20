@@ -92,7 +92,6 @@ class ItemRepository implements ItemRepositoryInterface
 
         $where = $this->createConditional($params);
 
-
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -117,9 +116,8 @@ class ItemRepository implements ItemRepositoryInterface
     {
         // Set where
         $columns = ['count' => new Expression('count(*)')];
-        $where = [];
 
-        $where = $this->getArr($params, $where);
+        $where = $this->createConditional($params);
 
 
         $sql = new Sql($this->db);
@@ -487,6 +485,7 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['title_key']) && !empty($params['title_key'])) {
             $where = ["title LIKE '%" . $params['title_key'] . "%' "];
         }
+
         return $this->getArr($params, $where);
     }
 

@@ -34,12 +34,9 @@ class ListHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get request body
         $requestBody = $request->getParsedBody();
-        $account     = $request->getAttribute('account');
-
-        // Get order after store data
-        $result = $this->itemService->getOrderList($requestBody);
+        $requestBody["type"] ="order";
+        $result = $this->itemService->getItemList($requestBody);
 
         return new JsonResponse($result);
     }

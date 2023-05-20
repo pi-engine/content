@@ -107,42 +107,7 @@ class ItemService implements ServiceInterface
         }
 
         // Get filtered IDs
-        $itemIdList = [];
-        if (!empty($filters)) {
-            $rowSet = $this->itemRepository->getIDFromFilter($filters);
-            foreach ($rowSet as $row) {
-                $itemIdList[] = $this->canonizeMetaItemID($row);
-            }
-        }
-
-        // Set filtered IDs to params
-        if (!empty($itemIdList)) {
-            $listParams['id'] = $itemIdList;
-        }
-
-        // Get list
-        $list = [];
-        $rowSet = $this->itemRepository->getItemList($listParams);
-        foreach ($rowSet as $row) {
-            $list[] = $this->canonizeItem($row);
-        }
-
-        // Get count
-        $count = $this->itemRepository->getItemCount($listParams);
-
-        return [
-            'result' => true,
-            'data' => [
-                'list' => $list,
-                'paginator' => [
-                    'count' => $count,
-                    'limit' => $limit,
-                    'page' => $page,
-                ],
-                'filters' => $filters,
-            ],
-            'error' => [],
-        ];
+        return $this->getFilteredIDs($filters, $listParams, $limit, $page);
     }
 
 
@@ -593,80 +558,45 @@ class ItemService implements ServiceInterface
      *
      * @return array
      */
-    public function getOrderList(array $params): array
-    {
-        ///TODO:update limit count
-        $limit = $params['limit'] ?? 125;
-        $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
-        $offset = ($page - 1) * $limit;
-
-
-        // Set filters
-        //$filters = $this->prepareFilter($params);
-        $filters = [];
-
-        // Set params
-        $listParams = [
-            'order' => $order,
-            'offset' => $offset,
-            'limit' => $limit,
-            'type' => $params['type'],
-            'status' => 1,
-            'data_from' => strtotime(
-                isset($params['data_from'])
-                    ? sprintf('%s 00:00:00', $params['data_from'])
-                    : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
-            ),
-            'data_to' => strtotime(
-                isset($params['data_to'])
-                    ? sprintf('%s 23:59:59', $params['data_to'])
-                    : sprintf('%s 23:59:59', date('Y-m-d'))
-            ),
-        ];
-
-        if (isset($params['user_id'])) {
-            $listParams['user_id'] = $params['user_id'];
-        }
-
-        // Get filtered IDs
-        $itemIdList = [];
-        if (!empty($filters)) {
-            $rowSet = $this->itemRepository->getIDFromFilter($filters);
-            foreach ($rowSet as $row) {
-                $itemIdList[] = $this->canonizeMetaItemID($row);
-            }
-        }
-
-        // Set filtered IDs to params
-        if (!empty($itemIdList)) {
-            $listParams['id'] = $itemIdList;
-        }
-
-        // Get list
-        $list = [];
-        $rowSet = $this->itemRepository->getItemList($listParams);
-        foreach ($rowSet as $row) {
-            $list[] = $this->canonizeItem($row);
-        }
-
-        // Get count
-        $count = $this->itemRepository->getItemCount($listParams);
-
-        return [
-            'result' => true,
-            'data' => [
-                'list' => $list,
-                'paginator' => [
-                    'count' => $count,
-                    'limit' => $limit,
-                    'page' => $page,
-                ],
-                'filters' => $filters,
-            ],
-            'error' => [],
-        ];
-    }
+//    public function getOrderList(array $params): array
+//    {
+//        ///TODO:update limit count
+//        $limit = $params['limit'] ?? 125;
+//        $page = $params['page'] ?? 1;
+//        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+//        $offset = ($page - 1) * $limit;
+//
+//
+//        // Set filters
+//        //$filters = $this->prepareFilter($params);
+//        $filters = [];
+//
+//        // Set params
+//        $listParams = [
+//            'order' => $order,
+//            'offset' => $offset,
+//            'limit' => $limit,
+//            'type' => $params['type'],
+//            'status' => 1,
+//            'data_from' => strtotime(
+//                isset($params['data_from'])
+//                    ? sprintf('%s 00:00:00', $params['data_from'])
+//                    : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
+//            ),
+//            'data_to' => strtotime(
+//                isset($params['data_to'])
+//                    ? sprintf('%s 23:59:59', $params['data_to'])
+//                    : sprintf('%s 23:59:59', date('Y-m-d'))
+//            ),
+//        ];
+//
+//        if (isset($params['user_id'])) {
+//            $listParams['user_id'] = $params['user_id'];
+//        }
+//
+//        // Get filtered IDs
+//        return $this->getFilteredIDs($filters, $listParams, $limit, $page);
+//    }
 
 
     ///// Start Question Section /////
@@ -1302,6 +1232,53 @@ class ItemService implements ServiceInterface
             $this->itemRepository->editItem($editedParent);
 
         }
+    }
+
+    /**
+     * @param array $filters
+     * @param array $listParams
+     * @param mixed $limit
+     * @param mixed $page
+     * @return array
+     */
+    private function getFilteredIDs(array $filters, array $listParams, mixed $limit, mixed $page): array
+    {
+        $itemIdList = [];
+        if (!empty($filters)) {
+            $rowSet = $this->itemRepository->getIDFromFilter($filters);
+            foreach ($rowSet as $row) {
+                $itemIdList[] = $this->canonizeMetaItemID($row);
+            }
+        }
+
+        // Set filtered IDs to params
+        if (!empty($itemIdList)) {
+            $listParams['id'] = $itemIdList;
+        }
+
+        // Get list
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+
+        // Get count
+        $count = $this->itemRepository->getItemCount($listParams);
+
+        return [
+            'result' => true,
+            'data' => [
+                'list' => $list,
+                'paginator' => [
+                    'count' => $count,
+                    'limit' => $limit,
+                    'page' => $page,
+                ],
+                'filters' => $filters,
+            ],
+            'error' => [],
+        ];
     }
 
 }
