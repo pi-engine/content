@@ -368,10 +368,11 @@ class ItemService implements ServiceInterface
     // TODO: update it
     public function addItem($params, $account)
     {
+
         $paramsBase = $params;
         $params['information'] = json_encode($params);
         $response = $this->itemRepository->addItem($params, $account);
-        $paramsBase['id'] =(int)$response->getId();
+        $paramsBase['id'] = (int)$response->getId();
         $paramsBase['information'] = json_encode($paramsBase);
         return $this->canonizeItem($this->itemRepository->editItem($paramsBase));
     }
@@ -792,7 +793,6 @@ class ItemService implements ServiceInterface
     }
 
     ///// End Question Section /////
-
 
 
     // TODO: update it
