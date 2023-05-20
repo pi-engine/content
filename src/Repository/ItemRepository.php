@@ -89,32 +89,9 @@ class ItemRepository implements ItemRepositoryInterface
      */
     public function getItemList(array $params = []): HydratingResultSet|array
     {
-        $where = [];
-        if (isset($params['user_id']) && !empty($params['user_id'])) {
-            $where['user_id'] = $params['user_id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['status']) && !empty($params['status'])) {
-            $where['status'] = $params['status'];
-        }
-        if (isset($params['id']) && !empty($params['id'])) {
-            $where['id'] = $params['id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['slug']) && !empty($params['slug'])) {
-            $where['slug'] = $params['slug'];
-        }
 
-        if (isset($params['data_from']) && !empty($params['data_from'])) {
-            $where['time_create >= ?'] = $params['data_from'];
-        }
-        if (isset($params['data_to']) && !empty($params['data_to'])) {
-            $where['time_create <= ?'] = $params['data_to'];
-        }
+        $where = $this->createConditional($params);
+
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
@@ -142,31 +119,7 @@ class ItemRepository implements ItemRepositoryInterface
         $columns = ['count' => new Expression('count(*)')];
         $where = [];
 
-        if (isset($params['user_id']) && !empty($params['user_id'])) {
-            $where['user_id'] = $params['user_id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['status']) && !empty($params['status'])) {
-            $where['status'] = $params['status'];
-        }
-        if (isset($params['id']) && !empty($params['id'])) {
-            $where['id'] = $params['id'];
-        }
-        if (isset($params['type']) && !empty($params['type'])) {
-            $where['type'] = $params['type'];
-        }
-        if (isset($params['slug']) && !empty($params['slug'])) {
-            $where['slug'] = $params['slug'];
-        }
-
-        if (isset($params['data_from']) && !empty($params['data_from'])) {
-            $where['time_create >= ?'] = $params['data_from'];
-        }
-        if (isset($params['data_to']) && !empty($params['data_to'])) {
-            $where['time_create <= ?'] = $params['data_to'];
-        }
+        $where = $this->getArr($params, $where);
 
 
         $sql = new Sql($this->db);
@@ -526,6 +479,50 @@ class ItemRepository implements ItemRepositoryInterface
 
 
         return $resultSet;
+    }
+
+    private function createConditional(array $params): array
+    {
+        $where = [];
+        if (isset($params['title_key']) && !empty($params['title_key'])) {
+            $where = ["title LIKE '%" . $params['title_key'] . "%' "];
+        }
+        return $this->getArr($params, $where);
+    }
+
+    /**
+     * @param array $params
+     * @param array $where
+     * @return array
+     */
+    private function getArr(array $params, array $where): array
+    {
+        if (isset($params['user_id']) && !empty($params['user_id'])) {
+            $where['user_id'] = $params['user_id'];
+        }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
+        if (isset($params['status']) && !empty($params['status'])) {
+            $where['status'] = $params['status'];
+        }
+        if (isset($params['id']) && !empty($params['id'])) {
+            $where['id'] = $params['id'];
+        }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $where['slug'] = $params['slug'];
+        }
+
+        if (isset($params['data_from']) && !empty($params['data_from'])) {
+            $where['time_create >= ?'] = $params['data_from'];
+        }
+        if (isset($params['data_to']) && !empty($params['data_to'])) {
+            $where['time_create <= ?'] = $params['data_to'];
+        }
+        return $where;
     }
 
 }
