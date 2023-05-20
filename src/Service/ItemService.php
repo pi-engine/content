@@ -32,7 +32,7 @@ class ItemService implements ServiceInterface
     protected ItemRepositoryInterface $itemRepository;
     protected array $allowKey
         = [
-            'type', 'category', 'brand', 'min_price', 'max_price', 'title', 'color', 'size',
+            'category', 'brand', 'min_price', 'max_price', 'title', 'color', 'size',
         ];
 
     // ToDo: get it from DB and cache
@@ -74,10 +74,8 @@ class ItemService implements ServiceInterface
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
 
-
         // Set filters
-        //$filters = $this->prepareFilter($params);
-        $filters = [];
+        $filters = $this->prepareFilter($params);
 
         // Set params
         $listParams = [
@@ -102,12 +100,47 @@ class ItemService implements ServiceInterface
             $listParams['user_id'] = $params['user_id'];
         }
 
-        if (isset($params['title_key'])) {
-            $listParams['title_key'] = $params['title_key'];
+        if (isset($params['title'])) {
+            $listParams['title'] = $params['title'];
         }
 
-        // Get filtered IDs
-        return $this->getFilteredIDs($filters, $listParams, $limit, $page);
+        $itemIdList = [];
+        if (!empty($filters)) {
+            $rowSet = $this->itemRepository->getIDFromFilter($filters);
+            foreach ($rowSet as $row) {
+                $itemIdList[] = $this->canonizeMetaItemID($row);
+            }
+            $listParams['id'] = $itemIdList;
+        }
+
+        // Set filtered IDs to params
+//        if (!empty($itemIdList)) {
+//            $listParams['id'] = $itemIdList;
+//        }
+
+        // Get list
+        $list = [];
+        $rowSet = $this->itemRepository->getItemList($listParams);
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeItem($row);
+        }
+
+        // Get count
+        $count = $this->itemRepository->getItemCount($listParams);
+
+        return [
+            'result' => true,
+            'data' => [
+                'list' => $list,
+                'paginator' => [
+                    'count' => $count,
+                    'limit' => $limit,
+                    'page' => $page,
+                ],
+                'filters' => $filters,
+            ],
+            'error' => [],
+        ];
     }
 
 
@@ -281,30 +314,22 @@ class ItemService implements ServiceInterface
                         ];
                         break;
 
-                    case 'type':
-                        $filters[$key] = [
-                            'key' => $key,
-                            'value' => $value,
-                            'type' => 'string',
-                        ];
-                        break;
-
-                    case 'title':
-                        $filters[$key] = [
-                            'key' => $key,
-                            'value' => $value,
-                            'type' => 'search',
-                        ];
-                        break;
-
                     case 'brand':
                     case 'category':
                         $filters[$key] = [
                             'key' => $key,
-                            'value' => $value,
-                            'type' => 'int',
+                            'value' =>$value,
+                            'type' => 'id',
                         ];
                         break;
+
+                    /*case 'title':
+                            $filters[$key] = [
+                                'key' => $key,
+                                'value' => $value,
+                                'type' => 'search',
+                            ];
+                            break;*/
 
                     case 'max_price':
                         $filters[$key] = [
@@ -644,7 +669,7 @@ class ItemService implements ServiceInterface
             "type" => $requestBody['type'] ?? 'answer',
             'time_create' => time()
         ];
- 
+
         $answerInformation = $answer;
         $answerInformation['title'] = $params['title'];
         $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
@@ -1183,51 +1208,5 @@ class ItemService implements ServiceInterface
         }
     }
 
-    /**
-     * @param array $filters
-     * @param array $listParams
-     * @param mixed $limit
-     * @param mixed $page
-     * @return array
-     */
-    private function getFilteredIDs(array $filters, array $listParams, mixed $limit, mixed $page): array
-    {
-        $itemIdList = [];
-        if (!empty($filters)) {
-            $rowSet = $this->itemRepository->getIDFromFilter($filters);
-            foreach ($rowSet as $row) {
-                $itemIdList[] = $this->canonizeMetaItemID($row);
-            }
-        }
-
-        // Set filtered IDs to params
-        if (!empty($itemIdList)) {
-            $listParams['id'] = $itemIdList;
-        }
-
-        // Get list
-        $list = [];
-        $rowSet = $this->itemRepository->getItemList($listParams);
-        foreach ($rowSet as $row) {
-            $list[] = $this->canonizeItem($row);
-        }
-
-        // Get count
-        $count = $this->itemRepository->getItemCount($listParams);
-
-        return [
-            'result' => true,
-            'data' => [
-                'list' => $list,
-                'paginator' => [
-                    'count' => $count,
-                    'limit' => $limit,
-                    'page' => $page,
-                ],
-                'filters' => $filters,
-            ],
-            'error' => [],
-        ];
-    }
 
 }

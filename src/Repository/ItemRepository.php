@@ -298,24 +298,28 @@ class ItemRepository implements ItemRepositoryInterface
 
         foreach ($filters as $filter) {
             switch ($filter['type']) {
+                case 'id':
+                    $select->where(['meta_key' => $filter['key'], 'value_id' => $filter['value']]);
+                    break;
+
                 case 'int':
-                    $select->where(['key' => $filter['key'], 'value_number' => $filter['value']]);
+                    $select->where(['meta_key' => $filter['meta_key'], 'value_number' => $filter['value']]);
                     break;
 
                 case 'string':
-                    $select->where(['key' => $filter['key'], 'value_string' => $filter['value']]);
+                    $select->where(['meta_key' => $filter['meta_key'], 'value_string' => $filter['value']]);
                     break;
 
                 case 'search':
-                    $select->where(['key' => $filter['key'], 'value_string like ?' => '%s' . $filter['value'] . '%s']);
+                    $select->where(['meta_key' => $filter['meta_key'], 'value_string like ?' => '%s' . $filter['value'] . '%s']);
                     break;
 
                 case 'rangeMax':
-                    $select->where(['key' => $filter['key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
+                    $select->where(['meta_key' => $filter['meta_key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
                     break;
 
                 case 'rangeMin':
-                    $select->where(['key' => $filter['key'], 'value_string > ?' => '%s' . $filter['value'] . '%s']);
+                    $select->where(['meta_key' => $filter['meta_key'], 'value_string > ?' => '%s' . $filter['value'] . '%s']);
                     break;
             }
         }
@@ -482,20 +486,9 @@ class ItemRepository implements ItemRepositoryInterface
     private function createConditional(array $params): array
     {
         $where = [];
-        if (isset($params['title_key']) && !empty($params['title_key'])) {
-            $where = ["title LIKE '%" . $params['title_key'] . "%' "];
+        if (isset($params['title']) && !empty($params['title'])) {
+            $where['title LIKE ?'] = '%' . $params['title'] . '%';
         }
-
-        return $this->getArr($params, $where);
-    }
-
-    /**
-     * @param array $params
-     * @param array $where
-     * @return array
-     */
-    private function getArr(array $params, array $where): array
-    {
         if (isset($params['user_id']) && !empty($params['user_id'])) {
             $where['user_id'] = $params['user_id'];
         }
@@ -505,8 +498,13 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['status']) && !empty($params['status'])) {
             $where['status'] = $params['status'];
         }
-        if (isset($params['id']) && !empty($params['id'])) {
-            $where['id'] = $params['id'];
+        if (isset($params['id']) ) {
+            if(!empty($params['id'])){
+                $where['id IN (?) '] = $params['id'];
+            }else{
+
+                $where['id IN (?) '] = -1;
+            }
         }
         if (isset($params['type']) && !empty($params['type'])) {
             $where['type'] = $params['type'];
@@ -514,7 +512,6 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['slug']) && !empty($params['slug'])) {
             $where['slug'] = $params['slug'];
         }
-
         if (isset($params['data_from']) && !empty($params['data_from'])) {
             $where['time_create >= ?'] = $params['data_from'];
         }
@@ -523,5 +520,7 @@ class ItemRepository implements ItemRepositoryInterface
         }
         return $where;
     }
+
+
 
 }
