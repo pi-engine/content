@@ -553,51 +553,6 @@ class ItemService implements ServiceInterface
     }
 
 
-    /**
-     * @param array $params
-     *
-     * @return array
-     */
-//    public function getOrderList(array $params): array
-//    {
-//        ///TODO:update limit count
-//        $limit = $params['limit'] ?? 125;
-//        $page = $params['page'] ?? 1;
-//        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
-//        $offset = ($page - 1) * $limit;
-//
-//
-//        // Set filters
-//        //$filters = $this->prepareFilter($params);
-//        $filters = [];
-//
-//        // Set params
-//        $listParams = [
-//            'order' => $order,
-//            'offset' => $offset,
-//            'limit' => $limit,
-//            'type' => $params['type'],
-//            'status' => 1,
-//            'data_from' => strtotime(
-//                isset($params['data_from'])
-//                    ? sprintf('%s 00:00:00', $params['data_from'])
-//                    : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
-//            ),
-//            'data_to' => strtotime(
-//                isset($params['data_to'])
-//                    ? sprintf('%s 23:59:59', $params['data_to'])
-//                    : sprintf('%s 23:59:59', date('Y-m-d'))
-//            ),
-//        ];
-//
-//        if (isset($params['user_id'])) {
-//            $listParams['user_id'] = $params['user_id'];
-//        }
-//
-//        // Get filtered IDs
-//        return $this->getFilteredIDs($filters, $listParams, $limit, $page);
-//    }
-
 
     ///// Start Question Section /////
     /// services of question type
@@ -689,20 +644,14 @@ class ItemService implements ServiceInterface
             "type" => $requestBody['type'] ?? 'answer',
             'time_create' => time()
         ];
-
-//        $information = $params;
+ 
         $answerInformation = $answer;
         $answerInformation['title'] = $params['title'];
-//        $answerInformation['meta']['categories'] = $hasCategories ? $params['categories'] : '';
         $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
         $answerInformation['meta']['like'] = 0;
         $answerInformation['meta']['dislike'] = 0;
 
 
-//        $information["body"] = $nullObject;
-//        $information["body"]["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
-//        $information["body"] ["description"] = $requestBody['description'] ?? "";
-//        $information["body"]["answer"] = $nullObject;
         $answer["information"] = json_encode($answerInformation, JSON_UNESCAPED_UNICODE);
         $answer = $this->itemRepository->addItem($answer);
 
