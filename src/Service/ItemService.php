@@ -102,6 +102,10 @@ class ItemService implements ServiceInterface
             $listParams['user_id'] = $params['user_id'];
         }
 
+        if (isset($params['title_key'])) {
+            $listParams['title_key'] = $params['title_key'];
+        }
+
         // Get filtered IDs
         $itemIdList = [];
         if (!empty($filters)) {
@@ -222,7 +226,7 @@ class ItemService implements ServiceInterface
         if (is_object($meta)) {
             $itemID = $meta->getItemID();
         } else {
-            $itemID = $meta['item'];
+            $itemID = $meta['item_id'];
         }
 
         return $itemID;
@@ -1063,14 +1067,12 @@ class ItemService implements ServiceInterface
             'slug' => $slug,
         ];
 
-
         // Get list
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
             $list = $this->canonizeItem($row);
         }
-
 
         return $list;
     }
@@ -1112,7 +1114,6 @@ class ItemService implements ServiceInterface
             "expired_at" => $expired,
         ];
 
-
         if (empty($customerReserve)) {
             $list[] = $customerNewReserve;
             $param = [
@@ -1144,7 +1145,6 @@ class ItemService implements ServiceInterface
             if ($flag) {
                 $list[] = $customerNewReserve;
                 $param = [
-
                     "title" => $customerSlug,
                     "slug" => $customerSlug,
                     "type" => "reservation",
