@@ -500,7 +500,7 @@ class ItemRepository implements ItemRepositoryInterface
         }
         if (isset($params['id']) ) {
             if(!empty($params['id'])){
-                $where['id IN (?) '] = $params['id'];
+                $where['id IN (?) '] =implode("','", $params['id']);
             }else{
 
                 $where['id IN (?) '] = -1;

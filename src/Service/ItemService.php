@@ -110,7 +110,13 @@ class ItemService implements ServiceInterface
             foreach ($rowSet as $row) {
                 $itemIdList[] = $this->canonizeMetaItemID($row);
             }
-            $listParams['id'] = $itemIdList;
+            $listParams['id'] = [
+                31703,
+                31771,
+                31773,
+                31777,
+                31783,
+                31784];
         }
 
         // Set filtered IDs to params
@@ -126,7 +132,7 @@ class ItemService implements ServiceInterface
         }
 
         // Get count
-        $count = $this->itemRepository->getItemCount($listParams);
+        $count =  $this->itemRepository->getItemCount($listParams);
 
         return [
             'result' => true,
@@ -318,7 +324,7 @@ class ItemService implements ServiceInterface
                     case 'category':
                         $filters[$key] = [
                             'key' => $key,
-                            'value' =>$value,
+                            'value' => $value,
                             'type' => 'id',
                         ];
                         break;
