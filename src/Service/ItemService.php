@@ -117,14 +117,7 @@ class ItemService implements ServiceInterface
             foreach ($rowSet as $row) {
                 $itemIdList[] = $this->canonizeMetaItemID($row);
             }
-            $listParams['id'] = [
-                31703,
-                31771,
-                31773,
-                31777,
-                31783,
-                31784,
-            ];
+            $listParams['id'] =$itemIdList;
         }
 
         // Set filtered IDs to params
