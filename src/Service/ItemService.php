@@ -110,6 +110,7 @@ class ItemService implements ServiceInterface
             $listParams['title'] = $params['title'];
         }
 
+
         $itemIdList = [];
         if (!empty($filters)) {
             $rowSet = $this->itemRepository->getIDFromFilter($filters);
