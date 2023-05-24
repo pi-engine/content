@@ -42,11 +42,7 @@ class MarkListHandler implements RequestHandlerInterface
             "page" => $requestBody["page"]??1,
         ];
         $result = $this->itemService->getMarks($params);
-        $result = [
-            'result' => true,
-            'data' => $result,
-            'error' => [],
-        ];
+
         return new JsonResponse($result);
     }
 }
