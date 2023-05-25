@@ -35,13 +35,15 @@ class MarkListHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $account     = $request->getAttribute('account');
+
         // Get request body
         $requestBody = $request->getParsedBody();
         $params = [
             "limit" => $requestBody["limit"]??1000,
             "page" => $requestBody["page"]??1,
         ];
-        $result = $this->itemService->getMarks($params);
+        $result = $this->itemService->getMarks($params,$account);
 
         return new JsonResponse($result);
     }

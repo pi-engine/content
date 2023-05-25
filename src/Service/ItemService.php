@@ -813,7 +813,7 @@ class ItemService implements ServiceInterface
     ///// Start Location Section /////
     ///// services of location type
     ///
-    public function getMarks($params): array
+    public function getMarks($params, $account): array
     {
         $limit = (int)$params['limit'] ?? 1000;
         $page = (int)$params['page'] ?? 1;
@@ -844,13 +844,24 @@ class ItemService implements ServiceInterface
         }
 
 
+        $reserves = $this->getReserveList([], $account);
+        $sortedReserves = [];
+        if (!empty($reserves)) {
+            foreach ($reserves as $reserve) {
+                $sortedReserves[$reserve['item_id']][] = $reserve;
+            }
+
+        }
+
         $packages = $this->scoreService->getCustomList([]);
         $sortedPackages = [];
         if (!empty($packages)) {
-            $packageList = $packages['data']['list'];
-            if (!empty($packageList)) {
-                foreach ($packageList as $package) {
-                    $sortedPackages[$package['item_id']][] = $package;
+            if (isset($packages['data']['list'])) {
+                $packageList = $packages['data']['list'];
+                if (!empty($packageList)) {
+                    foreach ($packageList as $package) {
+                        $sortedPackages[$package['item_id']][] = $package;
+                    }
                 }
             }
         }
@@ -859,7 +870,8 @@ class ItemService implements ServiceInterface
         for ($i = 0; $i < sizeof($list); $i++) {
             $ll[$i] = $list[$i];
             $ll[$i]["score"] = isset($scores[$ll[$i]["id"]]) ? $scores[$ll[$i]["id"]]["score"] : 0;
-            $ll[$i]["has_package"] = isset($sortedPackages[$list[$i]['id']])&&!empty($sortedPackages[$list[$i]['id']]) ? true : false;
+            $ll[$i]["has_reserve"] = isset($sortedReserves[$list[$i]['id']]) && !empty($sortedReserves[$list[$i]['id']]) ? true : false;
+            $ll[$i]["has_package"] = isset($sortedPackages[$list[$i]['id']]) && !empty($sortedPackages[$list[$i]['id']]) ? true : false;
             $ll[$i]["packages"] = isset($sortedPackages[$list[$i]['id']]) ? $sortedPackages[$list[$i]['id']] : [];
             $ll[$i]["classification"] = $this->calculateClassification((int)$ll[$i]["score"]);
         }
@@ -985,7 +997,7 @@ class ItemService implements ServiceInterface
         $page = $params['page'] ?? 1;
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
-        if ($params["role"] == "owner") {
+        if (isset($params["role"]) && $params["role"] == "owner") {
             $slug = "reservation_owner_" . $this->accountService->getProfile(["user_id" => $account["id"]])["item_id"];
         } else {
             $slug = "reservation_customer_" . $account["id"];
@@ -996,7 +1008,7 @@ class ItemService implements ServiceInterface
             'order' => $order,
             'offset' => $offset,
             'limit' => $limit,
-            'type' => $params['type'],
+            'type' => $params['type'] ?? 'reservation',
             'status' => 1,
             'slug' => $slug,
         ];
@@ -1138,7 +1150,7 @@ class ItemService implements ServiceInterface
 
         ///Send notification to owner
         $ownerProfile = $this->accountService->getProfile(['item_id' => $params["item_id"]]);
-        $owner = $this->accountService->getUser(['id' => $ownerProfile['user_id']]);
+        $owner = $this->accountService->getUserFromCacheFull($ownerProfile['user_id']);
 
         $notificationParams = [
             'information' =>
@@ -1163,7 +1175,7 @@ class ItemService implements ServiceInterface
 
 
         ///Send notification to customer
-        $customer = $this->accountService->getUser(['id' => $params["user_id"]]);
+        $customer = $this->accountService->getUserFromCacheFull($params["user_id"]);
 
         $notificationParams = [
             'information' =>
