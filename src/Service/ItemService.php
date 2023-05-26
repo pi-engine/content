@@ -1003,6 +1003,8 @@ class ItemService implements ServiceInterface
             $slug = "reservation_customer_" . $account["id"];
         }
 
+
+
         // Set params
         $listParams = [
             'order' => $order,
@@ -1044,20 +1046,24 @@ class ItemService implements ServiceInterface
 
         $customerNewReserve = [
             "slug" => $customerSlug,
-            "time" => time(),
+            "time" =>date('Y/m/d H:i', time()),
             "user_id" => $params["user_id"],
             "item_id" => $params["item_id"],
+            "user"=> $this->accountService->getProfile(['user_id' => $params["user_id"]]),
+            "item"=>  $this->getItem( $params["item_id"],'slug'),
             "code" => $custom["code"],
-            "expired_at" => $expired,
+            "expired_at" =>  date('Y/m/d H:i', $expired),
         ];
 
         $ownerNewReserve = [
             "slug" => $ownerSlug,
-            "time" => time(),
+            "time" =>date('Y/m/d H:i', time()),
             "user_id" => $params["user_id"],
             "item_id" => $params["item_id"],
+            "user"=> $this->accountService->getProfile(['user_id' => $params["user_id"]]),
+            "item"=>  $this->getItem( $params["item_id"],'slug'),
             "code" => $custom["code"],
-            "expired_at" => $expired,
+            "expired_at" =>  date('Y/m/d H:i', $expired),
         ];
 
         if (empty($customerReserve)) {
@@ -1150,28 +1156,31 @@ class ItemService implements ServiceInterface
 
         ///Send notification to owner
         $ownerProfile = $this->accountService->getProfile(['item_id' => $params["item_id"]]);
-        $owner = $this->accountService->getUserFromCacheFull($ownerProfile['user_id']);
+        if(isset($ownerProfile['user_id'])){
+            $owner = $this->accountService->getUserFromCacheFull($ownerProfile['user_id']);
 
-        $notificationParams = [
-            'information' =>
-                [
-                    "device_token" => $owner['device_tokens'],
-                    "in_app" => true,
-                    "in_app_title" => 'Reservation',
-                    "title" => 'Reservation',
-                    "in_app_body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
-                    "body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
-                    "event" => 'reservation',
-                    "user_id" => (int)$ownerProfile['user_id'],
-                    "item_id" => (int)$params['item_id'],
-                    "sender_id" => 0,
-                    "type" => 'info',
-                    "image_url" => '',
-                    "receiver_id" => (int)$ownerProfile['user_id'],
-                ],
-        ];
-        $notificationParams['push'] = $notificationParams['information'];
-        $this->notificationService->send($notificationParams, 'owner');
+            $notificationParams = [
+                'information' =>
+                    [
+                        "device_token" => $owner['device_tokens'],
+                        "in_app" => true,
+                        "in_app_title" => 'Reservation',
+                        "title" => 'Reservation',
+                        "in_app_body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
+                        "body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
+                        "event" => 'reservation',
+                        "user_id" => (int)$ownerProfile['user_id'],
+                        "item_id" => (int)$params['item_id'],
+                        "sender_id" => 0,
+                        "type" => 'info',
+                        "image_url" => '',
+                        "receiver_id" => (int)$ownerProfile['user_id'],
+                    ],
+            ];
+            $notificationParams['push'] = $notificationParams['information'];
+            $this->notificationService->send($notificationParams, 'owner');
+        }
+
 
 
         ///Send notification to customer

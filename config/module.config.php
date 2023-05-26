@@ -2,6 +2,7 @@
 
 namespace Content;
 
+use Content\Middleware\ValidationMiddleware;
 use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\Router\Http\Literal;
 use User\Middleware\AuthenticationMiddleware;
@@ -649,11 +650,13 @@ return [
                                 'package' => 'reserve',
                                 'handler' => 'add',
                                 'permission' => 'api-content-reserve-add',
+                                'validator'   => 'reserve',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
-//                                    SecurityMiddleware::class,
+                                    SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
-//                                    AuthorizationMiddleware::class,
+                                    AuthorizationMiddleware::class,
+                                    ValidationMiddleware::class,
                                     Handler\Api\Reservation\ReserveHandler::class
                                 ),
                             ],
@@ -698,9 +701,9 @@ return [
                                         'permission' => 'api-content-reserve-list',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
-//                                            SecurityMiddleware::class,
+                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
-//                                    AuthorizationMiddleware::class,
+                                            AuthorizationMiddleware::class,
                                             Handler\Api\Reservation\ReservationListHandler::class
                                         ),
                                     ],

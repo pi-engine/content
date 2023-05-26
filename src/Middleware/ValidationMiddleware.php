@@ -61,6 +61,10 @@ class ValidationMiddleware implements MiddlewareInterface
                 $this->detailIsValid($parsedBody);
                 break;
 
+            case 'reserve':
+                $this->reserveIsValid($parsedBody);
+                break;
+
             default:
                 $request = $request->withAttribute('status', StatusCodeInterface::STATUS_FORBIDDEN);
                 $request = $request->withAttribute(
@@ -125,6 +129,23 @@ class ValidationMiddleware implements MiddlewareInterface
 
         $inputFilter = new InputFilter();
         $inputFilter->add($slug);
+        $inputFilter->setData($params);
+
+        if (!$inputFilter->isValid()) {
+            return $this->setErrorHandler($inputFilter);
+        }
+    }
+
+    protected function reserveIsValid($params)
+    {
+        $code = new Input('code');
+        $itemId = new Input('item_id');
+        $code->getValidatorChain()->attach(new SlugValidator());
+        $itemId->getValidatorChain()->attach(new SlugValidator());
+
+        $inputFilter = new InputFilter();
+        $inputFilter->add($code);
+        $inputFilter->add($itemId);
         $inputFilter->setData($params);
 
         if (!$inputFilter->isValid()) {
