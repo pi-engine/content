@@ -1029,8 +1029,14 @@ class ItemService implements ServiceInterface
     public function reserve(object|array|null $params, $account): array
     {
         $flag = true;
-        $customList = $this->scoreService->getActiveCustomList(["item_id" => $params["item_id"]]);
+        $customList = $this->scoreService->getActiveCustomList(
+            [
+                "item_id"   => $params["item_id"],
+                "code"      => $params["code"]
+            ]
+        );
 
+        ///TODO: set error handler for when the code or item_id is not valid
         if (sizeof($customList) == 0) {
             return ["id" => -1];
         }

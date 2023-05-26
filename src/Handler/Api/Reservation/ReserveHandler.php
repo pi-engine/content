@@ -44,6 +44,7 @@ class ReserveHandler implements RequestHandlerInterface
         $params = [
             "user_id" => $account["id"],
             "item_id" => $requestBody["item_id"] ?? 0,
+            "code" => $requestBody["code"] ?? 0,
             "role" => $requestBody["role"] ?? "customer",
             "type" => "reservation"
         ];
