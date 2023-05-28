@@ -894,7 +894,7 @@ class ItemService implements ServiceInterface
         ];
     }
 
-    public function getMark(array $params): array|object
+    public function getMark(array $params, $account): array|object
     {
         $item = $this->itemRepository->getItem($params['slug'], 'slug');
         $item = $this->canonizeItem($item);
@@ -904,6 +904,35 @@ class ItemService implements ServiceInterface
         }
         $item["score"] = isset($scores[$item["id"]]) ? $scores[$item["id"]]["score"] : 0;
         $item["classification"] = $this->calculateClassification((int)$item["score"]);
+
+        $reserves = $this->getReserveList([], $account);
+        $sortedReserves = [];
+        if (!empty($reserves)) {
+            foreach ($reserves as $reserve) {
+                $sortedReserves[$reserve['item_id']][] = $reserve;
+            }
+
+        }
+
+        $packages = $this->scoreService->getCustomList([]);
+        $sortedPackages = [];
+        if (!empty($packages)) {
+            if (isset($packages['data']['list'])) {
+                $packageList = $packages['data']['list'];
+                if (!empty($packageList)) {
+                    foreach ($packageList as $package) {
+                        $sortedPackages[$package['item_id']][] = $package;
+                    }
+                }
+            }
+        }
+
+        $item["score"] = isset($scores[$item["id"]]) ? $scores[$item["id"]]["score"] : 0;
+        $item["has_reserve"] = isset($sortedReserves[$item['id']]) && !empty($sortedReserves[$item['id']]) ? true : false;
+        $item["has_package"] = isset($sortedPackages[$item['id']]) && !empty($sortedPackages[$item['id']]) ? true : false;
+        $item["packages"] = isset($sortedPackages[$item['id']]) ? $sortedPackages[$item['id']] : [];
+        $item["classification"] = $this->calculateClassification((int)$item["score"]);
+
         return $item;
     }
     ///// End Location Section /////
@@ -1004,7 +1033,6 @@ class ItemService implements ServiceInterface
         }
 
 
-
         // Set params
         $listParams = [
             'order' => $order,
@@ -1031,8 +1059,8 @@ class ItemService implements ServiceInterface
         $flag = true;
         $customList = $this->scoreService->getActiveCustomList(
             [
-                "item_id"   => $params["item_id"],
-                "code"      => $params["code"]
+                "item_id" => $params["item_id"],
+                "code" => $params["code"]
             ]
         );
 
@@ -1052,24 +1080,24 @@ class ItemService implements ServiceInterface
 
         $customerNewReserve = [
             "slug" => $customerSlug,
-            "time" =>date('Y/m/d H:i', time()),
+            "time" => date('Y/m/d H:i', time()),
             "user_id" => $params["user_id"],
             "item_id" => $params["item_id"],
-            "user"=> $this->accountService->getProfile(['user_id' => $params["user_id"]]),
-            "item"=>  $this->getItem( $params["item_id"],'slug'),
+            "user" => $this->accountService->getProfile(['user_id' => $params["user_id"]]),
+            "item" => $this->getItem($params["item_id"], 'slug'),
             "code" => $custom["code"],
-            "expired_at" =>  date('Y/m/d H:i', $expired),
+            "expired_at" => date('Y/m/d H:i', $expired),
         ];
 
         $ownerNewReserve = [
             "slug" => $ownerSlug,
-            "time" =>date('Y/m/d H:i', time()),
+            "time" => date('Y/m/d H:i', time()),
             "user_id" => $params["user_id"],
             "item_id" => $params["item_id"],
-            "user"=> $this->accountService->getProfile(['user_id' => $params["user_id"]]),
-            "item"=>  $this->getItem( $params["item_id"],'slug'),
+            "user" => $this->accountService->getProfile(['user_id' => $params["user_id"]]),
+            "item" => $this->getItem($params["item_id"], 'slug'),
             "code" => $custom["code"],
-            "expired_at" =>  date('Y/m/d H:i', $expired),
+            "expired_at" => date('Y/m/d H:i', $expired),
         ];
 
         if (empty($customerReserve)) {
@@ -1162,7 +1190,7 @@ class ItemService implements ServiceInterface
 
         ///Send notification to owner
         $ownerProfile = $this->accountService->getProfile(['item_id' => $params["item_id"]]);
-        if(isset($ownerProfile['user_id'])){
+        if (isset($ownerProfile['user_id'])) {
             $owner = $this->accountService->getUserFromCacheFull($ownerProfile['user_id']);
 
             $notificationParams = [
@@ -1186,7 +1214,6 @@ class ItemService implements ServiceInterface
             $notificationParams['push'] = $notificationParams['information'];
             $this->notificationService->send($notificationParams, 'owner');
         }
-
 
 
         ///Send notification to customer

@@ -36,12 +36,15 @@ class MarkDetailHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
 
+        // Get account
+        $account = $request->getAttribute('account');
+
         // Get request body
         $requestBody = $request->getParsedBody();
         $params = [
             "slug" => $requestBody["slug"]??0,
         ];
-        $result = $this->itemService->getMark($params);
+        $result = $this->itemService->getMark($params,$account);
         $result = [
             'result' => true,
             'data' => $result,
