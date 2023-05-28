@@ -911,7 +911,6 @@ class ItemService implements ServiceInterface
             foreach ($reserves as $reserve) {
                 $sortedReserves[$reserve['item_id']][] = $reserve;
             }
-
         }
 
         $packages = $this->scoreService->getCustomList([]);
