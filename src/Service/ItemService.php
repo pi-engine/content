@@ -870,9 +870,10 @@ class ItemService implements ServiceInterface
         for ($i = 0; $i < sizeof($list); $i++) {
             $ll[$i] = $list[$i];
             $ll[$i]["score"] = isset($scores[$ll[$i]["id"]]) ? $scores[$ll[$i]["id"]]["score"] : 0;
-            $ll[$i]["has_reserve"] = isset($sortedReserves[$list[$i]['id']]) && !empty($sortedReserves[$list[$i]['id']]) ? true : false;
-            $ll[$i]["has_package"] = isset($sortedPackages[$list[$i]['id']]) && !empty($sortedPackages[$list[$i]['id']]) ? true : false;
-            $ll[$i]["packages"] = isset($sortedPackages[$list[$i]['id']]) ? $sortedPackages[$list[$i]['id']] : [];
+            $ll[$i]["has_reserve"] = isset($sortedReserves[$list[$i]['id']]) && !empty($sortedReserves[$list[$i]['id']]);
+            $ll[$i]["reserves"] = $sortedReserves[$list[$i]['id']] ?? [];
+            $ll[$i]["has_package"] = isset($sortedPackages[$list[$i]['id']]) && !empty($sortedPackages[$list[$i]['id']]);
+            $ll[$i]["packages"] = $sortedPackages[$list[$i]['id']] ?? [];
             $ll[$i]["classification"] = $this->calculateClassification((int)$ll[$i]["score"]);
         }
 
@@ -927,9 +928,10 @@ class ItemService implements ServiceInterface
         }
 
         $item["score"] = isset($scores[$item["id"]]) ? $scores[$item["id"]]["score"] : 0;
-        $item["has_reserve"] = isset($sortedReserves[$item['id']]) && !empty($sortedReserves[$item['id']]) ? true : false;
-        $item["has_package"] = isset($sortedPackages[$item['id']]) && !empty($sortedPackages[$item['id']]) ? true : false;
-        $item["packages"] = isset($sortedPackages[$item['id']]) ? $sortedPackages[$item['id']] : [];
+        $item["has_reserve"] = isset($sortedReserves[$item['id']]) && !empty($sortedReserves[$item['id']]);
+        $item["reserves"] = $sortedReserves[$item['id']] ?? [];
+        $item["has_package"] = isset($sortedPackages[$item['id']]) && !empty($sortedPackages[$item['id']]);
+        $item["packages"] = $sortedPackages[$item['id']] ?? [];
         $item["classification"] = $this->calculateClassification((int)$item["score"]);
 
         return $item;
