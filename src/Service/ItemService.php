@@ -1289,4 +1289,32 @@ class ItemService implements ServiceInterface
     }
 
 
+    /// TODO: move to  independent service
+    public function getReportClubScoreList(array $params, mixed $account)
+    {
+        $scoreList = $this->scoreService->getScoreList($params, $account);
+        $list = array();
+        $canonized = array();
+        if (isset($scoreList['data'])) {
+            if (isset($scoreList['data']['list'])) {
+                foreach ($scoreList['data']['list'] as $record) {
+                    $list[] = $this->canonizeReportScoreList($record);
+                }
+                $scoreList['data']['list'] = $list;
+            }
+        }
+        return $scoreList;
+    }
+
+    private function canonizeReportScoreList(mixed $record)
+    {
+        $user = $this->accountService->getAccount(['id' => $record['user_id']]);
+        $user['avatar'] = 'https://cdn.seylaneh.co/general/avatar.png';
+        $item = $this->getItem($record['item_id'], 'slug');
+        $record['user'] = $user;
+        $record['item'] = $item;
+        return $record;
+    }
+
+
 }

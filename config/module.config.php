@@ -75,6 +75,10 @@ return [
             Handler\Api\Opinion\DislikeHandler::class => Factory\Handler\Api\Opinion\DislikeHandlerFactory::class,
 
 
+            // Report services factory
+            Handler\Api\Report\Club\Score\ListHandler::class => Factory\Handler\Api\Report\Club\Score\ListHandlerFactory::class,
+
+
             //Admin
             // Support services factory
             Handler\Admin\Support\AddHandler::class => Factory\Handler\Admin\Support\AddHandlerFactory::class,
@@ -650,7 +654,7 @@ return [
                                 'package' => 'reserve',
                                 'handler' => 'add',
                                 'permission' => 'api-content-reserve-add',
-                                'validator'   => 'reserve',
+                                'validator' => 'reserve',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
@@ -762,6 +766,53 @@ return [
                         ],
                     ],
 
+                    'report' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/report',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'club' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/club',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+                                    'score' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/score',
+                                            'defaults' => [ ],
+                                        ],
+                                        'child_routes' => [
+                                            'list' => [
+                                                'type' => Literal::class,
+                                                'options' => [
+                                                    'route' => '/list',
+                                                    'defaults' => [
+                                                        'module' => 'content',
+                                                        'section' => 'api',
+                                                        'package' => 'report',
+                                                        'handler' => 'club',
+                                                        'permission' => 'api-content-report-club',
+                                                        'controller' => PipeSpec::class,
+                                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                                            AuthenticationMiddleware::class,
+                                                            AuthorizationMiddleware::class,
+                                                            Handler\Api\Report\Club\Score\ListHandler::class
+                                                        ),
+                                                    ],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
 
                 ],
             ],

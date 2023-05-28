@@ -424,6 +424,23 @@ return [
             ],
         ],
 
+        [
+            'module' => 'content',
+            'section' => 'api',
+            'package' => 'report',
+            'handler' => 'club',
+            'permission' => 'api-content-report-club',
+            'role' => [
+                'member',
+                'admin',
+                'dafi',
+                'club',
+                'affiliate',
+                'b2b',
+                'luxirana',
+            ],
+        ],
+
     ],
 
     'admin' => [
