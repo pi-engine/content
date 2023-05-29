@@ -274,7 +274,7 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return void
      */
-    public function deleteCart($where): void
+    public function destroyItem($where): void
     {
         $update = new Delete($this->tableItem);
         $update->where($where);

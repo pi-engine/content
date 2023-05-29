@@ -683,11 +683,13 @@ return [
                                         'package' => 'reserve',
                                         'handler' => 'remove',
                                         'permission' => 'api-content-reserve-remove',
+                                        'validator' => 'reserve',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
+                                            ValidationMiddleware::class,
                                             Handler\Api\Reservation\ReservationRemoveHandler::class
                                         ),
                                     ],

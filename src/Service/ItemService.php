@@ -421,7 +421,7 @@ class ItemService implements ServiceInterface
                 "information" => json_encode($cart),
             ];
 
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+            $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $params["user_id"]]);
             $this->itemRepository->addCartItem($param);
         }
     }
@@ -450,7 +450,7 @@ class ItemService implements ServiceInterface
             "information" => json_encode($cart),
         ];
 
-        $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $params["user_id"]]);
+        $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $params["user_id"]]);
         $this->itemRepository->addCartItem($param);
     }
 
@@ -461,7 +461,7 @@ class ItemService implements ServiceInterface
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         echo sizeof($cart);
         if (sizeof($cart) < 2) {
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
+            $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
         } else {
             $index = $this->checkObjectInArray($cart, $product);
 
@@ -487,7 +487,7 @@ class ItemService implements ServiceInterface
                 "information" => json_encode($cart),
             ];
 
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
+            $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
             if (sizeof($cart)) {
                 $this->itemRepository->addCartItem($param);
             }
@@ -569,7 +569,7 @@ class ItemService implements ServiceInterface
                 "information" => json_encode($order_information),
             ];
 
-            $this->itemRepository->deleteCart(["type" => "cart", "user_id" => $account["id"]]);
+            $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
             return $this->addItem($order_request, $account);
         }
     }
@@ -1028,9 +1028,9 @@ class ItemService implements ServiceInterface
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
         $offset = ($page - 1) * $limit;
         if (isset($params["role"]) && $params["role"] == "owner") {
-            $slug = "reservation_owner_" . $this->accountService->getProfile(["user_id" => $account["id"]])["item_id"];
+            $title = "reservation_owner_" . $this->accountService->getProfile(["user_id" => $account["id"]])["item_id"] . "_";
         } else {
-            $slug = "reservation_customer_" . $account["id"];
+            $title = "reservation_customer_" . $account["id"] . "_";
         }
 
 
@@ -1041,23 +1041,27 @@ class ItemService implements ServiceInterface
             'limit' => $limit,
             'type' => $params['type'] ?? 'reservation',
             'status' => 1,
-            'slug' => $slug,
+            'title' => $title,
         ];
 
         // Get list
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
+
         foreach ($rowSet as $row) {
-            $list = $this->canonizeItem($row);
+            $list[] = $this->canonizeItem($row);
         }
 
         return $list;
     }
 
 
+    ///TODO: set title for slug =>
     public function reserve(object|array|null $params, $account): array
     {
-        $flag = true;
+        $sameCodeFlag = false;
+
+        ///check code is valid
         $customList = $this->scoreService->getActiveCustomList(
             [
                 "item_id" => $params["item_id"],
@@ -1071,182 +1075,193 @@ class ItemService implements ServiceInterface
         }
         $custom = $customList[0];
 
-        $customerSlug = $params["type"] . "_customer_" . $params["user_id"];
-        $ownerSlug = $params["type"] . "_owner_" . $params["item_id"];
+        $customerTitle = $params["type"] . "_customer_" . $params["user_id"] . "_owner_" . $params["item_id"] . "_";
+        $customerSlug = $params["type"] . "_customer_" . $params["user_id"] . "_" . $custom["code"];
 
-        $customerReserve = $this->itemRepository->getItem($customerSlug, "slug");
-        $ownerReserve = $this->itemRepository->getItem($ownerSlug, "slug");
+
+        $ownerTitle = $params["type"] . "_owner_" . $params["item_id"] . "_";
+        $ownerSlug = $customerTitle;
+
+        $ownerReserved = $this->canonizeItem($this->itemRepository->getItem($ownerSlug, 'slug'));
+        $customerReserved = $this->canonizeItem($this->itemRepository->getItem($customerTitle, 'title'));
 
         $expired = strtotime("+1 hour");
 
-        $customerNewReserve = [
-            "slug" => $customerSlug,
-            "time" => date('Y/m/d H:i', time()),
-            "user_id" => $params["user_id"],
-            "item_id" => $params["item_id"],
-            "user" => $this->accountService->getProfile(['user_id' => $params["user_id"]]),
-            "item" => $this->getItem($params["item_id"], 'slug'),
-            "code" => $custom["code"],
-            "expired_at" => date('Y/m/d H:i', $expired),
-        ];
+        $customerParam = $this->getReserveParams($customerSlug, $params, $custom["code"], $expired, $customerTitle);
+        $ownerParam = $this->getReserveParams($ownerSlug, $params, $custom["code"], $expired, $ownerTitle);
 
-        $ownerNewReserve = [
-            "slug" => $ownerSlug,
-            "time" => date('Y/m/d H:i', time()),
-            "user_id" => $params["user_id"],
-            "item_id" => $params["item_id"],
-            "user" => $this->accountService->getProfile(['user_id' => $params["user_id"]]),
-            "item" => $this->getItem($params["item_id"], 'slug'),
-            "code" => $custom["code"],
-            "expired_at" => date('Y/m/d H:i', $expired),
-        ];
 
-        if (empty($customerReserve)) {
-            $list[] = $customerNewReserve;
-            $param = [
-                "id" => null,
-                "title" => $customerSlug,
-                "slug" => $customerSlug,
-                "type" => "reservation",
-                "status" => 1,
-                "user_id" => $params["user_id"],
-                "information" => json_encode($list),
-            ];
-            $item = $this->canonizeItem($this->itemRepository->addItem($param));
+        /// if array have any user with the same slug
+        if (!empty($ownerReserved)) {
+            if ($custom['code'] !== $customerReserved['code']) {
+
+                /// get data of old score code from customer
+                $oldCustomList = $this->scoreService->getActiveCustomList(
+                    [
+                        "item_id" => $params["item_id"],
+                        "code" => $customerReserved["code"]
+                    ]
+                );
+                /// remove the used report of score for this customer
+                $this->scoreService->updateCustom(
+                    [
+                        'code' => $oldCustomList[0]['code'],
+                    ],
+                    [
+                        'count_used' => $oldCustomList[0]['count_used'] - 1,
+                    ]
+                );
+                $this->itemRepository->destroyItem(['slug' => $customerReserved['slug']]);
+                $this->itemRepository->destroyItem(['slug' => $ownerReserved['slug']]);
+            } else {
+                $sameCodeFlag = true;
+            }
+        }
+
+
+        /// check that the code sent not equal the old value
+        if (!$sameCodeFlag) {
+            $this->itemRepository->addItem($ownerParam);
+            $this->itemRepository->addItem($customerParam);
             $this->scoreService->updateCustom(
                 [
-                    'id' => $custom['id'],
+                    'code' => $custom['code'],
                 ],
                 [
                     'count_used' => $custom['count_used'] + 1,
                 ]
             );
-        } else {
-            $list = $this->canonizeItem($customerReserve);
-            foreach ($list as $object) {
-                if ($object["item_id"] == $params["item_id"]) {
-                    $flag = false;
-                }
-            }
-            if ($flag) {
-                $list[] = $customerNewReserve;
-                $param = [
-                    "title" => $customerSlug,
-                    "slug" => $customerSlug,
-                    "type" => "reservation",
-                    "status" => 1,
-                    "user_id" => $params["user_id"],
-                    "information" => json_encode($list),
+
+            /// send notification
+            ///Send notification to owner
+            $ownerProfile = $this->accountService->getProfile(['item_id' => $params["item_id"]]);
+            if (isset($ownerProfile['user_id'])) {
+                $owner = $this->accountService->getUserFromCacheFull($ownerProfile['user_id']);
+
+                $notificationParams = [
+                    'information' =>
+                        [
+                            "device_token" => $owner['device_tokens'],
+                            "in_app" => true,
+                            "in_app_title" => 'Reservation',
+                            "title" => 'Reservation',
+                            "in_app_body" => 'You have been reserved by a user . package code is ' . $custom['code'] . ' ',
+                            "body" => 'You have been reserved by a user . package code is ' . $custom['code'] . ' ',
+                            "event" => 'reservation',
+                            "user_id" => (int)$ownerProfile['user_id'],
+                            "item_id" => (int)$params['item_id'],
+                            "sender_id" => 0,
+                            "type" => 'info',
+                            "image_url" => '',
+                            "receiver_id" => (int)$ownerProfile['user_id'],
+                        ],
                 ];
-                $item = $this->canonizeItem($this->editItem($param));
-                $this->scoreService->updateCustom(
-                    [
-                        'id' => $custom['id'],
-                    ],
-                    [
-                        'count_used' => $custom['count_used'] + 1,
-                    ]
-                );
+                $notificationParams['push'] = $notificationParams['information'];
+                $this->notificationService->send($notificationParams, 'owner');
             }
-        }
 
 
-        $reserveResult = $list;
-        $list = [];
-
-
-        if (empty($ownerReserve)) {
-            $list[] = $ownerNewReserve;
-            $param = [
-                "id" => null,
-                "title" => $ownerSlug,
-                "slug" => $ownerSlug,
-                "type" => "reservation",
-                "status" => 1,
-                "user_id" => $params["user_id"],
-                "information" => json_encode($list),
-            ];
-            $this->canonizeItem($this->itemRepository->addItem($param));
-        } else {
-            $list = $this->canonizeItem($ownerReserve);
-            $flag = true;
-            foreach ($list as $object) {
-                if ($object["user_id"] == $params["user_id"]) {
-                    $flag = false;
-                }
-            }
-            if ($flag) {
-                $list[] = $ownerNewReserve;
-                $param = [
-                    "title" => $ownerSlug,
-                    "slug" => $ownerSlug,
-                    "type" => "reservation",
-                    "status" => 1,
-                    "user_id" => $params["user_id"],
-                    "information" => json_encode($list),
-                ];
-                $this->canonizeItem($this->editItem($param));
-            }
-        }
-
-        ///Send notification to owner
-        $ownerProfile = $this->accountService->getProfile(['item_id' => $params["item_id"]]);
-        if (isset($ownerProfile['user_id'])) {
-            $owner = $this->accountService->getUserFromCacheFull($ownerProfile['user_id']);
+            ///Send notification to customer
+            $customer = $this->accountService->getUserFromCacheFull($params["user_id"]);
 
             $notificationParams = [
                 'information' =>
                     [
-                        "device_token" => $owner['device_tokens'],
+                        "device_token" => $customer['device_tokens'],
                         "in_app" => true,
                         "in_app_title" => 'Reservation',
                         "title" => 'Reservation',
-                        "in_app_body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
-                        "body" => 'You have been reserved by a user. package code is ' . $custom['code'] . ' ',
+                        "in_app_body" => 'You have successfully booked the ' . $custom['code'] . ' package . This reservation is only valid for one hour . ',
+                        "body" => 'You have successfully booked the ' . $custom['code'] . ' package . This reservation is only valid for one hour . ',
                         "event" => 'reservation',
-                        "user_id" => (int)$ownerProfile['user_id'],
+                        "user_id" => (int)$params["user_id"],
                         "item_id" => (int)$params['item_id'],
                         "sender_id" => 0,
                         "type" => 'info',
                         "image_url" => '',
-                        "receiver_id" => (int)$ownerProfile['user_id'],
+                        "receiver_id" => (int)$params["user_id"],
                     ],
             ];
             $notificationParams['push'] = $notificationParams['information'];
-            $this->notificationService->send($notificationParams, 'owner');
+            $this->notificationService->send($notificationParams, 'customer');
         }
-
-
-        ///Send notification to customer
-        $customer = $this->accountService->getUserFromCacheFull($params["user_id"]);
-
-        $notificationParams = [
-            'information' =>
-                [
-                    "device_token" => $customer['device_tokens'],
-                    "in_app" => true,
-                    "in_app_title" => 'Reservation',
-                    "title" => 'Reservation',
-                    "in_app_body" => 'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
-                    "body" => 'You have successfully booked the ' . $custom['code'] . ' package. This reservation is only valid for one hour.',
-                    "event" => 'reservation',
-                    "user_id" => (int)$params["user_id"],
-                    "item_id" => (int)$params['item_id'],
-                    "sender_id" => 0,
-                    "type" => 'info',
-                    "image_url" => '',
-                    "receiver_id" => (int)$params["user_id"],
-                ],
+        $params = [
+            "slug" => $params["user_id"],
         ];
-        $notificationParams['push'] = $notificationParams['information'];
-        $this->notificationService->send($notificationParams, 'customer');
-
-        return $reserveResult;
+        return $this->getReserveList($params, $account);
     }
 
 
-    public function removeReserve(array $params)
+    /**
+     * @param string $ownerSlug
+     * @param object|array|null $params
+     * @param $code
+     * @param bool|int $expired
+     * @param string $ownerTitle
+     * @return array
+     */
+    private function getReserveParams(string $ownerSlug, object|array|null $params, $code, bool|int $expired, string $ownerTitle): array
     {
+        $ownerInfo = [
+            "slug" => $ownerSlug,
+            "time" => date('Y / m / d H:i', time()),
+            "user_id" => $params["user_id"],
+            "item_id" => $params["item_id"],
+            "user" => $this->accountService->getProfile(['user_id' => $params["user_id"]]),
+            "item" => $this->getItem($params["item_id"], 'slug'),
+            "code" => $code,
+            "expired_at" => date('Y / m / d H:i', $expired),
+        ];
+
+        $ownerParam = [
+            "id" => null,
+            "title" => $ownerTitle,
+            "slug" => $ownerSlug,
+            "type" => "reservation",
+            "status" => 1,
+            "user_id" => $params["user_id"],
+            "information" => json_encode($ownerInfo),
+        ];
+        return $ownerParam;
+    }
+
+
+    public function removeReserve(array $params, array $account, bool $apply = false): array
+    {
+        ///check code is valid
+        $customList = $this->scoreService->getActiveCustomList(
+            [
+                "item_id" => $params["item_id"],
+                "code" => $params["code"]
+            ]
+        );
+
+
+        ///TODO: set error handler for when the code or item_id is not valid
+        if (sizeof($customList) == 0) {
+            return ["id" => -1];
+        }
+        $custom = $customList[0];
+
+        $ownerSlug = $params["type"] . "_customer_" . $params["user_id"] . "_owner_" . $params["item_id"] . "_";
+        $customerSlug = $params["type"] . "_customer_" . $params["user_id"] . "_" . $params["code"];
+
+        $this->itemRepository->destroyItem(['slug' => $ownerSlug]);
+        $this->itemRepository->destroyItem(['slug' => $customerSlug]);
+
+        /// if this reserve removed by customer (called by remove reserve handler) - Else : this reserve removed by earn Score (called from earn score handler)
+        if (!$apply) {
+            $this->scoreService->updateCustom(
+                [
+                    'code' => $custom['code'],
+                ],
+                [
+                    'count_used' => $custom['count_used'] -1,
+                ]
+            );
+        }
+
+        return $this->getReserveList([], $account);
     }
 
     //// End Reservation Section /////
@@ -1315,6 +1330,5 @@ class ItemService implements ServiceInterface
         $record['item'] = $item;
         return $record;
     }
-
 
 }

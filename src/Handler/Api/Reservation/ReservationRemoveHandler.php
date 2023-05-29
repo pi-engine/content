@@ -43,15 +43,16 @@ class ReservationRemoveHandler implements RequestHandlerInterface
         $requestBody = $request->getParsedBody();
 
         $params = [
-            "user_id" => $requestBody["user_id"] ?? 0,
+            "user_id" => $requestBody["user_id"] ?? $account['id'],
             "item_id" => $requestBody["item_id"] ?? 0,
+            "code" => $requestBody["code"] ?? 0,
             "role" => $requestBody["role"] ?? "customer",
             "type" => "reservation"
         ];
 
 
         // Get list of notifications
-        $result = $this->itemService->removeReserve($params);
+        $result = $this->itemService->removeReserve($params,$account);
 
 
         // Get record
