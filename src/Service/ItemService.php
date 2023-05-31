@@ -1212,6 +1212,7 @@ class ItemService implements ServiceInterface
             "code" => $code,
             "expired_at" => date('Y / m / d H:i', $expired),
         ];
+        $ownerInfo['user']['avatar'] = 'https://cdn.seylaneh.co/general/avatar.png';
 
         $ownerParam = [
             "id" => null,
@@ -1222,6 +1223,7 @@ class ItemService implements ServiceInterface
             "user_id" => $params["user_id"],
             "information" => json_encode($ownerInfo),
         ];
+        $ownerInfo['user']['avatar'] = 'https://cdn.seylaneh.co/general/avatar.png';
         return $ownerParam;
     }
 
