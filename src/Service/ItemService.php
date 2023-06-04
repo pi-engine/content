@@ -121,12 +121,6 @@ class ItemService implements ServiceInterface
             $listParams['id'] = $itemIdList;
         }
 
-        // Set filtered IDs to params
-//        if (!empty($itemIdList)) {
-//            $listParams['id'] = $itemIdList;
-//        }
-
-        // Get list
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
