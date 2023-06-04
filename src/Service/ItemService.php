@@ -285,6 +285,7 @@ class ItemService implements ServiceInterface
         return $this->canonizeItem($item);
     }
 
+
     /**
      * @param string $parameter
      * @param string $type
@@ -755,7 +756,7 @@ class ItemService implements ServiceInterface
 
     public function replySupport($params): object|array
     {
-        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug", $params);
+        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
         if ($question == null) {
             return [];
         }
@@ -802,6 +803,43 @@ class ItemService implements ServiceInterface
         ];
 
         return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
+    }
+
+
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return array
+     */
+    public function getSupport(string $parameter, string $type = 'id', $params = []): array
+    {
+
+        $item = $this->itemRepository->getItem($parameter, $type, $params);
+
+        $limit = $params['limit'] ?? 1000;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+
+        $item = $this->canonizeItem($item);
+
+        ///TODO: get answers from db
+        if (sizeof($item) > 0) {
+            // Set params
+            $listParams = [
+                'page' => $page,
+                'limit' => $limit,
+                'order' => $order,
+                'offset' => $offset,
+                'type' => "answer",
+                'slug' => 'child_slug_' . $item['slug'],
+            ];
+            $answers = $this->itemRepository->getItemList($listParams);
+        }
+
+
+        return $item;
     }
 
     ///// Start Location Section /////
@@ -1252,7 +1290,7 @@ class ItemService implements ServiceInterface
                     'code' => $custom['code'],
                 ],
                 [
-                    'count_used' => $custom['count_used'] -1,
+                    'count_used' => $custom['count_used'] - 1,
                 ]
             );
         }

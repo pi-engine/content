@@ -42,10 +42,9 @@ class GetHandler implements RequestHandlerInterface
         $requestBody = $request->getParsedBody();
         $requestBody["type"] = "support";
 
-        $requestBody["user_id"] = $account['id'];
 
         // Get list of notifications
-        $result = $this->itemService->getItem($requestBody['slug'], 'slug',$requestBody);
+        $result = $this->itemService->getSupport($requestBody['slug'], 'slug',$requestBody);
 
         // Set result
         $result = [
