@@ -8,6 +8,7 @@ use mysql_xdevapi\Exception;
 use Notification\Service\NotificationService;
 use User\Service\AccountService;
 
+use User\Service\UtilityService;
 use function explode;
 use function in_array;
 use function is_object;
@@ -19,6 +20,9 @@ class ItemService implements ServiceInterface
 
     /** @var AccountService */
     protected AccountService $accountService;
+
+    /** @var UtilityService */
+    protected UtilityService $utilityService;
 
     /** @var ScoreService */
     protected ScoreService $scoreService;
@@ -56,6 +60,7 @@ class ItemService implements ServiceInterface
         ScoreService            $scoreService,
         NotificationService     $notificationService,
         LogService              $logService,
+        UtilityService          $utilityService,
                                 $config
     )
     {
@@ -64,6 +69,7 @@ class ItemService implements ServiceInterface
         $this->scoreService = $scoreService;
         $this->notificationService = $notificationService;
         $this->logService = $logService;
+        $this->utilityService      = $utilityService;
         $this->config = $config;
     }
 
@@ -604,6 +610,7 @@ class ItemService implements ServiceInterface
         ];
 
         $information = $params;
+        $information['time_created_view'] =  $this->utilityService->date($params['time_create']);
         $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
@@ -661,6 +668,7 @@ class ItemService implements ServiceInterface
         ];
 
         $answerInformation = $answer;
+        $answerInformation['time_created_view'] =  $this->utilityService->date($answer['time_create']);
         $answerInformation['title'] = $params['title'];
         $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
         $answerInformation['meta']['like'] = 0;
@@ -712,6 +720,7 @@ class ItemService implements ServiceInterface
         ];
 
         $information = $params;
+        $information['time_created_view'] =  $this->utilityService->date($params['time_create']);
         $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
@@ -725,21 +734,21 @@ class ItemService implements ServiceInterface
         $information['meta']['dislike'] = 0;
         $params['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
 
-        $question = $this->itemRepository->addItem($params);
-        $information = $this->canonizeItem($question);
-        $information["id"] = (int)$question->getId();
-        $editedQuestion = [
-            "id" => (int)$question->getId(),
+        $support = $this->itemRepository->addItem($params);
+        $information = $this->canonizeItem($support);
+        $information["id"] = (int)$support->getId();
+        $editedSupport = [
+            "id" => (int)$support->getId(),
             "time_update" => time(),
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE),
         ];
 
-        $question = $this->itemRepository->editItem($editedQuestion);
+        $support = $this->itemRepository->editItem($editedSupport);
 
         // add meta record for this question if isset categories parameter
         if (isset($requestBody['categories'])) {
             $metaParams = [
-                'item_id' => $question->getId(),
+                'item_id' => $support->getId(),
                 'meta_key' => 'category',
                 'time_create' => time(),
             ];
@@ -751,13 +760,13 @@ class ItemService implements ServiceInterface
             }
         }
 
-        return $this->canonizeItem($question);
+        return $this->canonizeItem($support);
     }
 
     public function replySupport($params): object|array
     {
-        $question = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
-        if ($question == null) {
+        $support = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
+        if ($support == null) {
             return [];
         }
 
@@ -774,6 +783,7 @@ class ItemService implements ServiceInterface
         ];
 
         $answerInformation = $answer;
+        $answerInformation['time_created_view'] =  $this->utilityService->date($answer['time_create']);
         $answerInformation['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);;
         $answerInformation['name'] = $params['user_id'] == 0 ? ''
             : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
@@ -789,20 +799,20 @@ class ItemService implements ServiceInterface
         $params["user"] = $params["user_id"] == 0 ? $nullObject : $this->accountService->getProfile($params);
 
 
-        $information = $this->canonizeItem($question);
+        $information = $this->canonizeItem($support);
         if (sizeof($information) == 0) {
             return [];
         }
 
         $answerInformation["id"] = (int)$answer->getId();
         array_unshift($information["body"]["answer"], $answerInformation);
-        $editedQuestion = [
-            "id" => (int)$question->getId(),
+        $editedSupport = [
+            "id" => (int)$support->getId(),
             "time_update" => time(),
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE),
         ];
 
-        return $this->canonizeItem($this->itemRepository->editItem($editedQuestion));
+        return $this->canonizeItem($this->itemRepository->editItem($editedSupport));
     }
 
 

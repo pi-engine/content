@@ -13,6 +13,7 @@ use Notification\Service\NotificationService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Service\AccountService;
+use User\Service\UtilityService;
 
 class ItemServiceFactory implements FactoryInterface
 {
@@ -35,6 +36,7 @@ class ItemServiceFactory implements FactoryInterface
             $container->get(ScoreService::class),
             $container->get(NotificationService::class),
             $container->get(LogService::class),
+            $container->get(UtilityService::class),
             $config['client']
         );
     }
