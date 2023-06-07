@@ -69,7 +69,7 @@ class ItemService implements ServiceInterface
         $this->scoreService = $scoreService;
         $this->notificationService = $notificationService;
         $this->logService = $logService;
-        $this->utilityService      = $utilityService;
+        $this->utilityService = $utilityService;
         $this->config = $config;
     }
 
@@ -610,7 +610,7 @@ class ItemService implements ServiceInterface
         ];
 
         $information = $params;
-        $information['time_created_view'] =  $this->utilityService->date($params['time_create']);
+        $information['time_created_view'] = $this->utilityService->date($params['time_create']);
         $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
@@ -668,7 +668,7 @@ class ItemService implements ServiceInterface
         ];
 
         $answerInformation = $answer;
-        $answerInformation['time_created_view'] =  $this->utilityService->date($answer['time_create']);
+        $answerInformation['time_created_view'] = $this->utilityService->date($answer['time_create']);
         $answerInformation['title'] = $params['title'];
         $information['meta']['categories'] = $hasCategories ? $this->canonizeItem($this->itemRepository->getItem($requestBody['categories'], 'id')) : [];
         $answerInformation['meta']['like'] = 0;
@@ -720,7 +720,7 @@ class ItemService implements ServiceInterface
         ];
 
         $information = $params;
-        $information['time_created_view'] =  $this->utilityService->date($params['time_create']);
+        $information['time_created_view'] = $this->utilityService->date($params['time_create']);
         $information['extra'] = isset($requestBody['extra']) ? json_decode($requestBody['extra']) : new \stdClass();
         $information['body'] = $nullObject;
         $information['body']['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
@@ -763,7 +763,7 @@ class ItemService implements ServiceInterface
         return $this->canonizeItem($support);
     }
 
-    public function replySupport($params): object|array
+    public function replySupport($params, $notificationTypes): object|array
     {
         $support = $this->itemRepository->getItem(str_replace("child_slug_", "", $params["support_slug"]), "slug");
         if ($support == null) {
@@ -783,8 +783,8 @@ class ItemService implements ServiceInterface
         ];
 
         $answerInformation = $answer;
-        $answerInformation['time_created_view'] =  $this->utilityService->date($answer['time_create']);
-        $answerInformation['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);;
+        $answerInformation['time_created_view'] = $this->utilityService->date($answer['time_create']);
+        $answerInformation['user'] = $params['user_id'] == 0 ? $nullObject : $this->accountService->getProfile($params);
         $answerInformation['name'] = $params['user_id'] == 0 ? ''
             : $this->accountService->getProfile($params)["first_name"] . ' ' . $this->accountService->getProfile($params)["last_name"];
         $answerInformation['title'] = $params['title'];
@@ -812,6 +812,13 @@ class ItemService implements ServiceInterface
             "information" => json_encode($information, JSON_UNESCAPED_UNICODE),
         ];
 
+        if (sizeof($notificationTypes) > 0) {
+            $userAccount = $this->accountService->getAccount(['id' => $information['user_id']]);
+            $this->sendNotification($notificationTypes, $userAccount, $params['title']);
+        }
+
+
+        return $this->accountService->getAccount(['id' => $information['user_id']]);
         return $this->canonizeItem($this->itemRepository->editItem($editedSupport));
     }
 
@@ -1373,6 +1380,24 @@ class ItemService implements ServiceInterface
         $record['user'] = $user;
         $record['item'] = $item;
         return $record;
+    }
+
+    private function sendNotification($notificationTypes, array $userAccount, $title)
+    {
+        foreach ($notificationTypes as $type) {
+            if ($type == 'sms') {
+                if (isset($userAccount['mobile']))
+                    $this->notificationService->send(
+                        [
+                            'sms' => [
+                                'message' => $title,
+                                'mobile' => $userAccount['mobile'],
+                                'source' => '',
+                            ],
+                        ]
+                    );
+            }
+        }
     }
 
 }

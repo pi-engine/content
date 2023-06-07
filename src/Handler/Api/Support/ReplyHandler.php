@@ -53,7 +53,7 @@ class ReplyHandler implements RequestHandlerInterface
 
 
         // Get list of notifications
-        $result = $this->itemService->replySupport($params);
+        $result = $this->itemService->replySupport($params,[]);
 
 
         // Get record
