@@ -164,6 +164,9 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['user_id']) && !empty($params['user_id'])) {
             $where['user_id'] = $params['user_id'];
         }
+        if (isset($params['type']) && !empty($params['type'])) {
+            $where['type'] = $params['type'];
+        }
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where);

@@ -1415,8 +1415,12 @@ class ItemService implements ServiceInterface
      */
     public function getTour($params, $account): array
     {
+        $item = $this->itemRepository->getItem($params[$params['parameter_type']], $params['parameter_type'], $params);
+        return $this->canonizeItem($item);
+    }
 
-
+    public function getDestination($params, $account): array
+    {
         $item = $this->itemRepository->getItem($params[$params['parameter_type']], $params['parameter_type'], $params);
         return $this->canonizeItem($item);
     }
