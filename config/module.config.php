@@ -79,6 +79,7 @@ return [
             Handler\Api\Report\Club\Score\ListHandler::class => Factory\Handler\Api\Report\Club\Score\ListHandlerFactory::class,
 
             // Tourism services factory
+            Handler\Api\Tourism\DashboardHandler::class => Factory\Handler\Api\Tourism\DashboardHandlerFactory::class,
             Handler\Api\Tourism\Tour\GetHandler::class => Factory\Handler\Api\Tourism\Tour\GetHandlerFactory::class,
             Handler\Api\Tourism\Tour\ListHandler::class => Factory\Handler\Api\Tourism\Tour\ListHandlerFactory::class,
             Handler\Api\Tourism\Destination\GetHandler::class => Factory\Handler\Api\Tourism\Destination\GetHandlerFactory::class,
@@ -829,6 +830,24 @@ return [
                             'defaults' => [],
                         ],
                         'child_routes' => [
+                            'dashboard' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/dashboard',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'api',
+                                        'package' => 'tourism',
+                                        'handler' => 'dashboard',
+                                        'permission' => 'api-content-tourism-dashboard',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            Handler\Api\Tourism\DashboardHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
                             'tour' => [
                                 'type' => Literal::class,
                                 'options' => [
@@ -925,6 +944,7 @@ return [
                             ],
                         ],
                     ],
+
 
                 ],
             ],

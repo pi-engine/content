@@ -1425,5 +1425,136 @@ class ItemService implements ServiceInterface
         return $this->canonizeItem($item);
     }
 
+    public function getTourismMainDashboard($params, $account): array
+    {
+        $top_sections =array();
+        $new_sections =array();
+        $suggest_sections =array();
+
+
+        $top_sections_caller = $this->itemRepository->getItemList(
+            [
+                'type'=>'destination',
+                'order' =>  ['time_create ASC', 'id ASC'] ,
+                'offset' => 0,
+                'page' => 1,
+                'limit' => 4,
+                'status' => 1,
+            ]
+        );
+        foreach ($top_sections_caller as $row) {
+            $top_sections[] = $this->canonizeItem($row);
+        }
+        $new_sections_caller = $this->itemRepository->getItemList(
+            [
+                'type'=>'destination',
+                'order' =>  ['time_create DESC', 'id DESC'] ,
+                'offset' => 0,
+                'page' => 1,
+                'limit' => 4,
+                'status' => 1,
+            ]
+        );
+        foreach ($new_sections_caller as $row) {
+            $new_sections[] = $this->canonizeItem($row);
+        }
+
+        $suggest_sections_caller = $this->itemRepository->getItemList(
+            [
+                'type'=>'tour',
+                'order' =>  ['time_create DESC', 'id DESC'] ,
+                'offset' => 0,
+                'page' => 1,
+                'limit' => 4,
+                'status' => 1,
+            ]
+        );
+        foreach ($suggest_sections_caller as $row) {
+            $suggest_sections[] = $this->canonizeItem($row);
+        }
+
+        $jayParsedAry = [
+            "main_slider" => [
+                "video" => "",
+                "banner" => "https://yadapi.kerloper.com/upload/banners/home.jpg",
+                "has_video" => false
+            ],
+            "top_section" => [
+                "list" => $new_sections,
+                "type" => "tour",
+                "title" => "جدیدترین ها",
+                "abstract" => ""
+            ],
+            "blog_section" => [
+                "list" => $top_sections,
+                "type" => "blog",
+                "title" => "ایران را بهتر بشناسید",
+                "abstract" => "در اینجا چند چیز وجود دارد که به شما کمک می کند تا با این کشور منحصر به فرد آشنا شوید."
+            ],
+            "middle_slider" => [
+                "banners" => [
+                    [
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg"
+                    ],
+                    [
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg"
+                    ],
+                    [
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-03.jpg"
+                    ],
+                    [
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-04.jpg"
+                    ]
+                ]
+            ],
+            "bottom_section" => [
+                "list" =>$suggest_sections,
+                "type" => "tour",
+                "title" => "مکان‌های پیشنهادی برای
+سفر بعدی شما",
+                "abstract" => "نمی دانید در سفر بعدی خود به کجا بروید یا چه کاری انجام دهید؟ جای نگرانی نیست ما منتخبی از سفرهای انتخاب شده از نقاط مختلف کشور را جمع آوری کرده ایم. مناظر جالب برای دیدن، مکان‌هایی برای بازدید و رستوران‌هایی برای صرف غذا پیدا کنید."
+            ],
+            "freq_questions" => [
+                "banner" => "https://yadapi.kerloper.com/upload/faq.jpg",
+                "questions" => [
+                    [
+                        "answer" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.",
+                        "question" => "بهترین زمان سال برای سفر به ایران؟"
+                    ],
+                    [
+                        "answer" => "بهترین زمان سال برای سفر به شمال؟بهترین زمان سال برای سفر به شمال؟بهترین زمان سال برای سفر به شمال؟بهترین زمان سال برای سفر به شمال؟",
+                        "question" => "بهترین زمان سال برای سفر به شمال؟"
+                    ],
+                    [
+                        "answer" => "بهترین زمان سال برای سفر به کیش؟بهترین زمان سال برای سفر به کیش؟بهترین زمان سال برای سفر به کیش؟بهترین زمان سال برای سفر به کیش؟",
+                        "question" => "بهترین زمان سال برای سفر به کیش؟"
+                    ],
+                    [
+                        "answer" => "بهترین زمان سال برای سفر به قشم؟بهترین زمان سال برای سفر به قشم؟بهترین زمان سال برای سفر به قشم؟بهترین زمان سال برای سفر به قشم؟",
+                        "question" => "بهترین زمان سال برای سفر به قشم؟"
+                    ]
+                ]
+            ],
+            "client_information" => [
+                "weather" => "ابری",
+                "location" => "تهران",
+                "temperature" => "5°C",
+                "weather_icon" => "https://yadapi.kerloper.com/upload/icon/cloudy.jpg"
+            ],
+            "bottom_slider_banner" => [
+                "video" => "",
+                "banner" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg",
+                "has_video" => false
+            ],
+            "middle_slider_banner" => [
+                "video" => "",
+                "banner" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg",
+                "has_video" => false
+            ]
+        ];
+        return $jayParsedAry;
+
+    }
+
 
 }
