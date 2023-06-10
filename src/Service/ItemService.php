@@ -97,17 +97,24 @@ class ItemService implements ServiceInterface
             'limit' => $limit,
             'type' => $params['type'],
             'status' => 1,
-            'data_from' => strtotime(
-                isset($params['data_from'])
+        ];
+
+
+        if (isset($params['data_from'])) {
+            $listParams['data_from'] = strtotime(
+                ($params['data_from']) != null
                     ? sprintf('%s 00:00:00', $params['data_from'])
                     : sprintf('%s 00:00:00', date('Y-m-d', strtotime('-1 month')))
-            ),
-            'data_to' => strtotime(
-                isset($params['data_to'])
-                    ? sprintf('%s 23:59:59', $params['data_to'])
+            );
+        }
+
+        if (isset($params['data_to'])) {
+            $listParams['data_to'] = strtotime(
+                ($params['data_to']) != null
+                    ? sprintf('%s 00:00:00', $params['data_from'])
                     : sprintf('%s 23:59:59', date('Y-m-d'))
-            ),
-        ];
+            );
+        }
 
         if (isset($params['user_id'])) {
             $listParams['user_id'] = $params['user_id'];
@@ -1399,5 +1406,20 @@ class ItemService implements ServiceInterface
             }
         }
     }
+
+    /**
+     * @param string $parameter
+     * @param string $type
+     *
+     * @return array
+     */
+    public function getTour($params, $account): array
+    {
+
+
+        $item = $this->itemRepository->getItem($params[$params['parameter_type']], $params['parameter_type'], $params);
+        return $this->canonizeItem($item);
+    }
+
 
 }
