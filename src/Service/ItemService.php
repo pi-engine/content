@@ -1438,7 +1438,7 @@ class ItemService implements ServiceInterface
                 'order' =>  ['time_create ASC', 'id ASC'] ,
                 'offset' => 0,
                 'page' => 1,
-                'limit' => 4,
+                'limit' => 6,
                 'status' => 1,
             ]
         );
@@ -1447,11 +1447,11 @@ class ItemService implements ServiceInterface
         }
         $new_sections_caller = $this->itemRepository->getItemList(
             [
-                'type'=>'destination',
+                'type'=>'tour',
                 'order' =>  ['time_create DESC', 'id DESC'] ,
                 'offset' => 0,
                 'page' => 1,
-                'limit' => 4,
+                'limit' => 5,
                 'status' => 1,
             ]
         );
