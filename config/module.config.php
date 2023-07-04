@@ -86,7 +86,7 @@ return [
             Handler\Api\Tourism\Destination\ListHandler::class => Factory\Handler\Api\Tourism\Destination\ListHandlerFactory::class,
 
 
-            //Admin
+            ///Admin Section
             // Support services factory
             Handler\Admin\Support\AddHandler::class => Factory\Handler\Admin\Support\AddHandlerFactory::class,
             Handler\Admin\Support\ListHandler::class => Factory\Handler\Admin\Support\ListHandlerFactory::class,
@@ -95,6 +95,12 @@ return [
 
             // Order services factory
             Handler\Admin\Order\ListHandler::class => Factory\Handler\Admin\Order\ListHandlerFactory::class,
+
+
+            ///Public Section
+            // Item
+            Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
+            Handler\Public\Item\ItemDetailHandler::class => Factory\Handler\Public\Item\ItemDetailHandlerFactory::class,
 
 
         ],
