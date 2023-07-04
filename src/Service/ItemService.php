@@ -857,9 +857,13 @@ class ItemService implements ServiceInterface
                 'order' => $order,
                 'offset' => $offset,
                 'type' => "answer",
-                'slug' => 'child_slug_' . $item['slug'],
+                'title' => 'child_slug_' . $item['slug'],
             ];
+            $item['body']['answer'] = [];
             $answers = $this->itemRepository->getItemList($listParams);
+            foreach ($answers as $answer) {
+                $item['body']['answer'][] = $this->canonizeItem($answer);
+            }
         }
 
 
