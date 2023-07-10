@@ -84,6 +84,7 @@ return [
             Handler\Api\Tourism\Tour\ListHandler::class => Factory\Handler\Api\Tourism\Tour\ListHandlerFactory::class,
             Handler\Api\Tourism\Destination\GetHandler::class => Factory\Handler\Api\Tourism\Destination\GetHandlerFactory::class,
             Handler\Api\Tourism\Destination\ListHandler::class => Factory\Handler\Api\Tourism\Destination\ListHandlerFactory::class,
+            Handler\Api\Tourism\Main\MainHandler::class => Factory\Handler\Api\Tourism\Main\MainHandlerFactory::class,
 
 
             ///Admin Section
@@ -108,6 +109,232 @@ return [
 
     'router' => [
         'routes' => [
+            // Public section
+            'public_content' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/public/content',
+                    'defaults' => [],
+                ],
+                'child_routes' => [
+
+                    'item' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/item',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'public-content-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            Handler\Public\Item\ItemDetailHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'public-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            Handler\Public\Item\ItemListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+
+                    'tourism' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/tourism',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'dashboard' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/dashboard',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'api',
+                                        'package' => 'tourism',
+                                        'handler' => 'dashboard',
+                                        'permission' => 'api-content-tourism-dashboard',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            Handler\Api\Tourism\DashboardHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'tour' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/tour',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+                                    'get' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/get',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-tour',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Api\Tourism\Tour\GetHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-tour',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Api\Tourism\Tour\ListHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                ],
+                            ],
+                            'destination' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/destination',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+                                    'get' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/get',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-destination',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Api\Tourism\Destination\GetHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-destination',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Api\Tourism\Destination\ListHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                ],
+                            ],
+                            'main' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/main',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+                                    'get' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/data',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-destination',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Api\Tourism\Main\MainHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-destination',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Api\Tourism\Destination\ListHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+
+                ],
+            ],
             // Api section
             'api_content' => [
                 'type' => Literal::class,
@@ -823,128 +1050,6 @@ return [
                                                 ],
                                             ],
                                         ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-
-                    'tourism' => [
-                        'type' => Literal::class,
-                        'options' => [
-                            'route' => '/tourism',
-                            'defaults' => [],
-                        ],
-                        'child_routes' => [
-                            'dashboard' => [
-                                'type' => Literal::class,
-                                'options' => [
-                                    'route' => '/dashboard',
-                                    'defaults' => [
-                                        'module' => 'content',
-                                        'section' => 'api',
-                                        'package' => 'tourism',
-                                        'handler' => 'dashboard',
-                                        'permission' => 'api-content-tourism-dashboard',
-                                        'controller' => PipeSpec::class,
-                                        'middleware' => new PipeSpec(
-                                            SecurityMiddleware::class,
-                                            Handler\Api\Tourism\DashboardHandler::class
-                                        ),
-                                    ],
-                                ],
-                            ],
-                            'tour' => [
-                                'type' => Literal::class,
-                                'options' => [
-                                    'route' => '/tour',
-                                    'defaults' => [],
-                                ],
-                                'child_routes' => [
-                                    'get' => [
-                                        'type' => Literal::class,
-                                        'options' => [
-                                            'route' => '/get',
-                                            'defaults' => [
-                                                'module' => 'content',
-                                                'section' => 'api',
-                                                'package' => 'tourism',
-                                                'handler' => 'tour',
-                                                'permission' => 'api-content-tourism-tour',
-                                                'controller' => PipeSpec::class,
-                                                'middleware' => new PipeSpec(
-                                                    SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Tour\GetHandler::class
-                                                ),
-                                            ],
-                                        ],
-
-                                    ],
-                                    'list' => [
-                                        'type' => Literal::class,
-                                        'options' => [
-                                            'route' => '/list',
-                                            'defaults' => [
-                                                'module' => 'content',
-                                                'section' => 'api',
-                                                'package' => 'tourism',
-                                                'handler' => 'tour',
-                                                'permission' => 'api-content-tourism-tour',
-                                                'controller' => PipeSpec::class,
-                                                'middleware' => new PipeSpec(
-                                                    SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Tour\ListHandler::class
-                                                ),
-                                            ],
-                                        ],
-
-                                    ],
-                                ],
-                            ],
-                            'destination' => [
-                                'type' => Literal::class,
-                                'options' => [
-                                    'route' => '/destination',
-                                    'defaults' => [],
-                                ],
-                                'child_routes' => [
-                                    'get' => [
-                                        'type' => Literal::class,
-                                        'options' => [
-                                            'route' => '/get',
-                                            'defaults' => [
-                                                'module' => 'content',
-                                                'section' => 'api',
-                                                'package' => 'tourism',
-                                                'handler' => 'tour',
-                                                'permission' => 'api-content-tourism-destination',
-                                                'controller' => PipeSpec::class,
-                                                'middleware' => new PipeSpec(
-                                                    SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Destination\GetHandler::class
-                                                ),
-                                            ],
-                                        ],
-
-                                    ],
-                                    'list' => [
-                                        'type' => Literal::class,
-                                        'options' => [
-                                            'route' => '/list',
-                                            'defaults' => [
-                                                'module' => 'content',
-                                                'section' => 'api',
-                                                'package' => 'tourism',
-                                                'handler' => 'tour',
-                                                'permission' => 'api-content-tourism-destination',
-                                                'controller' => PipeSpec::class,
-                                                'middleware' => new PipeSpec(
-                                                    SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Destination\ListHandler::class
-                                                ),
-                                            ],
-                                        ],
-
                                     ],
                                 ],
                             ],
