@@ -4,44 +4,82 @@ namespace Content\Model;
 
 class Meta
 {
-    private mixed   $id;
-    private int     $item_id;
-    private string  $meta_key;
-    private string  $value_string;
-    private string  $value_id;
-    private int     $value_number;
-    private int     $status;
-    private string  $logo;
-    private int     $time_create;
-    private int     $time_update;
-    private int     $time_delete;
+    private mixed $id;
+    private int $item_id;
+    private string $item_slug;
+    private string $meta_key;
+    private string $value_string;
+    private string $value_id;
+    private int $value_number;
+    private string $value_slug;
+    private int $status;
+    private string $logo;
+    private int $time_create;
+    private int $time_update;
+    private int $time_delete;
 
     /**
      * @param mixed $id
      * @param int $item_id
+     * @param string $item_slug
      * @param string $meta_key
      * @param string $value_string
      * @param string $value_id
      * @param int $value_number
+     * @param string $value_slug
      * @param int $status
      * @param string $logo
      * @param int $time_create
      * @param int $time_update
      * @param int $time_delete
      */
-    public function __construct(mixed $id, int $item_id, string $meta_key, string $value_string, string $value_id, int $value_number, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
+    public function __construct(mixed $id, int $item_id, string $item_slug, string $meta_key, string $value_string, string $value_id, int $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
     {
         $this->id = $id;
         $this->item_id = $item_id;
+        $this->item_slug = $item_slug;
         $this->meta_key = $meta_key;
         $this->value_string = $value_string;
         $this->value_id = $value_id;
         $this->value_number = $value_number;
+        $this->value_slug = $value_slug;
         $this->status = $status;
         $this->logo = $logo;
         $this->time_create = $time_create;
         $this->time_update = $time_update;
         $this->time_delete = $time_delete;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItemString(): string
+    {
+        return $this->item_string;
+    }
+
+    /**
+     * @param string $item_string
+     */
+    public function setItemString(string $item_string): void
+    {
+        $this->item_string = $item_string;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValueSlug(): string
+    {
+        return $this->value_slug;
+    }
+
+    /**
+     * @param string $value_slug
+     */
+    public function setValueSlug(string $value_slug): void
+    {
+        $this->value_slug = $value_slug;
     }
 
     /**
