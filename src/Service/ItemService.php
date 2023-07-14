@@ -43,6 +43,8 @@ class ItemService implements ServiceInterface
             'max_price',
             'title',
             'color',
+            'destination',
+            'duration',
             'size',
         ];
 
@@ -286,8 +288,6 @@ class ItemService implements ServiceInterface
 
         switch ($type) {
             case 'tour':
-                $data['cost_dollar'] = 670;
-                $data['cost_dollar_view'] = '670 دلار';
                 $data['type'] = 'tour';
                 break;
         }
@@ -339,6 +339,8 @@ class ItemService implements ServiceInterface
                         break;
 
                     case 'brand':
+//                    case 'destination':
+//                    case 'duration':
                     case 'category':
                         $filters[$key] = [
                             'key' => $key,
