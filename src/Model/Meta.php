@@ -7,6 +7,7 @@ class Meta
     private mixed $id;
     private int $item_id;
     private string $item_slug;
+    private string $item_type;
     private string $meta_key;
     private string $value_string;
     private string $value_id;
@@ -22,6 +23,7 @@ class Meta
      * @param mixed $id
      * @param int $item_id
      * @param string $item_slug
+     * @param string $item_type
      * @param string $meta_key
      * @param string $value_string
      * @param string $value_id
@@ -33,11 +35,12 @@ class Meta
      * @param int $time_update
      * @param int $time_delete
      */
-    public function __construct(mixed $id, int $item_id, string $item_slug, string $meta_key, string $value_string, string $value_id, int $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
+    public function __construct(mixed $id, int $item_id, string $item_slug, string $item_type, string $meta_key, string $value_string, string $value_id, int $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
     {
         $this->id = $id;
         $this->item_id = $item_id;
         $this->item_slug = $item_slug;
+        $this->item_type = $item_type;
         $this->meta_key = $meta_key;
         $this->value_string = $value_string;
         $this->value_id = $value_id;
@@ -53,18 +56,35 @@ class Meta
     /**
      * @return string
      */
-    public function getItemString(): string
+    public function getItemSlug(): string
     {
-        return $this->item_string;
+        return $this->item_slug;
     }
 
     /**
-     * @param string $item_string
+     * @param string $item_slug
      */
-    public function setItemString(string $item_string): void
+    public function setItemSlug(string $item_slug): void
     {
-        $this->item_string = $item_string;
+        $this->item_slug = $item_slug;
     }
+
+    /**
+     * @return string
+     */
+    public function getItemType(): string
+    {
+        return $this->item_type;
+    }
+
+    /**
+     * @param string $item_type
+     */
+    public function setItemType(string $item_type): void
+    {
+        $this->item_type = $item_type;
+    }
+
 
     /**
      * @return string
