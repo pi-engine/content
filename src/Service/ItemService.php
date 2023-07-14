@@ -137,7 +137,7 @@ class ItemService implements ServiceInterface
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
-            $list[] = $this->canonizeItem($row);
+            $list[] = $this->canonizeItem($row,$params['type']);
         }
 
         // Get count
@@ -248,7 +248,7 @@ class ItemService implements ServiceInterface
      *
      * @return array
      */
-    public function canonizeItem(object|array $item): array
+    public function canonizeItem(object|array $item,$type='global'): array
     {
         if (empty($item)) {
             return [];
@@ -282,8 +282,17 @@ class ItemService implements ServiceInterface
             ];
         }
 
+        $data = !empty($item['information']) ? json_decode($item['information'], true) : [];
+
+        switch ($type){
+            case 'tour':
+                $data['cost_dollar']  = 670;
+                $data['cost_dollar_view']  = '670 دلار';
+                break;
+        }
+
         // Set information
-        return !empty($item['information']) ? json_decode($item['information'], true) : [];
+        return $data;
     }
 
     /**
