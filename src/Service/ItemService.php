@@ -137,7 +137,7 @@ class ItemService implements ServiceInterface
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
         foreach ($rowSet as $row) {
-            $list[] = $this->canonizeItem($row,$params['type']);
+            $list[] = $this->canonizeItem($row, $params['type']);
         }
 
         // Get count
@@ -248,7 +248,7 @@ class ItemService implements ServiceInterface
      *
      * @return array
      */
-    public function canonizeItem(object|array $item,$type='global'): array
+    public function canonizeItem(object|array $item, $type = 'global'): array
     {
         if (empty($item)) {
             return [];
@@ -284,11 +284,11 @@ class ItemService implements ServiceInterface
 
         $data = !empty($item['information']) ? json_decode($item['information'], true) : [];
 
-        switch ($type){
+        switch ($type) {
             case 'tour':
-                $data['cost_dollar']  = 670;
-                $data['cost_dollar_view']  = '670 دلار';
-                $data['type']  = 'tour';
+                $data['cost_dollar'] = 670;
+                $data['cost_dollar_view'] = '670 دلار';
+                $data['type'] = 'tour';
                 break;
         }
 
@@ -305,7 +305,7 @@ class ItemService implements ServiceInterface
     public function getItem(string $parameter, string $type = 'id', $params = []): array
     {
         $item = $this->itemRepository->getItem($parameter, $type, $params);
-        return $this->canonizeItem($item);
+        return $this->canonizeItem($item, (isset($params['type'])) ? $params['type'] : 'global');
     }
 
 
@@ -1441,15 +1441,15 @@ class ItemService implements ServiceInterface
 
     public function getTourismMainDashboard($params, $account): array
     {
-        $top_sections =array();
-        $new_sections =array();
-        $suggest_sections =array();
+        $top_sections = array();
+        $new_sections = array();
+        $suggest_sections = array();
 
 
         $top_sections_caller = $this->itemRepository->getItemList(
             [
-                'type'=>'destination',
-                'order' =>  ['time_create ASC', 'id ASC'] ,
+                'type' => 'destination',
+                'order' => ['time_create ASC', 'id ASC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 6,
@@ -1461,8 +1461,8 @@ class ItemService implements ServiceInterface
         }
         $new_sections_caller = $this->itemRepository->getItemList(
             [
-                'type'=>'tour',
-                'order' =>  ['time_create DESC', 'id DESC'] ,
+                'type' => 'tour',
+                'order' => ['time_create DESC', 'id DESC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 5,
@@ -1475,8 +1475,8 @@ class ItemService implements ServiceInterface
 
         $suggest_sections_caller = $this->itemRepository->getItemList(
             [
-                'type'=>'tour',
-                'order' =>  ['time_create DESC', 'id DESC'] ,
+                'type' => 'tour',
+                'order' => ['time_create DESC', 'id DESC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 4,
@@ -1522,7 +1522,7 @@ class ItemService implements ServiceInterface
                 ]
             ],
             "bottom_section" => [
-                "list" =>$suggest_sections,
+                "list" => $suggest_sections,
                 "type" => "tour",
                 "title" => "مکان‌های پیشنهادی برای
 سفر بعدی شما",
