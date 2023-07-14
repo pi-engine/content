@@ -288,6 +288,7 @@ class ItemService implements ServiceInterface
             case 'tour':
                 $data['cost_dollar']  = 670;
                 $data['cost_dollar_view']  = '670 دلار';
+                $data['type']  = 'tour';
                 break;
         }
 
