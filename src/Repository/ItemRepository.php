@@ -131,6 +131,24 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * @param array $params
      *
+     * @return int
+     */
+    public function getMetaKeyCount(array $params = []): int
+    {
+        // Set where
+        $columns = ['count' => new Expression('count(*)')];
+
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableMetaKey)->columns($columns);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $row = $statement->execute()->current();
+
+        return (int)$row['count'];
+    }
+
+    /**
+     * @param array $params
+     *
      * @return array|object
      */
     public function addItem(array $params): object|array
@@ -525,6 +543,32 @@ class ItemRepository implements ItemRepositoryInterface
         return $where;
     }
 
+
+    // Meta repo
+
+    /**
+     * @param array $params
+     *
+     * @return HydratingResultSet|array
+     */
+    public function getMetaKeyList(array $params = []): HydratingResultSet|array
+    {
+
+        $where = [];
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableMetaKey)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            return [];
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->metaKeyPrototype);
+        $resultSet->initialize($result);
+
+        return $resultSet;
+    }
 
 
 }

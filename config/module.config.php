@@ -103,6 +103,9 @@ return [
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
             Handler\Public\Item\ItemDetailHandler::class => Factory\Handler\Public\Item\ItemDetailHandlerFactory::class,
 
+            // Meta
+            Handler\Public\Meta\MetaListHandler::class => Factory\Handler\Public\Meta\MetaListHandlerFactory::class,
+
 
         ],
     ],
@@ -157,6 +160,34 @@ return [
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
                                             Handler\Public\Item\ItemListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'meta' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/meta',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'public-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            Handler\Public\Meta\MetaListHandler::class
                                         ),
                                     ],
                                 ],

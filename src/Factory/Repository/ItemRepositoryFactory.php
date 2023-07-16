@@ -32,7 +32,7 @@ class ItemRepositoryFactory implements FactoryInterface
             new ReflectionHydrator(),
             new Item('', '', '', 0, 0, 0, 0, 0, '', 0),
             new Meta(0, 0, 0,0, 0,0,0,0, '', 0,0,0,0, 0),
-            new Key('', '', 0, 0, 0, 0, 0)
+            new Key('', '', 0, 0, 0, 0, 0, 0)
         );
     }
 }
