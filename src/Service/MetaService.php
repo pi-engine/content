@@ -277,6 +277,12 @@ class MetaService implements ServiceInterface
 
     }
 
+
+    public function getMetaValueList(object|array|null $requestBody): array
+    {
+        return [];
+    }
+
     private function canonizeMetaKey(mixed $meta, mixed $type = 'global'): array
     {
         if (empty($meta)) {
@@ -311,6 +317,5 @@ class MetaService implements ServiceInterface
         return $meta;
 
     }
-
 
 }

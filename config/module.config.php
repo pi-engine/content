@@ -105,6 +105,7 @@ return [
 
             // Meta
             Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\key\MetaKeyListHandlerFactory::class,
+            Handler\Public\Meta\Value\MetaValueListHandler::class => Factory\Handler\Public\Meta\Value\MetaValueListHandlerFactory::class,
 
 
         ],
@@ -214,6 +215,35 @@ return [
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
                                                     Handler\Public\Meta\Key\MetaKeyListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+
+                                ]
+                            ],
+                            'value' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/value',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'public',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'public-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Meta\Value\MetaValueListHandler::class
                                                 ),
                                             ],
                                         ],
