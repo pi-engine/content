@@ -104,7 +104,7 @@ return [
             Handler\Public\Item\ItemDetailHandler::class => Factory\Handler\Public\Item\ItemDetailHandlerFactory::class,
 
             // Meta
-            Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\key\MetaKeyListHandlerFactory::class,
+            Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\Key\MetaKeyListHandlerFactory::class,
             Handler\Public\Meta\Value\MetaValueListHandler::class => Factory\Handler\Public\Meta\Value\MetaValueListHandlerFactory::class,
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Factory\Handler\Public\Meta\key;
+namespace Content\Factory\Handler\Public\Meta\Key;
 
 use Content\Handler\Public\Meta\Key\MetaKeyListHandler;
 use Content\Service\MetaService;
