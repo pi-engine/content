@@ -235,7 +235,7 @@ class MetaService implements ServiceInterface
         $this->logService->updateLog($log);
     }
 
-    public function getMetaKeyList(object|array|null $params)
+    public function getMetaKeyList(object|array|null $params): array
     {
         $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
@@ -278,9 +278,9 @@ class MetaService implements ServiceInterface
     }
 
 
-    public function getMetaValueList(object|array|null $requestBody): array
+    public function getMetaValueList(object|array|null $params): array
     {
-        return [];
+       return $this->itemService->getItemList(['type'=>'meta_'.$params['key']??'']);
     }
 
     private function canonizeMetaKey(mixed $meta, mixed $type = 'global'): array
