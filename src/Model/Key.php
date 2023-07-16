@@ -9,6 +9,7 @@ class Key
     private string $value;
     private string $type;
     private string $suffix;
+    private string $option;
     private string $logo;
     private int $status;
 
@@ -18,16 +19,18 @@ class Key
      * @param string $value
      * @param string $type
      * @param string $suffix
+     * @param string $option
      * @param string $logo
      * @param int $status
      */
-    public function __construct(mixed $id, string $key, string $value, string $type, string $suffix, string $logo, int $status)
+    public function __construct(mixed $id, string $key, string $value, string $type, string $suffix,string $option, string $logo, int $status)
     {
         $this->id = $id;
         $this->key = $key;
         $this->value = $value;
         $this->type = $type;
         $this->suffix = $suffix;
+        $this->option = $option;
         $this->logo = $logo;
         $this->status = $status;
     }
@@ -142,6 +145,22 @@ class Key
     public function setStatus(int $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOption(): string
+    {
+        return $this->option;
+    }
+
+    /**
+     * @param string $option
+     */
+    public function setOption(string $option): void
+    {
+        $this->option = $option;
     }
 
 
