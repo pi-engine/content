@@ -1,8 +1,7 @@
 <?php
 
-namespace Content\Handler\Public\Meta;
+namespace Content\Handler\Public\Meta\Key;
 
-use Content\Service\ItemService;
 use Content\Service\MetaService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -11,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MetaListHandler implements RequestHandlerInterface
+class MetaKeyListHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;

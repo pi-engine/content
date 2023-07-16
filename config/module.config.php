@@ -104,7 +104,7 @@ return [
             Handler\Public\Item\ItemDetailHandler::class => Factory\Handler\Public\Item\ItemDetailHandlerFactory::class,
 
             // Meta
-            Handler\Public\Meta\MetaListHandler::class => Factory\Handler\Public\Meta\MetaListHandlerFactory::class,
+            Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\key\MetaKeyListHandlerFactory::class,
 
 
         ],
@@ -187,11 +187,42 @@ return [
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             SecurityMiddleware::class,
-                                            Handler\Public\Meta\MetaListHandler::class
+                                            Handler\Public\Meta\Key\MetaKeyListHandler::class
                                         ),
                                     ],
                                 ],
                             ],
+                            'key' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/key',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'public',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'public-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Meta\Key\MetaKeyListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+
+                                ]
+                            ],
+
+
                         ]
                     ],
 
