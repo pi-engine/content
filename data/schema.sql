@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `content_item`
 );
 
 
+
 CREATE TABLE `content_meta_value` (
                                       `id` int UNSIGNED NOT NULL,
                                       `item_id` int UNSIGNED NOT NULL DEFAULT '0',
@@ -29,7 +30,20 @@ CREATE TABLE `content_meta_value` (
                                       `time_create` int UNSIGNED NOT NULL DEFAULT '0',
                                       `time_update` int NOT NULL DEFAULT '0',
                                       `time_delete` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
+CREATE TABLE `content_meta_key` (
+                                    `id` int UNSIGNED NOT NULL,
+                                    `key` varchar(64) NOT NULL DEFAULT '',
+                                    `value` varchar(255) DEFAULT NULL,
+                                    `type` varchar(64) NOT NULL DEFAULT 'string',
+                                    `suffix` varchar(255) NOT NULL DEFAULT '',
+                                    `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
+                                    `status` int UNSIGNED NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 ALTER TABLE `content_meta_key`
     ADD PRIMARY KEY (`id`);
@@ -51,7 +65,7 @@ CREATE TABLE `content_meta_value` (
                                       `time_create` int(10) UNSIGNED NOT NULL DEFAULT 0,
                                       `time_update` int(11) NOT NULL DEFAULT 0,
                                       `time_delete` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4_general_ci;
 
 
 CREATE TABLE `content_log` (
