@@ -32,6 +32,7 @@ class ItemDetailHandler implements RequestHandlerInterface
         $this->itemService     = $itemService;
     }
 
+    /// TODO: check slug and check public access
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         // Get request body
