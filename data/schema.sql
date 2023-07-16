@@ -39,6 +39,7 @@ CREATE TABLE `content_meta_key` (
                                     `key` varchar(64) NOT NULL DEFAULT '',
                                     `value` varchar(255) DEFAULT NULL,
                                     `type` varchar(64) NOT NULL DEFAULT 'string',
+                                    -- store data of required , entity type , ....
                                     `option` json DEFAULT NULL,
                                     `suffix` varchar(255) NOT NULL DEFAULT '',
                                     `logo` varchar(255) NOT NULL DEFAULT 'no-image.png',
