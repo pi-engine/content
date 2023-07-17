@@ -1570,5 +1570,75 @@ class ItemService implements ServiceInterface
 
     }
 
+    public function addEntity(object|array|null $request, mixed $account): array
+    {
+        ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        $request['slug'] = uniqid();
+        $request['time_create'] = time();
+        $request['status'] = 1;
+        $request['type'] = $request['type'] ?? 'entity';
+        $request['user_id'] = $account['id'] ?? 0;
+        $request['body'] = [];
+        $params = [
+            'user_id' => $request['user_id'],
+            'title' => $request['title'],
+            'slug' => $request['slug'],
+            'status' => $request['status'],
+            'type' => $request['type'],
+            'time_create' => $request['time_create'],
+            "information" => json_encode($request),
+        ];
+        return $this->canonizeItem($this->itemRepository->addItem($params));
+    }
 
+    public function updateEntity(object|array|null $request, mixed $account): array
+    {
+        ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        ///TODO: update mode
+
+        $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
+        $object = $request['body'];
+        $object['id'] = time();
+        $entity['body'][sizeof($entity['body'])] = $object;
+        usort($entity['body'], function ($a, $b) {
+            if ($a['index'] === $b['index']) {
+                return $b['id'] - $a['id'];
+            }
+            return $a['index'] - $b['index'];
+        });
+        $params = [
+            $request['type'] => $request[$request['type']],
+            'information' => json_encode($entity)
+        ];
+        $this->editItem($params);
+        return $entity;
+
+    }
+
+    public function replaceEntity(mixed $request, mixed $account): array
+    {
+        $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
+        $object = $request['body'];
+//        $entity['body'] = array_filter($entity['body'], function ($element) use ($object) {
+//            return $element['id'] !== $object['id'];
+//        });
+
+        $temp = [];
+        $i = 0;
+        foreach ($entity['body'] as $obj) {
+            if($obj['id'] !== $object['id']){
+                $temp [$i] = $obj;
+                $i++;
+            }
+        }
+        $entity['body'] = $temp;
+
+
+        $params = [
+            $request['type'] => $request[$request['type']],
+            'information' => json_encode($entity)
+        ];
+        $this->editItem($params);
+        return $entity;
+    }
 }

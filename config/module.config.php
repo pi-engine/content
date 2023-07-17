@@ -97,6 +97,13 @@ return [
             // Order services factory
             Handler\Admin\Order\ListHandler::class => Factory\Handler\Admin\Order\ListHandlerFactory::class,
 
+            // Entity service factory
+            Handler\Admin\Entity\EntityAddHandler::class => Factory\Handler\Admin\Entity\EntityAddHandlerFactory::class,
+            Handler\Admin\Entity\EntityUpdateHandler::class => Factory\Handler\Admin\Entity\EntityUpdateHandlerFactory::class,
+            Handler\Admin\Entity\EntityReplaceHandler::class => Factory\Handler\Admin\Entity\EntityReplaceHandlerFactory::class,
+            Handler\Admin\Entity\EntityListHandler::class => Factory\Handler\Admin\Entity\EntityListHandlerFactory::class,
+            Handler\Admin\Entity\EntityGetHandler::class => Factory\Handler\Admin\Entity\EntityGetHandlerFactory::class,
+
 
             ///Public Section
             // Item
@@ -1392,6 +1399,115 @@ return [
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
                                             Handler\Admin\Order\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'entity' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/entity',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-entity-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'update' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/update',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-entity-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityUpdateHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'replace' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/replace',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-entity-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityReplaceHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-entity-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-entity-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityGetHandler::class
                                         ),
                                     ],
                                 ],

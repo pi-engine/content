@@ -241,6 +241,7 @@ class MetaService implements ServiceInterface
         $page = $params['page'] ?? 1;
         $order = $params['order'] ?? [ 'id DESC'];
         $offset = ($page - 1) * $limit;
+        $params['type'] = $params['type']??'';
 
         // Set params
         $listParams = [

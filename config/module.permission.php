@@ -577,6 +577,27 @@ return [
                 'admin',
             ],
         ],
+
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'entity',
+            'handler' => 'add',
+            'permission' => 'admin-content-entity-add',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'entity',
+            'handler' => 'list',
+            'permission' => 'admin-content-entity-list',
+            'role' => [
+                'admin',
+            ],
+        ],
     ],
 
 ];
