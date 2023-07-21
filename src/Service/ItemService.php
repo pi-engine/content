@@ -532,10 +532,9 @@ class ItemService implements ServiceInterface
 
 
     // ToDo: update it
-    public function addOrderItem($params, $account)
+    public function addOrderItem($params, $account): array
     {
 
-        $cart = [];
         $limit = $params['limit'] ?? 25;
         $page = $params['page'] ?? 1;
         $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
@@ -549,10 +548,18 @@ class ItemService implements ServiceInterface
             "status" => 1,
 
         ];
-        $cart["items"] = $this->getCart($cart_request);
+        $cart = $this->getCart($cart_request);
 
-        if (sizeof($cart['items']) == 0)
+        if (sizeof($cart) == 0)
             return [];
+
+        $items = [];
+        $index = 0;
+        foreach ($cart as $item) {
+            $items[$index] = $this->getItem($item['slug'], 'slug', ['type' => 'product']);
+        }
+
+
         ///TODO: get address from database from old address if send address_id
 //        if (!isset($params["address_id"]) || $params["address_id"] == null || $params["address_id"] == "null") {
         $address = [
@@ -575,16 +582,13 @@ class ItemService implements ServiceInterface
         $address["id"] = $this->addItem($address_request, $account)->getId();
 
 
-
-
-        $cart["address"] = ($address);
-
         $order_information = [
             "user_id" => $account["id"],
             "status" => "created",
             "date_time" => date('m/d/Y h:i', time()),
             "description" => $params["description"],
-            "items" => ($cart),
+            "items" => $items,
+            "address" => $address,
         ];
 
         $slug = "order-{$account["id"]}-" . time();
@@ -600,8 +604,7 @@ class ItemService implements ServiceInterface
         ];
 
         $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
-        $content = $this->canonizeItem($this->addItem($order_request, $account));
-        return $content;
+        return $this->canonizeItem($this->addItem($order_request, $account));
 //        }
     }
 
