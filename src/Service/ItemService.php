@@ -180,7 +180,6 @@ class ItemService implements ServiceInterface
         $params['status'] = 1;
 
 
-
         $rowSet = $this->itemRepository->getItemList($params);
         foreach ($rowSet as $row) {
             ///TODO: review this codes
@@ -535,6 +534,25 @@ class ItemService implements ServiceInterface
     // ToDo: update it
     public function addOrderItem($params, $account)
     {
+
+        $cart = [];
+        $limit = $params['limit'] ?? 25;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+        $cart_request = [
+            "user_id" => $account["id"],
+            "type" => "cart",
+            "order" => $order,
+            "offset" => $offset,
+            "limit" => $limit,
+            "status" => 1,
+
+        ];
+        $cart["items"] = $this->getCart($cart_request);
+
+        if (sizeof($cart['items']) == 0)
+            return [];
         ///TODO: get address from database from old address if send address_id
 //        if (!isset($params["address_id"]) || $params["address_id"] == null || $params["address_id"] == "null") {
         $address = [
@@ -557,22 +575,8 @@ class ItemService implements ServiceInterface
         $address["id"] = $this->addItem($address_request, $account)->getId();
 
 
-        $limit = $params['limit'] ?? 25;
-        $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
-        $offset = ($page - 1) * $limit;
 
-        $cart_request = [
-            "user_id" => $account["id"],
-            "type" => "cart",
-            "order" => $order,
-            "offset" => $offset,
-            "limit" => $limit,
-            "status" => 1,
 
-        ];
-        $cart = [];
-        $cart["items"] = $this->getCart($cart_request);
         $cart["address"] = ($address);
 
         $order_information = [
@@ -583,9 +587,12 @@ class ItemService implements ServiceInterface
             "items" => ($cart),
         ];
 
+        $slug = "order-{$account["id"]}-" . time();
+        $order_information['slug'] = $slug;
+
         $order_request = [
             "type" => "order",
-            "slug" => "order-{$account["id"]}-" . time(),
+            "slug" => $slug,
             "user_id" => $account["id"],
             "status" => 1,
             "title" => "order-{$account["id"]}",
@@ -593,7 +600,7 @@ class ItemService implements ServiceInterface
         ];
 
         $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
-        $content =  $this->canonizeItem($this->addItem($order_request, $account));
+        $content = $this->canonizeItem($this->addItem($order_request, $account));
         return $content;
 //        }
     }
