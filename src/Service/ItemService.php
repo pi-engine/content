@@ -557,6 +557,7 @@ class ItemService implements ServiceInterface
         $index = 0;
         foreach ($cart as $item) {
             $items[$index] = $this->getItem($item['slug'], 'slug', ['type' => 'product']);
+            $index++;
         }
 
 
