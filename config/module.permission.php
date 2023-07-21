@@ -598,6 +598,29 @@ return [
                 'admin',
             ],
         ],
+
+
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'item',
+            'handler' => 'get',
+            'permission' => 'admin-content-item-get',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'item',
+            'handler' => 'list',
+            'permission' => 'admin-content-item-list',
+            'role' => [
+                'admin',
+            ],
+        ],
+
     ],
 
 ];

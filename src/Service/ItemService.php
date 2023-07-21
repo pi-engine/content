@@ -180,10 +180,14 @@ class ItemService implements ServiceInterface
         $params['status'] = 1;
 
 
+
         $rowSet = $this->itemRepository->getItemList($params);
         foreach ($rowSet as $row) {
+            ///TODO: review this codes
             $list[] = $this->canonizeItem($row);
+            $list = $this->canonizeItem($row);
         }
+
 
 
         $count = $this->itemRepository->getItemCount($params);
@@ -290,6 +294,11 @@ class ItemService implements ServiceInterface
                 $data['cost_dollar_view'] = '670 دلار';
                 $data['type'] = 'tour';
                 break;
+            case 'product':
+                $data['price'] = 100;
+                $data['price_view'] = '1,000,000 تومان';
+                $data['stock_status'] = 1;
+                $data['stock_status_view'] = 'موجود در انبار';
         }
 
         // Set information

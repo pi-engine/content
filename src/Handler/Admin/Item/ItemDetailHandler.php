@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Public\Item;
+namespace Content\Handler\Admin\Item;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
