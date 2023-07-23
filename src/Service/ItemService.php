@@ -596,7 +596,7 @@ class ItemService implements ServiceInterface
         $order_information['slug'] = $slug;
 
         $order_request = [
-            "type" => "order",
+            "type" => "module_order",
             "slug" => $slug,
             "user_id" => $account["id"],
             "status" => 1,
