@@ -466,6 +466,8 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+                                    AuthorizationMiddleware::class,
                                     Handler\Api\MainHandler::class
                                 ),
                             ],
