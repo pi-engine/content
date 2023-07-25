@@ -1,8 +1,8 @@
 <?php
 
-namespace Content\Handler\Public\Item;
+namespace Content\Handler\Public\Meta\Key;
 
-use Content\Service\ItemService;
+use Content\Service\MetaService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ItemDetailHandler implements RequestHandlerInterface
+class MetaKeyListHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -18,35 +18,25 @@ class ItemDetailHandler implements RequestHandlerInterface
     /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
 
-    /** @var ItemService */
-    protected ItemService $itemService;
+    /** @var MetaService */
+    protected MetaService $metaService;
 
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface $streamFactory,
-        ItemService $itemService
+        MetaService $metaService
     ) {
         $this->responseFactory = $responseFactory;
         $this->streamFactory   = $streamFactory;
-        $this->itemService     = $itemService;
+        $this->metaService     = $metaService;
     }
 
-    /// TODO: check slug and check public access
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         // Get request body
         $requestBody = $request->getParsedBody();
-
-        // Get list of notifications
-        $result = $this->itemService->getItem($requestBody['slug']??'', 'slug',$requestBody);
-
-        // Set result
-        $result = [
-            'result' => true,
-            'data'   => $result,
-            'error'  => [],
-        ];
+        $result = $this->metaService->getMetaKeyList($requestBody);
 
         return new JsonResponse($result);
     }

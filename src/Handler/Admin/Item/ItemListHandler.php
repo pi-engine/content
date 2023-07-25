@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Public\Item;
+namespace Content\Handler\Admin\Item;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ItemDetailHandler implements RequestHandlerInterface
+class ItemListHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -32,21 +32,13 @@ class ItemDetailHandler implements RequestHandlerInterface
         $this->itemService     = $itemService;
     }
 
-    /// TODO: check slug and check public access
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         // Get request body
         $requestBody = $request->getParsedBody();
-
-        // Get list of notifications
-        $result = $this->itemService->getItem($requestBody['slug']??'', 'slug',$requestBody);
-
-        // Set result
-        $result = [
-            'result' => true,
-            'data'   => $result,
-            'error'  => [],
-        ];
+        // $account = $request->getAttribute('account');
+        // $requestBody["user_id"] = $account['id'];
+        $result = $this->itemService->getItemList($requestBody);
 
         return new JsonResponse($result);
     }

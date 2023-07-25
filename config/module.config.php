@@ -97,11 +97,32 @@ return [
             // Order services factory
             Handler\Admin\Order\ListHandler::class => Factory\Handler\Admin\Order\ListHandlerFactory::class,
 
+            // Entity service factory
+            Handler\Admin\Entity\EntityAddHandler::class => Factory\Handler\Admin\Entity\EntityAddHandlerFactory::class,
+            Handler\Admin\Entity\EntityUpdateHandler::class => Factory\Handler\Admin\Entity\EntityUpdateHandlerFactory::class,
+            Handler\Admin\Entity\EntityReplaceHandler::class => Factory\Handler\Admin\Entity\EntityReplaceHandlerFactory::class,
+            Handler\Admin\Entity\EntityListHandler::class => Factory\Handler\Admin\Entity\EntityListHandlerFactory::class,
+            Handler\Admin\Entity\EntityGetHandler::class => Factory\Handler\Admin\Entity\EntityGetHandlerFactory::class,
+
+            // Item
+            Handler\Admin\Item\ItemListHandler::class => Factory\Handler\Admin\Item\ItemListHandlerFactory::class,
+            Handler\Admin\Item\ItemDetailHandler::class => Factory\Handler\Admin\Item\ItemDetailHandlerFactory::class,
+
+            // Meta
+            Handler\Admin\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyListHandlerFactory::class,
+            Handler\Admin\Meta\Value\MetaValueListHandler::class => Factory\Handler\Admin\Meta\Value\MetaValueListHandlerFactory::class,
+
+
+
 
             ///Public Section
             // Item
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
             Handler\Public\Item\ItemDetailHandler::class => Factory\Handler\Public\Item\ItemDetailHandlerFactory::class,
+
+            // Meta
+            Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\Key\MetaKeyListHandlerFactory::class,
+            Handler\Public\Meta\Value\MetaValueListHandler::class => Factory\Handler\Public\Meta\Value\MetaValueListHandlerFactory::class,
 
 
         ],
@@ -161,6 +182,94 @@ return [
                                     ],
                                 ],
                             ],
+                        ]
+                    ],
+                    'meta' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/meta',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'public-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            Handler\Public\Meta\Key\MetaKeyListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'key' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/key',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'public',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'public-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Meta\Key\MetaKeyListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+
+                                ]
+                            ],
+                            'value' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/value',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'public',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'public-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Meta\Value\MetaValueListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+
+                                ]
+                            ],
+
+
                         ]
                     ],
 
@@ -357,6 +466,8 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     SecurityMiddleware::class,
+                                    AuthenticationMiddleware::class,
+                                    AuthorizationMiddleware::class,
                                     Handler\Api\MainHandler::class
                                 ),
                             ],
@@ -426,7 +537,8 @@ return [
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
-                                            AuthorizationMiddleware::class,
+                                           ///TODO: resolve and uncomment this
+                                           // AuthorizationMiddleware::class,
                                             Handler\Api\Cart\AddHandler::class
                                         ),
                                     ],
@@ -486,7 +598,8 @@ return [
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
-                                            AuthorizationMiddleware::class,
+                                            ///TODO: resolve and uncomment this
+                                           // AuthorizationMiddleware::class,
                                             Handler\Api\Cart\ListHandler::class
                                         ),
                                     ],
@@ -1167,6 +1280,151 @@ return [
                             ],
                         ],
                     ],
+
+                    'item' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/item',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'admin-content-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Item\ItemDetailHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Item\ItemListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'meta' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/meta',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Meta\Key\MetaKeyListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'key' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/key',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'admin',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'admin-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    AuthenticationMiddleware::class,
+                                                    AuthorizationMiddleware::class,
+                                                    Handler\Admin\Meta\Key\MetaKeyListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+
+                                ]
+                            ],
+                            'value' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/value',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'admin',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'admin-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    AuthenticationMiddleware::class,
+                                                    AuthorizationMiddleware::class,
+                                                    Handler\Admin\Meta\Value\MetaValueListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+
+                                ]
+                            ],
+
+
+                        ]
+                    ],
+
                     // Admin installer
                     'installer' => [
                         'type' => Literal::class,
@@ -1300,6 +1558,115 @@ return [
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
                                             Handler\Admin\Order\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'entity' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/entity',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-entity-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'update' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/update',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-entity-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityUpdateHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'replace' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/replace',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-entity-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityReplaceHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-entity-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-entity-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityGetHandler::class
                                         ),
                                     ],
                                 ],

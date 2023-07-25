@@ -25,4 +25,8 @@ interface ItemRepositoryInterface
 
     public function getGroupList($params);
 
+    public function getMetaKeyCount(array $params);
+
+    public function getMetaKeyList(array $listParams);
+
 }

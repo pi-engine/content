@@ -184,7 +184,9 @@ class ItemService implements ServiceInterface
 
         $rowSet = $this->itemRepository->getItemList($params);
         foreach ($rowSet as $row) {
+            ///TODO: review this codes
             $list[] = $this->canonizeItem($row);
+            $list = $this->canonizeItem($row);
         }
 
 
@@ -290,6 +292,11 @@ class ItemService implements ServiceInterface
             case 'tour':
                 $data['type'] = 'tour';
                 break;
+            case 'product':
+                $data['price'] = 1000;
+                $data['price_view'] = '1,000,000 تومان';
+                $data['stock_status'] = 1;
+                $data['stock_status_view'] = 'موجود در انبار';
         }
 
         // Set information
@@ -527,71 +534,81 @@ class ItemService implements ServiceInterface
 
 
     // ToDo: update it
-    public function addOrderItem($params, $account)
+    public function addOrderItem($params, $account): array
     {
-        $address = [];
-        if (isset($params["address_id"]) && ($params["address_id"] != null) && ($params["address_id"] != "null")) {
-            ///TODO:get address by address_id from db
-            $address = [];
-        } else {
-            $address = [
-                "id" => null,
-                "name" => $params["name"],
-                "phone" => $params["phone"],
-                "address" => $params["address"],
-                "state" => $params["state"],
-                "city" => $params["city"],
-                "zip_code" => $params["zip_code"],
-            ];
-            $address_request = [
-                "type" => "address",
-                "slug" => "address-{$account["id"]}-" . time(),
-                "user_id" => $account["id"],
-                "status" => 1,
-                "title" => "address-{$account["id"]}",
-                "information" => json_encode($address),
-            ];
-            $address["id"] = $this->addItem($address_request, $account)->getId();
 
+        $limit = $params['limit'] ?? 25;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $offset = ($page - 1) * $limit;
+        $cart_request = [
+            "user_id" => $account["id"],
+            "type" => "cart",
+            "order" => $order,
+            "offset" => $offset,
+            "limit" => $limit,
+            "status" => 1,
 
-            $limit = $params['limit'] ?? 25;
-            $page = $params['page'] ?? 1;
-            $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
-            $offset = ($page - 1) * $limit;
+        ];
+        $cart = $this->getCart($cart_request);
 
-            $cart_request = [
-                "user_id" => $account["id"],
-                "type" => "cart",
-                "order" => $order,
-                "offset" => $offset,
-                "limit" => $limit,
-                "status" => 1,
+        if (sizeof($cart) == 0)
+            return [];
 
-            ];
-            $cart = [];
-            $cart["items"] = $this->getCart($cart_request);
-            $cart["address"] = ($address);
-
-            $order_information = [
-                "user_id" => $account["id"],
-                "status" => "created",
-                "date_time" => date('m/d/Y h:i', time()),
-                "description" => $params["description"],
-                "items" => ($cart),
-            ];
-
-            $order_request = [
-                "type" => "order",
-                "slug" => "order-{$account["id"]}-" . time(),
-                "user_id" => $account["id"],
-                "status" => 1,
-                "title" => "order-{$account["id"]}",
-                "information" => json_encode($order_information),
-            ];
-
-            $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
-            return $this->addItem($order_request, $account);
+        $items = [];
+        $index = 0;
+        foreach ($cart as $item) {
+            $items[$index] = $this->getItem($item['slug'], 'slug', ['type' => 'product']);
+            $index++;
         }
+
+
+        ///TODO: get address from database from old address if send address_id
+//        if (!isset($params["address_id"]) || $params["address_id"] == null || $params["address_id"] == "null") {
+        $address = [
+            "id" => null,
+            "name" => $params["name"],
+            "phone" => $params["phone"],
+            "address" => $params["address"],
+            "state" => $params["state"],
+            "city" => $params["city"],
+            "zip_code" => $params["zip_code"],
+        ];
+        $address_request = [
+            "type" => "address",
+            "slug" => "address-{$account["id"]}-" . time(),
+            "user_id" => $account["id"],
+            "status" => 1,
+            "title" => "address-{$account["id"]}",
+            "information" => json_encode($address),
+        ];
+        $address["id"] = $this->addItem($address_request, $account)->getId();
+
+
+        $order_information = [
+            "user_id" => $account["id"],
+            "status" => "created",
+            "date_time" => date('m/d/Y h:i', time()),
+            "description" => $params["description"],
+            "items" => $items,
+            "address" => $address,
+        ];
+
+        $slug = "order-{$account["id"]}-" . time();
+        $order_information['slug'] = $slug;
+
+        $order_request = [
+            "type" => "module_order",
+            "slug" => $slug,
+            "user_id" => $account["id"],
+            "status" => 1,
+            "title" => "order-{$account["id"]}",
+            "information" => json_encode($order_information),
+        ];
+
+        $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
+        return $this->canonizeItem($this->addItem($order_request, $account));
+//        }
     }
 
 
@@ -1572,5 +1589,75 @@ class ItemService implements ServiceInterface
 
     }
 
+    public function addEntity(object|array|null $request, mixed $account): array
+    {
+        ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        $request['slug'] = uniqid();
+        $request['time_create'] = time();
+        $request['status'] = 1;
+        $request['type'] = $request['type'] ?? 'entity';
+        $request['user_id'] = $account['id'] ?? 0;
+        $request['body'] = [];
+        $params = [
+            'user_id' => $request['user_id'],
+            'title' => $request['title'],
+            'slug' => $request['slug'],
+            'status' => $request['status'],
+            'type' => $request['type'],
+            'time_create' => $request['time_create'],
+            "information" => json_encode($request),
+        ];
+        return $this->canonizeItem($this->itemRepository->addItem($params));
+    }
 
+    public function updateEntity(object|array|null $request, mixed $account): array
+    {
+        ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        ///TODO: update mode
+
+        $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
+        $object = $request['body'];
+        $object['id'] = time();
+        $entity['body'][sizeof($entity['body'])] = $object;
+        usort($entity['body'], function ($a, $b) {
+            if ($a['index'] === $b['index']) {
+                return $b['id'] - $a['id'];
+            }
+            return $a['index'] - $b['index'];
+        });
+        $params = [
+            $request['type'] => $request[$request['type']],
+            'information' => json_encode($entity)
+        ];
+        $this->editItem($params);
+        return $entity;
+
+    }
+
+    public function replaceEntity(mixed $request, mixed $account): array
+    {
+        $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
+        $object = $request['body'];
+//        $entity['body'] = array_filter($entity['body'], function ($element) use ($object) {
+//            return $element['id'] !== $object['id'];
+//        });
+
+        $temp = [];
+        $i = 0;
+        foreach ($entity['body'] as $obj) {
+            if ($obj['id'] !== $object['id']) {
+                $temp [$i] = $obj;
+                $i++;
+            }
+        }
+        $entity['body'] = $temp;
+
+
+        $params = [
+            $request['type'] => $request[$request['type']],
+            'information' => json_encode($entity)
+        ];
+        $this->editItem($params);
+        return $entity;
+    }
 }

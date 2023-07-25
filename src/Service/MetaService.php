@@ -187,7 +187,7 @@ class MetaService implements ServiceInterface
         return $this->canonizeMeta($row);
     }
 
-    private function minusDislike(array $metaPrams, array $log)
+    private function minusDislike(array $metaPrams, array $log): void
     {
         $log["time_delete"] = time();
         $log["action"] = "dislike";
@@ -199,7 +199,7 @@ class MetaService implements ServiceInterface
         $this->updateOpinion($prams, $log);
     }
 
-    private function minusLike(array $metaPrams, array $log)
+    private function minusLike(array $metaPrams, array $log): void
     {
         $log["time_delete"] = time();
         $log["action"] = "like";
@@ -235,5 +235,88 @@ class MetaService implements ServiceInterface
         $this->logService->updateLog($log);
     }
 
+    public function getMetaKeyList(object|array|null $params): array
+    {
+        $limit = $params['limit'] ?? 125;
+        $page = $params['page'] ?? 1;
+        $order = $params['order'] ?? [ 'id DESC'];
+        $offset = ($page - 1) * $limit;
+        $params['type'] = $params['type']??'';
+
+        // Set params
+        $listParams = [
+            'order' => $order,
+            'offset' => $offset,
+            'limit' => $limit,
+            'type' => $params['type'],
+            'status' => 1,
+        ];
+
+        $rowSet = $this->itemRepository->getMetaKeyList($listParams);
+        $list = [];
+        foreach ($rowSet as $row) {
+            $list[] = $this->canonizeMetaKey($row, $params['type']);
+        }
+
+        // Get count
+        $count = $this->itemRepository->getMetaKeyCount($listParams);
+
+        return [
+            'result' => true,
+            'data' => [
+                'list' => $list,
+                'paginator' => [
+                    'count' => $count,
+                    'limit' => $limit,
+                    'page' => $page,
+                ],
+                'filters' => [],
+            ],
+            'error' => [],
+        ];
+
+
+    }
+
+
+    public function getMetaValueList(object|array|null $params): array
+    {
+       return $this->itemService->getItemList(['type'=>'meta_'.$params['key']??'']);
+    }
+
+    private function canonizeMetaKey(mixed $meta, mixed $type = 'global'): array
+    {
+        if (empty($meta)) {
+            return [];
+        }
+
+        if (is_object($meta)) {
+            $meta = [
+                'id' => $meta->getId(),
+                'key' => $meta->getKey(),
+                'value' => $meta->getValue(),
+                'type' => $meta->getType(),
+                'suffix' => $meta->getSuffix(),
+                'option' => json_decode($meta->getOption()),
+                'logo' => $meta->getLogo(),
+                'status' => $meta->getStatus(),
+
+            ];
+        } else {
+            $meta = [
+                'id' => $meta['id'],
+                'key' => $meta['key'],
+                'value' => $meta['value'],
+                'type' => $meta['type'],
+                'suffix' => $meta['suffix'],
+                'option' => json_decode( $meta['option']),
+                'logo' => $meta['logo'],
+                'status' => $meta['status'],
+            ];
+        }
+
+        return $meta;
+
+    }
 
 }
