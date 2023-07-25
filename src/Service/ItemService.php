@@ -293,7 +293,7 @@ class ItemService implements ServiceInterface
                 $data['type'] = 'tour';
                 break;
             case 'product':
-                $data['price'] = 100;
+                $data['price'] = 1000;
                 $data['price_view'] = '1,000,000 تومان';
                 $data['stock_status'] = 1;
                 $data['stock_status_view'] = 'موجود در انبار';
