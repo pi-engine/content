@@ -1615,20 +1615,43 @@ class ItemService implements ServiceInterface
 
         $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
         $object = $request['body'];
-        $object['id'] = time();
-        $entity['body'][sizeof($entity['body'])] = $object;
-        usort($entity['body'], function ($a, $b) {
-            if ($a['index'] === $b['index']) {
-                return $b['id'] - $a['id'];
+        $params = [];
+        if ($request['mode'] == 'body') {
+            $object['id'] = time();
+            $entity['body'][sizeof($entity['body'])] = $object;
+
+            usort($entity['body'], function ($a, $b) {
+                if ($a['index'] === $b['index']) {
+                    return $b['id'] - $a['id'];
+                }
+                return $a['index'] - $b['index'];
+            });
+            $params = [
+                'information' => json_encode($entity)
+            ];
+        }
+
+        if ($request['mode'] == 'entity') {
+            $request['type'] = $request['type'] ?? 'entity';
+            $request['body'] = [];
+
+            $information = $entity;
+            foreach ($information as $key => $value) {
+                if (isset($request[$key]) && $key != 'body') {
+                    $information[$key] = $request[$key];
+                }
             }
-            return $a['index'] - $b['index'];
-        });
-        $params = [
-            $request['type'] => $request[$request['type']],
-            'information' => json_encode($entity)
-        ];
-        $this->editItem($params);
-        return $entity;
+
+            $params = [
+                'title' => $request['title'],
+                'status' => $request['status'] ?? 1,
+                'information' => json_encode($information),
+            ];
+
+        }
+        $params[$request['type']] = $request[$request['type']];
+
+        return $this->canonizeItem($this->editItem($params));
 
     }
 
