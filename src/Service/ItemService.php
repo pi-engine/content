@@ -1605,13 +1605,16 @@ class ItemService implements ServiceInterface
             'time_create' => $request['time_create'],
             "information" => json_encode($request),
         ];
-        return $this->canonizeItem($this->itemRepository->addItem($params));
+
+        $item = ($this->itemRepository->addItem($params));
+        $information = $this->canonizeItem($item);
+        $information['id'] = $item->getId();
+        return $this->canonizeItem($this->editItem(['id' => $item->getId(), 'information' => json_encode($information)]));
     }
 
     public function updateEntity(object|array|null $request, mixed $account): array
     {
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
-        ///TODO: update mode
 
         $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
         $object = $request['body'];
