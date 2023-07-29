@@ -1589,7 +1589,10 @@ class ItemService implements ServiceInterface
 
     public function addEntity(object|array|null $request, mixed $account): array
     {
+
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        if (isset($request['meta']))
+            $this->addMetaData($request);
         $request['slug'] = uniqid();
         $request['time_create'] = time();
         $request['status'] = 1;
@@ -1615,6 +1618,8 @@ class ItemService implements ServiceInterface
     public function updateEntity(object|array|null $request, mixed $account): array
     {
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        if (isset($request['meta']))
+            $this->addMetaData($request);
 
         $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
         $object = $request['body'];
@@ -1683,5 +1688,38 @@ class ItemService implements ServiceInterface
         ];
         $this->editItem($params);
         return $entity;
+    }
+
+    private function addMetaData(object|array $request): void
+    {
+        foreach ($request['meta'] as $meta) {
+            $params = [];
+            $value = $this->getItem(['slug' => $meta['meta_value']]);
+            if (sizeof($value) > 0) {
+                $params = [
+                    "item_slug" => $request['slug'] ?? null,
+                    "meta_key" => $meta['meta_key'] ?? null,
+                    "value_slug" => $value['slug'] ?? null,
+                    "value_string" => $value['title'] ?? null,
+                    "value_number" => $value['number'] ?? null,
+                    "value_id" => $value['id'],
+                    'time_create' => time()
+                ];
+            } else {
+                $params = [
+                    "item_slug" => $request['slug'] ?? null,
+                    "meta_key" => $meta['meta_key'] ?? null,
+                    "value_string" => $meta['meta_value'] ?? null,
+                    "value_number" => $meta['meta_value'] ?? null,
+                    'time_create' => time()
+                ];
+            }
+            if (isset($request['id'])) {
+                if ($request['id'] != null)
+                    ///TODO:resolve this
+                    $params["item_id"] = $request['id'];
+            }
+            $this->itemRepository->addMetaValue($params);
+        }
     }
 }
