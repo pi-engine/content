@@ -1694,7 +1694,7 @@ class ItemService implements ServiceInterface
     {
         foreach ($request['meta'] as $meta) {
             $params = [];
-            $value = $this->getItem(['slug' => $meta['meta_value']]);
+            $value = $this->getItem($meta['meta_value'], 'slug');
             if (sizeof($value) > 0) {
                 $params = [
                     "item_slug" => $request['slug'] ?? null,
@@ -1710,6 +1710,7 @@ class ItemService implements ServiceInterface
                     "item_slug" => $request['slug'] ?? null,
                     "meta_key" => $meta['meta_key'] ?? null,
                     "value_string" => $meta['meta_value'] ?? null,
+                    "value_slug" => $meta['meta_value'] ?? null,
                     "value_number" => $meta['meta_value'] ?? null,
                     'time_create' => time()
                 ];
