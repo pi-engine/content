@@ -1618,6 +1618,8 @@ class ItemService implements ServiceInterface
     public function updateEntity(object|array|null $request, mixed $account): array
     {
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        ///
+        $this->itemRepository->destroyMetaValue(['item_slug'=>$request['slug']]);
         if (isset($request['meta']))
             $this->addMetaData($request);
 
