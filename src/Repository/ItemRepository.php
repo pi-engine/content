@@ -570,5 +570,14 @@ class ItemRepository implements ItemRepositoryInterface
         return $resultSet;
     }
 
+    public function destroyMetaValue($where): void
+    {
+        $update = new Delete($this->tableMetaValue);
+        $update->where($where);
+
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+    }
 
 }

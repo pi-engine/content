@@ -1591,7 +1591,10 @@ class ItemService implements ServiceInterface
 
     public function addEntity(object|array|null $request, mixed $account): array
     {
+
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        if (isset($request['meta']))
+            $this->addMetaData($request);
         $request['slug'] = uniqid();
         $request['time_create'] = time();
         $request['status'] = 1;
@@ -1607,30 +1610,60 @@ class ItemService implements ServiceInterface
             'time_create' => $request['time_create'],
             "information" => json_encode($request),
         ];
-        return $this->canonizeItem($this->itemRepository->addItem($params));
+
+        $item = ($this->itemRepository->addItem($params));
+        $information = $this->canonizeItem($item);
+        $information['id'] = $item->getId();
+        return $this->canonizeItem($this->editItem(['id' => $item->getId(), 'information' => json_encode($information)]));
     }
 
     public function updateEntity(object|array|null $request, mixed $account): array
     {
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
-        ///TODO: update mode
+        ///
+        $this->itemRepository->destroyMetaValue(['item_slug'=>$request['slug']]);
+        if (isset($request['meta']))
+            $this->addMetaData($request);
 
         $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
         $object = $request['body'];
-        $object['id'] = time();
-        $entity['body'][sizeof($entity['body'])] = $object;
-        usort($entity['body'], function ($a, $b) {
-            if ($a['index'] === $b['index']) {
-                return $b['id'] - $a['id'];
+        $params = [];
+        if ($request['mode'] == 'body') {
+            $object['id'] = time();
+            $entity['body'][sizeof($entity['body'])] = $object;
+
+            usort($entity['body'], function ($a, $b) {
+                if ($a['index'] === $b['index']) {
+                    return $b['id'] - $a['id'];
+                }
+                return $a['index'] - $b['index'];
+            });
+            $params = [
+                'information' => json_encode($entity)
+            ];
+        }
+
+        if ($request['mode'] == 'entity') {
+            $request['type'] = $request['type'] ?? 'entity';
+            $request['body'] = [];
+
+            $information = $entity;
+            foreach ($information as $key => $value) {
+                if (isset($request[$key]) && $key != 'body') {
+                    $information[$key] = $request[$key];
+                }
             }
-            return $a['index'] - $b['index'];
-        });
-        $params = [
-            $request['type'] => $request[$request['type']],
-            'information' => json_encode($entity)
-        ];
-        $this->editItem($params);
-        return $entity;
+
+            $params = [
+                'title' => $request['title'],
+                'status' => $request['status'] ?? 1,
+                'information' => json_encode($information),
+            ];
+
+        }
+        $params[$request['type']] = $request[$request['type']];
+
+        return $this->canonizeItem($this->editItem($params));
 
     }
 
@@ -1659,5 +1692,39 @@ class ItemService implements ServiceInterface
         ];
         $this->editItem($params);
         return $entity;
+    }
+
+    private function addMetaData(object|array $request): void
+    {
+        foreach ($request['meta'] as $meta) {
+            $params = [];
+            $value = $this->getItem($meta['meta_value'], 'slug');
+            if (sizeof($value) > 0) {
+                $params = [
+                    "item_slug" => $request['slug'] ?? null,
+                    "meta_key" => $meta['meta_key'] ?? null,
+                    "value_slug" => $value['slug'] ?? null,
+                    "value_string" => $value['title'] ?? null,
+                    "value_number" => $value['number'] ?? null,
+                    "value_id" => $value['id'],
+                    'time_create' => time()
+                ];
+            } else {
+                $params = [
+                    "item_slug" => $request['slug'] ?? null,
+                    "meta_key" => $meta['meta_key'] ?? null,
+                    "value_string" => $meta['meta_value'] ?? null,
+                    "value_slug" => $meta['meta_value'] ?? null,
+                    "value_number" => $meta['meta_value'] ?? null,
+                    'time_create' => time()
+                ];
+            }
+            if (isset($request['id'])) {
+                if ($request['id'] != null)
+                    ///TODO:resolve this
+                    $params["item_id"] = $request['id'];
+            }
+            $this->itemRepository->addMetaValue($params);
+        }
     }
 }

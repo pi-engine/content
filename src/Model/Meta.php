@@ -11,7 +11,7 @@ class Meta
     private string $meta_key;
     private string $value_string;
     private string $value_id;
-    private int $value_number;
+    private mixed $value_number;
     private string $value_slug;
     private int $status;
     private string $logo;
@@ -27,7 +27,7 @@ class Meta
      * @param string $meta_key
      * @param string $value_string
      * @param string $value_id
-     * @param int $value_number
+     * @param mixed $value_number
      * @param string $value_slug
      * @param int $status
      * @param string $logo
@@ -35,7 +35,7 @@ class Meta
      * @param int $time_update
      * @param int $time_delete
      */
-    public function __construct(mixed $id, int $item_id, string $item_slug, string $item_type, string $meta_key, string $value_string, string $value_id, int $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
+    public function __construct(mixed $id, int $item_id, string $item_slug, string $item_type, string $meta_key, string $value_string, string $value_id, mixed $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
     {
         $this->id = $id;
         $this->item_id = $item_id;
@@ -185,7 +185,7 @@ class Meta
     /**
      * @return int
      */
-    public function getValueNumber(): int
+    public function getValueNumber(): mixed
     {
         return $this->value_number;
     }

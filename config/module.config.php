@@ -99,6 +99,7 @@ return [
 
             // Entity service factory
             Handler\Admin\Entity\EntityAddHandler::class => Factory\Handler\Admin\Entity\EntityAddHandlerFactory::class,
+            Handler\Admin\Entity\EntityRemoveHandler::class => Factory\Handler\Admin\Entity\EntityRemoveHandlerFactory::class,
             Handler\Admin\Entity\EntityUpdateHandler::class => Factory\Handler\Admin\Entity\EntityUpdateHandlerFactory::class,
             Handler\Admin\Entity\EntityReplaceHandler::class => Factory\Handler\Admin\Entity\EntityReplaceHandlerFactory::class,
             Handler\Admin\Entity\EntityListHandler::class => Factory\Handler\Admin\Entity\EntityListHandlerFactory::class,
@@ -1587,6 +1588,26 @@ return [
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
                                             Handler\Admin\Entity\EntityAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'remove' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/remove',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'entity',
+                                        'handler' => 'remove',
+                                        'permission' => 'admin-content-entity-remove',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Entity\EntityRemoveHandler::class
                                         ),
                                     ],
                                 ],
