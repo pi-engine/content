@@ -235,7 +235,7 @@ class ItemService implements ServiceInterface
         return $list;
     }
 
-    public function canonizeMetaItemID(object|array $meta): int
+    public function canonizeMetaItemID(object|array $meta): int|null
     {
         if (empty($meta)) {
             return 0;
@@ -344,7 +344,7 @@ class ItemService implements ServiceInterface
                     case 'color':
                     case 'size':
                         $filters[$key] = [
-                            'key' => $key,
+                            'meta_key' => $key,
                             'value' => explode(',', $value),
                             'type' => 'string',
                         ];
@@ -353,7 +353,7 @@ class ItemService implements ServiceInterface
                     case 'brand':
 //                    case 'category':
                         $filters[$key] = [
-                            'key' => $key,
+                            'meta_key' => $key,
                             'value' => $value,
                             'type' => 'id',
                         ];
@@ -369,7 +369,7 @@ class ItemService implements ServiceInterface
 
                     case 'max_price':
                         $filters[$key] = [
-                            'key' => $key,
+                            'meta_key' => $key,
                             'value' => $value,
                             'type' => 'rangeMax',
                         ];
@@ -377,28 +377,28 @@ class ItemService implements ServiceInterface
 
                     case 'min_price':
                         $filters[$key] = [
-                            'key' => $key,
+                            'meta_key' => $key,
                             'value' => $value,
                             'type' => 'rangeMin',
                         ];
                         break;
                     case 'categories':
                         $filters[$key] = [
-                            'key' => 'category',
+                            'meta_key' => 'category',
                             'value' => explode(',', $value),
                             'type' => 'slug',
                         ];
                         break;
                     case 'colors':
                         $filters[$key] = [
-                            'key' => 'color',
+                            'meta_key' => 'color',
                             'value' => explode(',', $value),
                             'type' => 'slug',
                         ];
                         break;
                     case 'shed_colors':
                         $filters[$key] = [
-                            'key' => 'shed_color',
+                            'meta_key' => 'shed_color',
                             'value' => explode(',', $value),
                             'type' => 'slug',
                         ];
@@ -1754,7 +1754,7 @@ class ItemService implements ServiceInterface
                     ///TODO:resolve this
                     $params["item_id"] = $request['id'];
             }
-
+            $params["status"] = 1;
             $this->itemRepository->addMetaValue($params);
         }
     }
