@@ -114,12 +114,13 @@ return [
             Handler\Admin\Meta\Value\MetaValueListHandler::class => Factory\Handler\Admin\Meta\Value\MetaValueListHandlerFactory::class,
 
 
-
-
             ///Public Section
             // Item
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
             Handler\Public\Item\ItemDetailHandler::class => Factory\Handler\Public\Item\ItemDetailHandlerFactory::class,
+
+            // Dashboard
+            Handler\Public\Dashboard\DashboardHandler::class => Factory\Handler\Public\Dashboard\DashboardHandlerFactory::class,
 
             // Meta
             Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\Key\MetaKeyListHandlerFactory::class,
@@ -140,6 +141,51 @@ return [
                 ],
                 'child_routes' => [
 
+                    'dashboard' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/dashboard',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'public-content-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            Handler\Public\Item\ItemDetailHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'public-content-dashboard-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+//                                            SecurityMiddleware::class,
+                                            Handler\Public\Dashboard\DashboardHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
                     'item' => [
                         'type' => Literal::class,
                         'options' => [
@@ -538,8 +584,8 @@ return [
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
-                                           ///TODO: resolve and uncomment this
-                                           // AuthorizationMiddleware::class,
+                                            ///TODO: resolve and uncomment this
+                                            // AuthorizationMiddleware::class,
                                             Handler\Api\Cart\AddHandler::class
                                         ),
                                     ],
@@ -600,7 +646,7 @@ return [
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             ///TODO: resolve and uncomment this
-                                           // AuthorizationMiddleware::class,
+                                            // AuthorizationMiddleware::class,
                                             Handler\Api\Cart\ListHandler::class
                                         ),
                                     ],
