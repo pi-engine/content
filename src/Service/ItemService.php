@@ -44,6 +44,9 @@ class ItemService implements ServiceInterface
             'title',
             'color',
             'size',
+            'categories',
+            'colors',
+            'shed_colors',
         ];
 
     // ToDo: get it from DB and cache
@@ -127,7 +130,9 @@ class ItemService implements ServiceInterface
 
         $itemIdList = [];
         if (!empty($filters)) {
+
             $rowSet = $this->itemRepository->getIDFromFilter($filters);
+
             foreach ($rowSet as $row) {
                 $itemIdList[] = $this->canonizeMetaItemID($row);
             }
@@ -334,7 +339,7 @@ class ItemService implements ServiceInterface
         $filters = [];
         foreach ($params as $key => $value) {
             if (in_array($key, $this->allowKey)) {
-                // ToDo: get this info from DB
+                // TODO: get this info from DB
                 switch ($key) {
                     case 'color':
                     case 'size':
@@ -346,7 +351,7 @@ class ItemService implements ServiceInterface
                         break;
 
                     case 'brand':
-                    case 'category':
+//                    case 'category':
                         $filters[$key] = [
                             'key' => $key,
                             'value' => $value,
@@ -375,6 +380,27 @@ class ItemService implements ServiceInterface
                             'key' => $key,
                             'value' => $value,
                             'type' => 'rangeMin',
+                        ];
+                        break;
+                    case 'categories':
+                        $filters[$key] = [
+                            'key' => 'category',
+                            'value' => explode(',', $value),
+                            'type' => 'slug',
+                        ];
+                        break;
+                    case 'colors':
+                        $filters[$key] = [
+                            'key' => 'color',
+                            'value' => explode(',', $value),
+                            'type' => 'slug',
+                        ];
+                        break;
+                    case 'shed_colors':
+                        $filters[$key] = [
+                            'key' => 'shed_color',
+                            'value' => explode(',', $value),
+                            'type' => 'slug',
                         ];
                         break;
                 }
@@ -1590,9 +1616,7 @@ class ItemService implements ServiceInterface
     public function addEntity(object|array|null $request, mixed $account): array
     {
 
-        ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
-        if (isset($request['meta']))
-            $this->addMetaData($request);
+
         $request['slug'] = uniqid();
         $request['time_create'] = time();
         $request['status'] = 1;
@@ -1609,7 +1633,13 @@ class ItemService implements ServiceInterface
             "information" => json_encode($request),
         ];
 
+
         $item = ($this->itemRepository->addItem($params));
+        ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
+        if (isset($request['meta'])) {
+            $request['id'] = $item->getId();
+            $this->addMetaData($request);
+        }
         $information = $this->canonizeItem($item);
         $information['id'] = $item->getId();
         return $this->canonizeItem($this->editItem(['id' => $item->getId(), 'information' => json_encode($information)]));
@@ -1618,10 +1648,8 @@ class ItemService implements ServiceInterface
     public function updateEntity(object|array|null $request, mixed $account): array
     {
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
-        ///
-        $this->itemRepository->destroyMetaValue(['item_slug'=>$request['slug']]);
-        if (isset($request['meta']))
-            $this->addMetaData($request);
+        $this->itemRepository->destroyMetaValue(['item_slug' => $request['slug']]);
+
 
         $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
         $object = $request['body'];
@@ -1660,7 +1688,10 @@ class ItemService implements ServiceInterface
 
         }
         $params[$request['type']] = $request[$request['type']];
-
+        if (isset($request['meta'])) {
+            $request['id'] = $entity['id'] ?? 0;
+            $this->addMetaData($request);
+        }
         return $this->canonizeItem($this->editItem($params));
 
     }
@@ -1694,6 +1725,7 @@ class ItemService implements ServiceInterface
 
     private function addMetaData(object|array $request): void
     {
+
         foreach ($request['meta'] as $meta) {
             $params = [];
             $value = $this->getItem($meta['meta_value'], 'slug');
@@ -1722,6 +1754,7 @@ class ItemService implements ServiceInterface
                     ///TODO:resolve this
                     $params["item_id"] = $request['id'];
             }
+
             $this->itemRepository->addMetaValue($params);
         }
     }

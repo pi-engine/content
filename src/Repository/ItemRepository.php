@@ -338,6 +338,9 @@ class ItemRepository implements ItemRepositoryInterface
                 case 'rangeMax':
                     $select->where(['meta_key' => $filter['meta_key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
                     break;
+                case 'slug':
+                    $select->where(['meta_key' => $filter['meta_key'],'value_slug' => $filter['value']]);
+                    break;
 
                 case 'rangeMin':
                     $select->where(['meta_key' => $filter['meta_key'], 'value_string > ?' => '%s' . $filter['value'] . '%s']);
