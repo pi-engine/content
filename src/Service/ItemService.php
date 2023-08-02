@@ -1635,7 +1635,7 @@ class ItemService implements ServiceInterface
     {
 
 
-        $request['slug'] = uniqid();
+        $request['slug'] = $request['slug']??uniqid();
         $request['time_create'] = time();
         $request['status'] = 1;
         $request['type'] = $request['type'] ?? 'entity';
