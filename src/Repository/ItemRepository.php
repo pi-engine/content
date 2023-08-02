@@ -175,7 +175,7 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return object|array
      */
-    public function getItem($parameter, $type = 'id',$params=[]): object|array
+    public function getItem($parameter, $type = 'id', $params = []): object|array
     {
         $where = [$type => $parameter];
 
@@ -311,7 +311,7 @@ class ItemRepository implements ItemRepositoryInterface
      * @return HydratingResultSet|array
      */
     // ToDo: This is temp solution, need be improve
-    public function getIDFromFilter(array $filters = []): HydratingResultSet|array
+    public function getIDFromFilter_old(array $filters = []): HydratingResultSet|array
     {
         $where = ['status' => 1];
         $sql = new Sql($this->db);
@@ -339,7 +339,7 @@ class ItemRepository implements ItemRepositoryInterface
                     $select->where(['meta_key' => $filter['meta_key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
                     break;
                 case 'slug':
-                    $select->where(['meta_key' => $filter['meta_key'],'value_slug' => $filter['value']]);
+                    $select->where(['meta_key' => $filter['meta_key'], 'value_slug' => $filter['value']]);
                     break;
 
                 case 'rangeMin':
@@ -347,6 +347,56 @@ class ItemRepository implements ItemRepositoryInterface
                     break;
             }
         }
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            return [];
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->metaValuePrototype);
+        $resultSet->initialize($result);
+
+        return $resultSet;
+    }
+
+    public function getIDFromFilter(array $filter = []): HydratingResultSet|array
+    {
+        $where = ['status' => 1];
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableMetaValue)->where($where);
+
+
+        switch ($filter['type']) {
+            case 'id':
+                $select->where(['meta_key' => $filter['key'], 'value_id' => $filter['value']]);
+                break;
+
+            case 'int':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_number' => $filter['value']]);
+                break;
+
+            case 'string':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_string' => $filter['value']]);
+                break;
+
+            case 'search':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_string like ?' => '%s' . $filter['value'] . '%s']);
+                break;
+
+            case 'rangeMax':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
+                break;
+            case 'slug':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_slug' => $filter['value']]);
+                break;
+
+            case 'rangeMin':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_string > ?' => '%s' . $filter['value'] . '%s']);
+                break;
+        }
+
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -448,7 +498,7 @@ class ItemRepository implements ItemRepositoryInterface
             );
         }
         $id = $result->getGeneratedValue();
-        return $this->getMetaValue(["id" => $id],"object");
+        return $this->getMetaValue(["id" => $id], "object");
     }
 
     /**
@@ -472,7 +522,7 @@ class ItemRepository implements ItemRepositoryInterface
                 'Database error occurred during update operation'
             );
         }
-        return $this->getMetaValue($params ,"object");
+        return $this->getMetaValue($params, "object");
     }
 
 
@@ -522,11 +572,11 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['status']) && !empty($params['status'])) {
             $where['status'] = $params['status'];
         }
-        if (isset($params['id']) ) {
-            if(!empty($params['id'])){
+        if (isset($params['id'])) {
+            if (!empty($params['id'])) {
 //                $where['id IN (?) '] =implode("','", $params['id']);
                 $where['id'] = $params['id'];
-            }else{
+            } else {
 
                 $where['id IN (?) '] = -1;
             }
