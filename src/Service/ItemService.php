@@ -127,17 +127,35 @@ class ItemService implements ServiceInterface
             $listParams['title'] = $params['title'];
         }
 
-
         $itemIdList = [];
         if (!empty($filters)) {
-
-            $rowSet = $this->itemRepository->getIDFromFilter($filters);
-
-            foreach ($rowSet as $row) {
-                $itemIdList[] = $this->canonizeMetaItemID($row);
+            $isFresh = true;
+            foreach ($filters as $filter) {
+                $rowSet = $this->itemRepository->getIDFromFilter($filter);
+                foreach ($rowSet as $row) {
+                    $itemIdList[] = $this->canonizeMetaItemID($row);
+                }
+                if ($isFresh) {
+                    $listParams['id'] = $itemIdList;
+                    $isFresh = false;
+                } else {
+                    $listParams['id'] = array_intersect($listParams['id'], $itemIdList);
+                }
             }
-            $listParams['id'] = $itemIdList;
+
         }
+
+
+//        old caller
+//        if (!empty($filters)) {
+//
+//            $rowSet = $this->itemRepository->getIDFromFilter($filters);
+//
+//            foreach ($rowSet as $row) {
+//                $itemIdList[] = $this->canonizeMetaItemID($row);
+//            }
+//            $listParams['id'] = $itemIdList;
+//        }
 
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
