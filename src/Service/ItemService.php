@@ -127,10 +127,10 @@ class ItemService implements ServiceInterface
             $listParams['title'] = $params['title'];
         }
 
-        $itemIdList = [];
         if (!empty($filters)) {
             $isFresh = true;
             foreach ($filters as $filter) {
+                $itemIdList = [];
                 $rowSet = $this->itemRepository->getIDFromFilter($filter);
                 foreach ($rowSet as $row) {
                     $itemIdList[] = $this->canonizeMetaItemID($row);
@@ -156,6 +156,7 @@ class ItemService implements ServiceInterface
 //            }
 //            $listParams['id'] = $itemIdList;
 //        }
+
 
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
