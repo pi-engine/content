@@ -107,16 +107,16 @@ class DashboardHandler implements RequestHandlerInterface
                         "id" => 1,
                         "category" => "",
                         "title" => "محصولات پرطرفدار",
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 12, 'page' => 1]),
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 12, 'page' => 1])['data']['list'],
 
                     ],
                     "top_section" => [
                         "title" => "جدید ترین ها",
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 1]),
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 1])['data']['list'],
                     ],
                     "bottom_section" => [
                         "title" => "محصولات پر طرفدار",
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 2]),
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 2])['data']['list'],
                     ],
                     "freq_questions" => [
                         "banner" => "https://yadapi.kerloper.com/upload/faq.jpg",
