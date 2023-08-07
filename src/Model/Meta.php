@@ -5,8 +5,8 @@ namespace Content\Model;
 class Meta
 {
     private mixed $id;
-    private int $item_id;
-    private string $item_slug;
+    private mixed $item_id;
+    private mixed $item_slug;
     private string $item_type;
     private string $meta_key;
     private string $value_string;
@@ -35,7 +35,7 @@ class Meta
      * @param int $time_update
      * @param int $time_delete
      */
-    public function __construct(mixed $id, int $item_id, string $item_slug, string $item_type, string $meta_key, string $value_string, string $value_id, mixed $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
+    public function __construct(mixed $id, mixed $item_id, mixed $item_slug, string $item_type, string $meta_key, string $value_string, string $value_id, mixed $value_number, string $value_slug, int $status, string $logo, int $time_create, int $time_update, int $time_delete)
     {
         $this->id = $id;
         $this->item_id = $item_id;
@@ -56,7 +56,7 @@ class Meta
     /**
      * @return string
      */
-    public function getItemSlug(): string
+    public function getItemSlug(): mixed
     {
         return $this->item_slug;
     }
@@ -121,7 +121,7 @@ class Meta
     /**
      * @return int
      */
-    public function getItemId(): int
+    public function getItemId(): mixed
     {
         return $this->item_id;
     }
