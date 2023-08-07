@@ -1639,7 +1639,7 @@ class ItemService implements ServiceInterface
 
         $request['slug'] = $request['slug']??uniqid();
         $request['time_create'] = time();
-        $request['status'] = 1;
+        $request['status'] = $request['status']??0;
         $request['type'] = $request['type'] ?? 'entity';
         $request['user_id'] = $account['id'] ?? 0;
         $request['body'] = [];
@@ -1702,9 +1702,13 @@ class ItemService implements ServiceInterface
 
             $params = [
                 'title' => $request['title'],
-                'status' => $request['status'] ?? 1,
                 'information' => json_encode($information),
             ];
+
+            if(isset($request['slug']))
+                $params['slug']=$request['slug'];
+            if(isset($request['status']))
+                $params['status']=$request['status'];
 
         }
         $params[$request['type']] = $request[$request['type']];
