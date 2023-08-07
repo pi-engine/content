@@ -1595,7 +1595,7 @@ class ItemService implements ServiceInterface
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
         if (isset($request['meta']))
             $this->addMetaData($request);
-        $request['slug'] = uniqid();
+        $request['slug'] = $request['slug']??uniqid();
         $request['time_create'] = time();
         $request['status'] = 1;
         $request['type'] = $request['type'] ?? 'entity';
