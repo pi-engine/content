@@ -164,6 +164,8 @@ class ItemService implements ServiceInterface
             $list[] = $this->canonizeItem($row, $params['type']);
         }
 
+
+
         // Get count
         $count = $this->itemRepository->getItemCount($listParams);
 
