@@ -87,7 +87,7 @@ class ItemService implements ServiceInterface
         ///TODO:update limit count
         $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        $order = $params['order'] ?? ['id DESC'];
         $offset = ($page - 1) * $limit;
 
         // Set filters
@@ -150,7 +150,6 @@ class ItemService implements ServiceInterface
         foreach ($rowSet as $row) {
             $list[] = $this->canonizeItem($row, $params['type']);
         }
-
 
 
         // Get count
@@ -591,7 +590,7 @@ class ItemService implements ServiceInterface
         $index = 0;
         foreach ($cart as $item) {
             $items[$index] = $this->getItem($item['slug'], 'slug', ['type' => 'product']);
-            $items[$index]['count'] =$item['count'];
+            $items[$index]['count'] = $item['count'];
             $index++;
         }
 
@@ -1626,9 +1625,9 @@ class ItemService implements ServiceInterface
     {
 
 
-        $request['slug'] = $request['slug']??uniqid();
+        $request['slug'] = $request['slug'] ?? uniqid();
         $request['time_create'] = time();
-        $request['status'] = $request['status']??0;
+        $request['status'] = $request['status'] ?? 0;
         $request['type'] = $request['type'] ?? 'entity';
         $request['user_id'] = $account['id'] ?? 0;
         $request['body'] = [];
@@ -1694,10 +1693,10 @@ class ItemService implements ServiceInterface
                 'information' => json_encode($information),
             ];
 
-            if(isset($request['slug']))
-                $params['slug']=$request['slug'];
-            if(isset($request['status']))
-                $params['status']=$request['status'];
+            if (isset($request['slug']))
+                $params['slug'] = $request['slug'];
+            if (isset($request['status']))
+                $params['status'] = $request['status'];
 
         }
         $params[$request['type']] = $request[$request['type']];
