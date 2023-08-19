@@ -46,6 +46,47 @@ class DashboardHandler implements RequestHandlerInterface
                 $result = [
                     "sliders" => [
                         [
+                            "image" => "https://api.shokrin.com/upload/ver-03/slide-01.png?" . time(),
+                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-01.png?" . time(),
+                            "has_link" => true,
+                            "url" => "/",
+                            "button_title" => "خرید",
+                            "title" => "شکرین",
+                            "subhead" => " درخشش خانه تو",
+                            "subtitle" => "",
+                        ],
+                        [
+                            "image" => "https://api.shokrin.com/upload/ver-03/slide-02.png?" . time(),
+                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-02.png?" . time(),
+                            "has_link" => true,
+                            "url" => "/",
+                            "button_title" => "خرید",
+                            "title" => "شکرین",
+                            "subhead" => " درخشش خانه تو",
+                            "subtitle" => "",
+                        ],
+                    ],
+                    "special_section" => [
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 3])['data']['list'],
+                        "type" => "product",
+                        "title" => "فروش ویژه",
+                        "more_link" => "/products/",
+                        "more_title" => "مشاهده بیشتر",
+                        "background" => "https://api.shokrin.com/upload/ver-03/right-side-main.png",
+                        "abstract" => ""
+                    ],
+                    "middle_banner" => [
+                        "image" => "https://api.shokrin.com/upload/ver-03/middle-slider.png",
+                        "mobile" => "https://api.shokrin.com/upload/ver-03/middle-slider.png",
+                        "has_link" => true,
+                        "url" => "/",
+                        "button_title" => "انتخاب کن",
+                        "title" => "قصه شکرین",
+                        "subhead" => "با عشق شروع می شود",
+                        "subtitle" => "",
+                    ],
+                    "old_sliders" => [
+                        [
                             "image" => "https://api.shokrin.com/upload/images/new-face/slider/slider-1.jpg",
                             "mobile" => "https://api.shokrin.com/upload/images/new-face/slider/mob-1_768x940.jpg",
                             "title" => "قصه شکرین با عشق شروع میشه",
@@ -111,12 +152,23 @@ class DashboardHandler implements RequestHandlerInterface
 
                     ],
                     "top_section" => [
-                        "title" => "جدید ترین ها",
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 1])['data']['list'],
+                        "title" => "جدید ترین محصولات",
+                        "more_link" => "/products/",
+                        "more_title" => "مشاهده بیشتر",
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 4, 'page' => 1])['data']['list'],
                     ],
                     "bottom_section" => [
                         "title" => "محصولات پر طرفدار",
+                        "more_link" => "/products/",
+                        "more_title" => "مشاهده بیشتر",
                         "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 2])['data']['list'],
+                        "banner" => [
+                            "image" => "https://api.shokrin.com/upload/ver-03/category-banner.png",
+                            "title" => "شمعدان‌های کلاسیک",
+                            "subtitle" => "محصولات جدید",
+                            "button_link" => "/products/",
+                            "button_title" => "خرید",
+                        ]
                     ],
                     "freq_questions" => [
                         "banner" => "https://yadapi.kerloper.com/upload/faq.jpg",
@@ -239,6 +291,51 @@ class DashboardHandler implements RequestHandlerInterface
                             " توضیحات برای تست نمایش محصول توضیحات برای تست نمایش محصول توضیحات برای تست نمایش محصول توضیحات برای تست نمایش محصول توضیحات برای تست نمایش محصول",
                     ],
                     "blog_list" => [
+
+                        "title" => "وبلاگ شکرین",
+                        "more_link" => "/pages/",
+                        "more_title" => "مشاهده بیشتر",
+                        "list" => [
+
+                            [
+                                "id" => 1,
+                                "slug" => "our_story",
+                                "thumbnail" =>
+                                    "https://api.shokrin.com/upload/images/800x562-1.png",
+                                "author" => "ادمین",
+                                "tag" => "طراحی داخلی",
+                                "title" => "داستان ما",
+                                "description" =>
+                                    " توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ",
+                                "date" => "17 آبان 1401",
+                            ],
+                            [
+                                "id" => 2,
+                                "slug" => "dehydration_method",
+                                "thumbnail" =>
+                                    "https://api.shokrin.com/upload/images/800x562-2.png",
+                                "author" => "ادمین",
+                                "tag" => "طراحی داخلی",
+                                "title" => "روش اب کاری محصولات شکرین",
+                                "description" =>
+                                    " توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ",
+                                "date" => "10 آذر 1401",
+                            ],
+                            [
+                                "id" => 3,
+                                "slug" => "light_importance",
+                                "thumbnail" =>
+                                    "https://api.shokrin.com/upload/images/800x562-3.png",
+                                "author" => "ادمین",
+                                "tag" => "طراحی داخلی",
+                                "title" => " دلیل اهمیت نور در دکوراسیون فضای داخلی",
+                                "description" =>
+                                    " توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ",
+                                "date" => "23 آذر 1401",
+                            ],
+                        ],
+                    ],
+                    "old_blog_list" => [
                         [
                             "id" => 1,
                             "slug" => "our_story",
@@ -317,6 +414,15 @@ class DashboardHandler implements RequestHandlerInterface
                             "caption" => " کپشن پست5",
                             "date" => "آبان ۱۷, ۱۴۰۱",
                         ],
+                    ],
+                    "instagram_section" => [
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 4, 'page' => 6])['data']['list'],
+                        "type" => "product",
+                        "title" => "فروش ویژه",
+                        "more_link" => "/products/",
+                        "more_title" => "مشاهده بیشتر",
+                        "background" => "https://api.shokrin.com/upload/ver-03/right-side-main.png",
+                        "abstract" => ""
                     ],
                 ];
         }
