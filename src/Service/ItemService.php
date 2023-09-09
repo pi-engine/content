@@ -886,7 +886,7 @@ class ItemService implements ServiceInterface
         }
 
 
-        return $this->accountService->getAccount(['id' => $information['user_id']]);
+//        return $this->accountService->getAccount(['id' => $information['user_id']]);
         return $this->canonizeItem($this->itemRepository->editItem($editedSupport));
     }
 
