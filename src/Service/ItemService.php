@@ -771,7 +771,7 @@ class ItemService implements ServiceInterface
 
 
     // TODO: update it
-    public function addSupport($requestBody): object|array
+    public function addSupport($requestBody, $notificationTypes = []): object|array
     {
         $nullObject = [];// new \stdClass();
 
@@ -827,6 +827,35 @@ class ItemService implements ServiceInterface
                 $this->itemRepository->addMetaValue($metaParams);
             }
         }
+
+        $this->sendNotification(
+            ['email'],
+            [
+                'email' => [
+                    'to' => [
+                        'email' => $this->config['admin']['email'],
+                        'name' => $this->config['admin']['name'],
+                    ],
+                    'subject' => "Seylaneh support",
+                    'body' => sprintf(
+                        "
+                        <p style='text-align: right;direction: rtl' dir='rtl'>
+                        درخواست پشتیبانی با شناسه %s از نوع %s , در تاریخ %s , در سامانه ثبت شد.
+                        <br/>
+                        مشخصات کاربر : %s
+                        </p>
+                        ",
+                        $support->getId(),
+                        $requestBody['categories'],
+                        $information['time_created_view'],
+                        $information['body']['name']
+                    ),
+                ],
+            ],
+
+            ''
+        );
+
 
         return $this->canonizeItem($support);
     }
@@ -1454,7 +1483,7 @@ class ItemService implements ServiceInterface
         return $record;
     }
 
-    private function sendNotification($notificationTypes, array $userAccount, $title)
+    private function sendNotification($notificationTypes, array $userAccount, $title): void
     {
         foreach ($notificationTypes as $type) {
             if ($type == 'sms') {
@@ -1466,6 +1495,14 @@ class ItemService implements ServiceInterface
                                 'mobile' => $userAccount['mobile'],
                                 'source' => '',
                             ],
+                        ]
+                    );
+            }
+            if ($type == 'email') {
+                if (isset($userAccount['email']))
+                    $this->notificationService->send(
+                        [
+                            'email' => $userAccount['email'],
                         ]
                     );
             }
