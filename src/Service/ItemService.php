@@ -448,6 +448,10 @@ class ItemService implements ServiceInterface
         $product = $this->getItem($params["information"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
+        if (isset($params['property'])) {
+            $product["property"] = json_decode($params["property"]);
+        }
+        $product["count"] = (int)$params["count"];
         if (sizeof($cart) == 0) {
             $param = [
                 "id" => null,
