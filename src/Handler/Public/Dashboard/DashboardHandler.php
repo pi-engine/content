@@ -46,6 +46,46 @@ class DashboardHandler implements RequestHandlerInterface
                 $result = [
                     "sliders" => [
                         [
+                            "image" => "https://api.shokrin.com/upload/ver-03/slide-06.png?" . time(),
+                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-06.png?" . time(),
+                            "has_link" => true,
+                            "button_link" => "/products/",
+                            "button_title" => "خرید",
+                            "title" => "شکرین",
+                            "subhead" => " درخشش خانه تو",
+                            "subtitle" => "",
+                        ],
+                        [
+                            "image" => "https://api.shokrin.com/upload/ver-03/slide-05.png?" . time(),
+                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-05.png?" . time(),
+                            "has_link" => true,
+                            "button_link" => "/products/",
+                            "button_title" => "خرید",
+                            "title" => "شکرین",
+                            "subhead" => " درخشش خانه تو",
+                            "subtitle" => "",
+                        ],
+                        [
+                            "image" => "https://api.shokrin.com/upload/ver-03/slide-04.png?" . time(),
+                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-04.png?" . time(),
+                            "has_link" => true,
+                            "button_link" => "/products/",
+                            "button_title" => "خرید",
+                            "title" => "شکرین",
+                            "subhead" => " درخشش خانه تو",
+                            "subtitle" => "",
+                        ],
+                        [
+                            "image" => "https://api.shokrin.com/upload/ver-03/slide-03.png?" . time(),
+                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-03.png?" . time(),
+                            "has_link" => true,
+                            "button_link" => "/products/",
+                            "button_title" => "خرید",
+                            "title" => "شکرین",
+                            "subhead" => " درخشش خانه تو",
+                            "subtitle" => "",
+                        ],
+                        [
                             "image" => "https://api.shokrin.com/upload/ver-03/slide-01.png?" . time(),
                             "mobile" => "https://api.shokrin.com/upload/ver-03/slide-01.png?" . time(),
                             "has_link" => true,
@@ -416,9 +456,30 @@ class DashboardHandler implements RequestHandlerInterface
                         ],
                     ],
                     "instagram_section" => [
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 4, 'page' => 6])['data']['list'],
+                        "list" => [
+                            [
+                                "image" => [
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-01.jpg?".time(),
+                                ]
+                            ],
+                            [
+                                "image" => [
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-02.jpg?".time(),
+                                ]
+                            ],
+                            [
+                                "image" => [
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-03.jpg?".time(),
+                                ]
+                            ],
+                            [
+                                "image" => [
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-04.jpg?".time(),
+                                ]
+                            ]
+                        ],
                         "type" => "product",
-                        "title" => "فروش ویژه",
+                        "title" => "",
                         "more_link" => "/products/",
                         "more_title" => "مشاهده بیشتر",
                         "background" => "https://api.shokrin.com/upload/ver-03/right-side-main.png",
