@@ -858,7 +858,7 @@ class ItemService implements ServiceInterface
                         'email' => $this->config['admin']['email'],
                         'name' => $this->config['admin']['name'],
                     ],
-                    'subject' => "Seylaneh support",
+                    'subject' => "Seylaneh Support",
                     'body' => sprintf(
                         "
                         <p style='text-align: right;direction: rtl' dir='rtl'>
