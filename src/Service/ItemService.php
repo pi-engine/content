@@ -832,33 +832,91 @@ class ItemService implements ServiceInterface
             }
         }
 
-        $this->sendNotification(
-            ['email'],
-            [
-                'email' => [
-                    'to' => [
-                        'email' => $this->config['admin']['email'],
-                        'name' => $this->config['admin']['name'],
-                    ],
-                    'subject' => "Seylaneh Support",
-                    'body' => sprintf(
-                        "
+        if ($requestBody['categories'] == 'course') {
+
+            $course = json_decode($requestBody['extra'], true);
+            //user side
+            $email = [
+                'to' => [
+                    'email' => $this->accountService->getAccount(['id' => $requestBody['user_id']])['email'],
+                    'name' => $this->config['admin']['name'],
+                ],
+                'subject' => $this->config['admin']['subject'],
+                'body' => sprintf($this->config['admin']['template']['course'],
+                    $course['course_title'],
+                    $course['thumbnail'],
+                    $course['course_title'],
+                    $course['course_schedule'] . ' ' . $course['course_fee'],
+                    "ثبت نام شما بعد از پرداخت هزینه دوره نهایی خواهد شد.",
+                    $this->config['admin']['template']['logo']
+                ),
+            ];
+            $this->sendNotification(
+                ['email'],
+                [
+                    'email' => $email,
+                ],
+
+                ''
+            );
+            $email = [
+                'to' => [
+                    'email' => $this->config['admin']['email'],
+                    'name' => $this->config['admin']['name'],
+                ],
+                'subject' => $this->config['admin']['subject'],
+                'body' => sprintf($this->config['admin']['template']['admin'],
+                    $course['course_title'],
+                    $course['thumbnail'],
+                    $course['course_title'],
+                    $course['course_schedule'] . ' ' . $course['course_fee'],
+                    $information['body']['user']['first_name'],
+                    $information['body']['user']['last_name'],
+                    $information['body']['user']['phone'],
+                    $this->accountService->getAccount(['id' => $requestBody['user_id']])['email'],
+                    $information['time_created_view'],
+                    $this->config['admin']['template']['logo']
+                ),
+            ];
+            $this->sendNotification(
+                ['email'],
+                [
+                    'email' => $email,
+                ],
+
+                ''
+            );
+
+        } else {
+            $email = [
+                'to' => [
+                    'email' => $this->config['admin']['email'],
+                    'name' => $this->config['admin']['name'],
+                ],
+                'subject' => "Support",
+                'body' => sprintf(
+                    "
                         <p style='text-align: right;direction: rtl' dir='rtl'>
                         درخواست پشتیبانی با شناسه %s از نوع %s , در تاریخ %s , در سامانه ثبت شد.
                         <br/>
                         مشخصات کاربر : %s
                         </p>
                         ",
-                        $support->getId(),
-                        $requestBody['categories'],
-                        $information['time_created_view'],
-                        $information['body']['name']
-                    ),
+                    $support->getId(),
+                    $requestBody['categories'],
+                    $information['time_created_view'],
+                    json_encode($information)
+                ),
+            ];
+            $this->sendNotification(
+                ['email'],
+                [
+                    'email' => $email,
                 ],
-            ],
 
-            ''
-        );
+                ''
+            );
+        }
 
 
         return $this->canonizeItem($support);
