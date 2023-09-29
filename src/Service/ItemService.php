@@ -305,8 +305,8 @@ class ItemService implements ServiceInterface
                 $data['type'] = 'tour';
                 break;
             case 'product':
-                $data['price'] = 1000;
-                $data['price_view'] = '1,000,000 تومان';
+                $data['price'] = $this->calculateTotalPrice($data);
+                $data['price_view'] = number_format($data['price']) . " تومان";;
                 $data['stock_status'] = 1;
                 $data['stock_status_view'] = 'موجود در انبار';
         }
@@ -619,6 +619,11 @@ class ItemService implements ServiceInterface
             "information" => json_encode($address),
         ];
         $address["id"] = $this->addItem($address_request, $account)->getId();
+        $total_price = 0;
+        // Calculate total price for each product
+        foreach ($items as $product) {
+            $total_price += $this->calculateTotalPrice($product);
+        }
 
 
         $order_information = [
@@ -627,6 +632,7 @@ class ItemService implements ServiceInterface
             "date_time" => date('m/d/Y h:i', time()),
             "description" => $params["description"],
             "items" => $items,
+            "total_price" => $total_price,
             "address" => $address,
         ];
 
@@ -647,9 +653,21 @@ class ItemService implements ServiceInterface
 //        }
     }
 
+    public function calculateTotalPrice($product): float|int
+    {
+        foreach ($product["meta"] as $meta) {
+            if ($meta["meta_key"] == "price") {
+                return $meta["meta_value"] * (int)((isset($product["count"])) ? $product["count"] : 1);
+            }
+        }
+
+        return 0; // Return 0 if no valid price found
+    }
 
 
-    ///// Start Question Section /////
+
+
+///// Start Question Section /////
     /// services of question type
 
     public function getGroupItem($params, $type = "id"): array
