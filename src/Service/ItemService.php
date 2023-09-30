@@ -925,7 +925,6 @@ class ItemService implements ServiceInterface
                     $support->getId(),
                     $requestBody['categories'],
                     $information['time_created_view'],
-                    json_encode($information)
                 ),
             ];
             $this->sendNotification(
