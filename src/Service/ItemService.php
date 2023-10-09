@@ -863,33 +863,93 @@ class ItemService implements ServiceInterface
             }
         }
 
-        $this->sendNotification(
-            ['email'],
-            [
-                'email' => [
-                    'to' => [
-                        'email' => $this->config['admin']['email'],
-                        'name' => $this->config['admin']['name'],
-                    ],
-                    'subject' => "Seylaneh Support",
-                    'body' => sprintf(
-                        "
+        if ($requestBody['categories'] == 'course') {
+
+            $course = json_decode($requestBody['extra'], true);
+            //user side
+            $email = [
+                'to' => [
+                    'email' => $this->accountService->getAccount(['id' => $requestBody['user_id']])['email'],
+                    'name' => $this->config['admin']['name'],
+                ],
+                'subject' => $this->config['admin']['subject'],
+                'body' => sprintf($this->config['admin']['template']['course'],
+                    $course['course_title'],
+                    $course['thumbnail'],
+                    $course['course_title'],
+                    $course['course_schedule'],
+                    ($course['course_fee']+($course['course_fee']*0.09)),
+                    "ثبت نام شما بعد از پرداخت هزینه دوره نهایی خواهد شد.",
+                    $this->config['admin']['template']['logo']
+                ),
+            ];
+            $this->sendNotification(
+                ['email'],
+                [
+                    'email' => $email,
+                ],
+
+                ''
+            );
+            $email = [
+                'to' => [
+                    'email' => $this->config['admin']['email'],
+                    'name' => $this->config['admin']['name'],
+                ],
+                'subject' => $this->config['admin']['subject'],
+                'body' => sprintf($this->config['admin']['template']['admin'],
+                    $course['course_title'],
+                    $course['thumbnail'],
+                    $course['course_title'],
+                    $course['course_schedule'] . ' ' . $course['course_fee_view'],
+                    ($course['course_fee']+($course['course_fee']*0.09)),
+                    $information['body']['user']['first_name'],
+                    $information['body']['user']['last_name'],
+                    $information['body']['user']['phone'],
+                    $this->accountService->getAccount(['id' => $requestBody['user_id']])['email'],
+                    $information['time_created_view'],
+                    $this->config['admin']['template']['logo']
+                ),
+            ];
+            $this->sendNotification(
+                ['email'],
+                [
+                    'email' => $email,
+                ],
+
+                ''
+            );
+
+        } else {
+            $email = [
+                'to' => [
+                    'email' => $this->config['admin']['email'],
+                    'name' => $this->config['admin']['name'],
+                ],
+                'subject' => "Support",
+                'body' => sprintf(
+                    "
                         <p style='text-align: right;direction: rtl' dir='rtl'>
                         درخواست پشتیبانی با شناسه %s از نوع %s , در تاریخ %s , در سامانه ثبت شد.
                         <br/>
                         مشخصات کاربر : %s
                         </p>
                         ",
-                        $support->getId(),
-                        $requestBody['categories'],
-                        $information['time_created_view'],
-                        $information['body']['name']
-                    ),
+                    $support->getId(),
+                    $requestBody['categories'],
+                    $information['time_created_view'],
+                    $information['body']['name']
+                ),
+            ];
+            $this->sendNotification(
+                ['email'],
+                [
+                    'email' => $email,
                 ],
-            ],
 
-            ''
-        );
+                ''
+            );
+        }
 
 
         return $this->canonizeItem($support);
@@ -1564,24 +1624,39 @@ class ItemService implements ServiceInterface
 
     public function getTourismMainDashboard($params, $account): array
     {
-        $top_sections = array();
+        $top_sections  = array();
+        $top_sections_india = array();
+        $top_sections_africa = array();
         $new_sections = array();
         $suggest_sections = array();
 
 
-        $top_sections_caller = $this->itemRepository->getItemList(
+        $top_sections = $this->getItemList(
             [
                 'type' => 'destination',
-                'order' => ['time_create ASC', 'id ASC'],
-                'offset' => 0,
                 'page' => 1,
                 'limit' => 6,
-                'status' => 1,
             ]
-        );
-        foreach ($top_sections_caller as $row) {
-            $top_sections[] = $this->canonizeItem($row);
-        }
+        )['data']['list'];
+        $top_sections_africa = $this->getItemList(
+            [
+                'type' => 'destination',
+                'page' => 1,
+                'limit' => 6,
+                'categories' => 'meta-category-africa',
+            ]
+        )['data']['list'];
+
+        $top_sections_india = $this->getItemList(
+            [
+                'type' => 'destination',
+                'page' => 1,
+                'limit' => 6,
+                'categories' => 'meta-category-india',
+            ]
+        )['data']['list'];
+
+
         $new_sections_caller = $this->itemRepository->getItemList(
             [
                 'type' => 'tour',
@@ -1616,10 +1691,19 @@ class ItemService implements ServiceInterface
                 "banner" => "https://yadapi.kerloper.com/upload/banners/home.jpg",
                 "has_video" => false
             ],
+            "middle_mode_banner" => [
+                "title"=>"به یاد ماندنی شوید",
+                "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
+                "button_title"=>"مشاهده اطلاعات بیشتر",
+                "button_link"=>"/tours/",
+                "video" => "",
+                "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
+                "has_video" => false
+            ],
             "top_section" => [
                 "list" => $new_sections,
                 "type" => "tour",
-                "title" => "جدیدترین ها",
+                "title" => "تورهای پرطرفدار یادمان",
                 "abstract" => ""
             ],
             "blog_section" => [
@@ -1628,19 +1712,56 @@ class ItemService implements ServiceInterface
                 "title" => "ایران را بهتر بشناسید",
                 "abstract" => "در اینجا چند چیز وجود دارد که به شما کمک می کند تا با این کشور منحصر به فرد آشنا شوید."
             ],
+            "blog_section1" => [
+                "list" => $top_sections_africa,
+                "type" => "blog",
+                "title" => "آفریقا را بهتر بشناسید",
+                "abstract" => "در اینجا چند چیز وجود دارد که به شما کمک می کند تا با این کشور منحصر به فرد آشنا شوید."
+            ],
+
+            "blog_section2" => [
+                "list" => $top_sections_india,
+                "type" => "blog",
+                "title" => "هندوستان  را بهتر بشناسید",
+                "abstract" => "در اینجا چند چیز وجود دارد که به شما کمک می کند تا با این کشور منحصر به فرد آشنا شوید."
+            ],
             "middle_slider" => [
                 "banners" => [
                     [
-                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg"
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg",
+                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title"=>"متن",
+                        "title"=>"عنوان اصلی تصویر",
+                        "sub_title"=>"متن",
+                        "button_title"=>"مشاهده بیشتر",
+                        "button_link"=>"/",
                     ],
                     [
-                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg"
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg",
+                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title"=>"متن",
+                        "title"=>"عنوان اصلی تصویر",
+                        "sub_title"=>"متن",
+                        "button_title"=>"مشاهده بیشتر",
+                        "button_link"=>"/",
                     ],
                     [
-                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-03.jpg"
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-03.jpg",
+                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title"=>"متن",
+                        "title"=>"عنوان اصلی تصویر",
+                        "sub_title"=>"متن",
+                        "button_title"=>"مشاهده بیشتر",
+                        "button_link"=>"/",
                     ],
                     [
-                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-04.jpg"
+                        "url" => "https://yadapi.kerloper.com/upload/banners/banner-04.jpg",
+                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title"=>"متن",
+                        "title"=>"عنوان اصلی تصویر",
+                        "sub_title"=>"متن",
+                        "button_title"=>"مشاهده بیشتر",
+                        "button_link"=>"/",
                     ]
                 ]
             ],
