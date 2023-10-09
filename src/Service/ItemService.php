@@ -47,6 +47,15 @@ class ItemService implements ServiceInterface
             'categories',
             'colors',
             'shed_colors',
+            'min_price',
+            'max_price',
+            'min_height',
+            'max_height',
+            'min_width',
+            'max_width',
+            'max_diagonal',
+            'min_diagonal',
+            'flames_count',
         ];
 
     // ToDo: get it from DB and cache
@@ -144,6 +153,7 @@ class ItemService implements ServiceInterface
             }
 
         }
+
 
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
@@ -376,20 +386,76 @@ class ItemService implements ServiceInterface
 
                     case 'max_price':
                         if (($value != '') && !empty($value) && ($value != null))
-                        $filters[$key] = [
-                            'meta_key' => $key,
-                            'value' => $value,
-                            'type' => 'rangeMax',
-                        ];
+                            $filters[$key] = [
+                                'meta_key' => 'price',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
                         break;
 
                     case 'min_price':
                         if (($value != '') && !empty($value) && ($value != null))
-                        $filters[$key] = [
-                            'meta_key' => $key,
-                            'value' => $value,
-                            'type' => 'rangeMin',
-                        ];
+                            $filters[$key] = [
+                                'meta_key' => 'price',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'min_height':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'height',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'max_height':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'height',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'min_width':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'width',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'max_width':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'width',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'max_diagonal':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'diagonal',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'min_diagonal':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'diagonal',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'flames_count':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'flames-count',
+                                'value' => $value,
+                                'type' => 'int',
+                            ];
                         break;
                     case 'categories':
                         $filters[$key] = [
@@ -467,7 +533,7 @@ class ItemService implements ServiceInterface
             ];
             $this->itemRepository->addCartItem($param);
         } else {
-            $index = $this->checkKeyValueInArray($cart, $params['cart_slug'],'cart_slug');
+            $index = $this->checkKeyValueInArray($cart, $params['cart_slug'], 'cart_slug');
 
             if ($index > -1 && (json_decode($params['property'], true) == $cart[$index]['property'])) {
                 $cart[$index]["count"] = (int)$cart[$index]["count"] + (int)$params["count"];

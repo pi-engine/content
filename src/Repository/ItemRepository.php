@@ -385,15 +385,15 @@ class ItemRepository implements ItemRepositoryInterface
                 $select->where(['meta_key' => $filter['meta_key'], 'value_string like ?' => '%s' . $filter['value'] . '%s']);
                 break;
 
-            case 'rangeMax':
-                $select->where(['meta_key' => $filter['meta_key'], 'value_string < ?' => '%s' . $filter['value'] . '%s']);
-                break;
             case 'slug':
                 $select->where(['meta_key' => $filter['meta_key'], 'value_slug' => $filter['value']]);
                 break;
 
+            case 'rangeMax':
+                $select->where(['meta_key' => $filter['meta_key'], 'value_number < ?' =>  (int)$filter['value'] ]);
+                break;
             case 'rangeMin':
-                $select->where(['meta_key' => $filter['meta_key'], 'value_string > ?' => '%s' . $filter['value'] . '%s']);
+                $select->where(['meta_key' => $filter['meta_key'], 'value_number >  ?' =>   (int)$filter['value']  ]);
                 break;
         }
 
