@@ -375,6 +375,7 @@ class ItemService implements ServiceInterface
                             break;*/
 
                     case 'max_price':
+                        if (($value != '') && !empty($value) && ($value != null))
                         $filters[$key] = [
                             'meta_key' => $key,
                             'value' => $value,
@@ -383,6 +384,7 @@ class ItemService implements ServiceInterface
                         break;
 
                     case 'min_price':
+                        if (($value != '') && !empty($value) && ($value != null))
                         $filters[$key] = [
                             'meta_key' => $key,
                             'value' => $value,
