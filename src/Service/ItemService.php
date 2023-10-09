@@ -465,8 +465,7 @@ class ItemService implements ServiceInterface
             ];
             $this->itemRepository->addCartItem($param);
         } else {
-            $index = $this->checkObjectInArray($cart, $product);
-
+            $index = $this->checkKeyValueInArray($cart, $params['cart_slug'],'cart_slug');
 
             if ($index > -1 && (json_decode($params['property'], true) == $cart[$index]['property'])) {
                 $cart[$index]["count"] = (int)$cart[$index]["count"] + (int)$params["count"];
@@ -569,9 +568,13 @@ class ItemService implements ServiceInterface
     private function checkKeyValueInArray(array $array, $value, $key = 'id')
     {
         $index = -1;
+        echo 'start';
         foreach ($array as $item) {
+            echo 'main';
             $index++;
+            echo  ($item[$key] == $value);
             if ($item[$key] == $value) {
+                echo $index;
                 return $index;
             }
         }
