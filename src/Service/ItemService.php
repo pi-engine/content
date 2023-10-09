@@ -496,11 +496,12 @@ class ItemService implements ServiceInterface
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
 
-        $index = $this->checkObjectInArray($cart, $product);
-
+//        $index = $this->checkObjectInArray($cart, $product);
+        $index = $this->checkKeyValueInArray($cart, $params["cart_slug"], 'cart_slug');
         if ($index > -1) {
             $cart[$index]["count"] = $params["count"];
         } else {
+            $product['cart_slug'] = uniqid();
             $cart[] = $product;
         }
         $param = [
@@ -563,6 +564,17 @@ class ItemService implements ServiceInterface
         foreach ($array as $item) {
             $index++;
             if ($item[$key] == $object[$key]) {
+                return $index;
+            }
+        }
+    }
+
+    private function checkKeyValueInArray(array $array, $value, $key = 'id')
+    {
+        $index = -1;
+        foreach ($array as $item) {
+            $index++;
+            if ($item[$key] == $value) {
                 return $index;
             }
         }
