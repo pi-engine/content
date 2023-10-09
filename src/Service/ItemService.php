@@ -452,6 +452,7 @@ class ItemService implements ServiceInterface
             $product["property"] = json_decode($params["property"]);
         }
         $product["count"] = (int)$params["count"];
+        $product["cart_slug"] = uniqid();
         if (sizeof($cart) == 0) {
             $param = [
                 "id" => null,
