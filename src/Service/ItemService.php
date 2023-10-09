@@ -55,6 +55,8 @@ class ItemService implements ServiceInterface
             'max_width',
             'max_diagonal',
             'min_diagonal',
+            'min_flames_count',
+            'max_flames_count',
             'flames_count',
         ];
 
@@ -445,6 +447,22 @@ class ItemService implements ServiceInterface
                         if (($value != '') && !empty($value) && ($value != null))
                             $filters[$key] = [
                                 'meta_key' => 'diagonal',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'max_flames_count':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'flames-count',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'min_flames_count':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'flames-count',
                                 'value' => $value,
                                 'type' => 'rangeMin',
                             ];
