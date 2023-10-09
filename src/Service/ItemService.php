@@ -467,7 +467,8 @@ class ItemService implements ServiceInterface
         } else {
             $index = $this->checkObjectInArray($cart, $product);
 
-            if ($index > -1) {
+
+            if ($index > -1 && (json_decode($params['property'], true) == $cart[$index]['property'])) {
                 $cart[$index]["count"] = (int)$cart[$index]["count"] + (int)$params["count"];
             } else {
                 $cart[] = $product;
@@ -498,6 +499,7 @@ class ItemService implements ServiceInterface
 
 //        $index = $this->checkObjectInArray($cart, $product);
         $index = $this->checkKeyValueInArray($cart, $params["cart_slug"], 'cart_slug');
+
         if ($index > -1) {
             $cart[$index]["count"] = $params["count"];
         } else {
@@ -523,21 +525,15 @@ class ItemService implements ServiceInterface
     {
         $product = $this->getItem($params["slug"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
-        echo sizeof($cart);
         if (sizeof($cart) < 2) {
             $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
         } else {
-            $index = $this->checkObjectInArray($cart, $product);
+//            $index = $this->checkObjectInArray($cart, $product);
+            $index = $this->checkKeyValueInArray($cart, $params["cart_slug"], 'cart_slug');
 
             if ($index > -1) {
-//                unset($cart[$index]);
-                $list = [];
-                foreach ($cart as $item) {
-                    if ($item["id"] != $cart[$index]["id"]) {
-                        $list[] = $item;
-                    }
-                }
-                $cart = $list;
+                unset($cart[$index]);
+                $cart = array_values($cart);
             } else {
                 $cart[] = [];
             }
@@ -567,6 +563,7 @@ class ItemService implements ServiceInterface
                 return $index;
             }
         }
+        return $index;
     }
 
     private function checkKeyValueInArray(array $array, $value, $key = 'id')
@@ -578,6 +575,7 @@ class ItemService implements ServiceInterface
                 return $index;
             }
         }
+        return $index;
     }
 
 
@@ -878,7 +876,7 @@ class ItemService implements ServiceInterface
                     $course['thumbnail'],
                     $course['course_title'],
                     $course['course_schedule'],
-                    ($course['course_fee']+($course['course_fee']*0.09)),
+                    ($course['course_fee'] + ($course['course_fee'] * 0.09)),
                     "ثبت نام شما بعد از پرداخت هزینه دوره نهایی خواهد شد.",
                     $this->config['admin']['template']['logo']
                 ),
@@ -902,7 +900,7 @@ class ItemService implements ServiceInterface
                     $course['thumbnail'],
                     $course['course_title'],
                     $course['course_schedule'] . ' ' . $course['course_fee_view'],
-                    ($course['course_fee']+($course['course_fee']*0.09)),
+                    ($course['course_fee'] + ($course['course_fee'] * 0.09)),
                     $information['body']['user']['first_name'],
                     $information['body']['user']['last_name'],
                     $information['body']['user']['phone'],
@@ -1624,7 +1622,7 @@ class ItemService implements ServiceInterface
 
     public function getTourismMainDashboard($params, $account): array
     {
-        $top_sections  = array();
+        $top_sections = array();
         $top_sections_india = array();
         $top_sections_africa = array();
         $new_sections = array();
@@ -1692,10 +1690,10 @@ class ItemService implements ServiceInterface
                 "has_video" => false
             ],
             "middle_mode_banner" => [
-                "title"=>"به یاد ماندنی شوید",
+                "title" => "به یاد ماندنی شوید",
                 "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
-                "button_title"=>"مشاهده اطلاعات بیشتر",
-                "button_link"=>"/tours/",
+                "button_title" => "مشاهده اطلاعات بیشتر",
+                "button_link" => "/tours/",
                 "video" => "",
                 "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
                 "has_video" => false
@@ -1729,39 +1727,39 @@ class ItemService implements ServiceInterface
                 "banners" => [
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-03.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-04.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ]
                 ]
             ],
