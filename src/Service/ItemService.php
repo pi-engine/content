@@ -534,9 +534,22 @@ class ItemService implements ServiceInterface
         $product = $this->getItem($params["information"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
+
+        /// replace order property with original property ( 
         if (isset($params['property'])) {
-            $product["property"] = json_decode($params["property"]);
+            $orderProperty = json_decode($params["property"], true);
+            if (isset($product['property'])) {
+                if (isset($orderProperty['meta_selected_data'])) {
+                    $originalProperty = $product["property"];
+                    $product["property"] = $orderProperty;
+                    $product["property"]['meta_selected_data'] = $originalProperty[$orderProperty['meta_selected']['meta_key'] . '-' . $orderProperty['meta_selected']['meta_value']];
+                }
+            } else {
+                // $product['property'] = $orderProperty;
+            }
         }
+
+
         $product["count"] = (int)$params["count"];
         $product["cart_slug"] = uniqid();
         if (sizeof($cart) == 0) {
@@ -690,6 +703,7 @@ class ItemService implements ServiceInterface
         foreach ($cart as $item) {
             $items[$index] = $this->getItem($item['slug'], 'slug', ['type' => 'product']);
             $items[$index]['count'] = $item['count'];
+            $items[$index]['property'] = $item['property'];
             $index++;
         }
 
@@ -704,6 +718,9 @@ class ItemService implements ServiceInterface
             "state" => $params["state"],
             "city" => $params["city"],
             "zip_code" => $params["zip_code"],
+            "description" => $params["description"],
+            "day" => $params["day"],
+            "time" => $params["time"],
         ];
         $address_request = [
             "type" => "address",
@@ -750,12 +767,17 @@ class ItemService implements ServiceInterface
 
     public function calculateTotalPrice($product): float|int
     {
-        foreach ($product["meta"] as $meta) {
+        $metaList = $product["meta"];
+        if (isset($product['property'])) {
+            if (isset($product['property']['meta_selected_data'])) {
+                $metaList = $product['property']['meta_selected_data'];
+            }
+        }
+        foreach ($metaList as $meta) {
             if ($meta["meta_key"] == "price") {
                 return $meta["meta_value"] * (int)((isset($product["count"])) ? $product["count"] : 1);
             }
         }
-
         return 0; // Return 0 if no valid price found
     }
 
