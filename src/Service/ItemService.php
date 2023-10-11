@@ -535,17 +535,19 @@ class ItemService implements ServiceInterface
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
 
+        $orderProperty = json_decode($params["property"], true);
         /// replace order property with original property ( 
         if (isset($params['property'])) {
-            $orderProperty = json_decode($params["property"], true);
             if (isset($product['property'])) {
+                $originalProperty = $product["property"];
+                $product['property'] = $orderProperty;
                 if (isset($orderProperty['meta_selected_data'])) {
-                    $originalProperty = $product["property"];
-                    $product["property"] = $orderProperty;
-                    $product["property"]['meta_selected_data'] = $originalProperty[$orderProperty['meta_selected']['meta_key'] . '-' . $orderProperty['meta_selected']['meta_value']];
+                    if (!empty($orderProperty['meta_selected_data'])) {
+                        $product["property"]['meta_selected_data'] = $originalProperty[$orderProperty['meta_selected']['meta_key'] . '-' . $orderProperty['meta_selected']['meta_value']];
+                    }
                 }
             } else {
-                // $product['property'] = $orderProperty;
+                 $product['property'] = $orderProperty;
             }
         }
 

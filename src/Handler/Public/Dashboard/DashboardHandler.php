@@ -119,7 +119,7 @@ class DashboardHandler implements RequestHandlerInterface
                         "image" => "https://api.shokrin.com/upload/ver-03/middle-slider.png",
                         "mobile" => "https://api.shokrin.com/upload/ver-03/middle-slider.png",
                         "has_link" => true,
-                        "url" => "/products/",
+                        "url" => "/products/chandelier-code-401/",
                         "button_title" => "انتخاب کن",
                         "title" => "شکرین",
                         "subhead" => " درخشش خانه تو",
