@@ -578,7 +578,7 @@ class ItemService implements ServiceInterface
             $param = [
                 "id" => null,
                 "title" => "cart",
-                "slug" => "cart",
+                "slug" => "cart-{$account["id"]}",
                 "type" => "cart",
                 "status" => 1,
                 "user_id" => $params["user_id"],
@@ -609,7 +609,7 @@ class ItemService implements ServiceInterface
         $param = [
             "id" => null,
             "title" => "cart",
-            "slug" => "cart",
+            "slug" => "cart-{$account["id"]}",
             "type" => "cart",
             "status" => 1,
             "user_id" => $params["user_id"],
@@ -639,7 +639,7 @@ class ItemService implements ServiceInterface
             $param = [
                 "id" => null,
                 "title" => "cart",
-                "slug" => "cart",
+                "slug" => "cart-{$account["id"]}",
                 "type" => "cart",
                 "status" => 1,
                 "user_id" => $params["user_id"],
