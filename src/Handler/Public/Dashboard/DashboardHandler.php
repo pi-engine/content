@@ -86,16 +86,6 @@ class DashboardHandler implements RequestHandlerInterface
                             "subtitle" => "",
                         ],
                         [
-                            "image" => "https://api.shokrin.com/upload/ver-03/slide-01.png?" . time(),
-                            "mobile" => "https://api.shokrin.com/upload/ver-03/slide-01.png?" . time(),
-                            "has_link" => true,
-                            "button_link" => "/products/chandelier-code-412/",
-                            "button_title" => "خرید",
-                            "title" => "شکرین",
-                            "subhead" => " درخشش خانه تو",
-                            "subtitle" => "",
-                        ],
-                        [
                             "image" => "https://api.shokrin.com/upload/ver-03/slide-02.png?" . time(),
                             "mobile" => "https://api.shokrin.com/upload/ver-03/slide-02.png?" . time(),
                             "has_link" => true,
