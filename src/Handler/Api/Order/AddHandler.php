@@ -46,10 +46,6 @@ class AddHandler implements RequestHandlerInterface
         // Get list of notifications
         $result = $this->itemService->addOrderItem($requestBody,$account);
 
-
-        // Get record
-        // $result = [];
-
         // Set result
         $result = [
             'result' => true,

@@ -47,6 +47,17 @@ class ItemService implements ServiceInterface
             'categories',
             'colors',
             'shed_colors',
+            'min_price',
+            'max_price',
+            'min_height',
+            'max_height',
+            'min_width',
+            'max_width',
+            'max_diagonal',
+            'min_diagonal',
+            'min_flames_count',
+            'max_flames_count',
+            'flames_count',
         ];
 
     // ToDo: get it from DB and cache
@@ -144,6 +155,7 @@ class ItemService implements ServiceInterface
             }
 
         }
+
 
         $list = [];
         $rowSet = $this->itemRepository->getItemList($listParams);
@@ -375,19 +387,93 @@ class ItemService implements ServiceInterface
                             break;*/
 
                     case 'max_price':
-                        $filters[$key] = [
-                            'meta_key' => $key,
-                            'value' => $value,
-                            'type' => 'rangeMax',
-                        ];
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'price',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
                         break;
 
                     case 'min_price':
-                        $filters[$key] = [
-                            'meta_key' => $key,
-                            'value' => $value,
-                            'type' => 'rangeMin',
-                        ];
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'price',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'min_height':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'height',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'max_height':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'height',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'min_width':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'width',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'max_width':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'width',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'max_diagonal':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'diagonal',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'min_diagonal':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'diagonal',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'max_flames_count':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'flames-count',
+                                'value' => $value,
+                                'type' => 'rangeMax',
+                            ];
+                        break;
+                    case 'min_flames_count':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'flames-count',
+                                'value' => $value,
+                                'type' => 'rangeMin',
+                            ];
+                        break;
+                    case 'flames_count':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'flames-count',
+                                'value' => $value,
+                                'type' => 'int',
+                            ];
                         break;
                     case 'categories':
                         $filters[$key] = [
@@ -448,10 +534,26 @@ class ItemService implements ServiceInterface
         $product = $this->getItem($params["information"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
+
+        $orderProperty = json_decode($params["property"], true);
+        /// replace order property with original property ( 
         if (isset($params['property'])) {
-            $product["property"] = json_decode($params["property"]);
+            if (isset($product['property'])) {
+                $originalProperty = $product["property"];
+                $product['property'] = $orderProperty;
+                if (isset($orderProperty['meta_selected_data'])) {
+                    if (!empty($orderProperty['meta_selected_data'])) {
+                        $product["property"]['meta_selected_data'] = $originalProperty[$orderProperty['meta_selected']['meta_key'] . '-' . $orderProperty['meta_selected']['meta_value']];
+                    }
+                }
+            } else {
+                 $product['property'] = $orderProperty;
+            }
         }
+
+
         $product["count"] = (int)$params["count"];
+        $product["cart_slug"] = uniqid();
         if (sizeof($cart) == 0) {
             $param = [
                 "id" => null,
@@ -464,9 +566,9 @@ class ItemService implements ServiceInterface
             ];
             $this->itemRepository->addCartItem($param);
         } else {
-            $index = $this->checkObjectInArray($cart, $product);
+            $index = $this->checkKeyValueInArray($cart, $params['cart_slug'], 'cart_slug');
 
-            if ($index > -1) {
+            if ($index > -1 && (json_decode($params['property'], true) == $cart[$index]['property'])) {
                 $cart[$index]["count"] = (int)$cart[$index]["count"] + (int)$params["count"];
             } else {
                 $cart[] = $product;
@@ -476,7 +578,7 @@ class ItemService implements ServiceInterface
             $param = [
                 "id" => null,
                 "title" => "cart",
-                "slug" => "cart",
+                "slug" => "cart-{$account["id"]}",
                 "type" => "cart",
                 "status" => 1,
                 "user_id" => $params["user_id"],
@@ -495,17 +597,19 @@ class ItemService implements ServiceInterface
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
         $product["count"] = (int)$params["count"];
 
-        $index = $this->checkObjectInArray($cart, $product);
+//        $index = $this->checkObjectInArray($cart, $product);
+        $index = $this->checkKeyValueInArray($cart, $params["cart_slug"], 'cart_slug');
 
         if ($index > -1) {
             $cart[$index]["count"] = $params["count"];
         } else {
+            $product['cart_slug'] = uniqid();
             $cart[] = $product;
         }
         $param = [
             "id" => null,
             "title" => "cart",
-            "slug" => "cart",
+            "slug" => "cart-{$account["id"]}",
             "type" => "cart",
             "status" => 1,
             "user_id" => $params["user_id"],
@@ -521,28 +625,21 @@ class ItemService implements ServiceInterface
     {
         $product = $this->getItem($params["slug"], "slug");
         $cart = $this->getItemFilter(["type" => "cart", "user_id" => $account["id"]]);
-        echo sizeof($cart);
         if (sizeof($cart) < 2) {
             $this->itemRepository->destroyItem(["type" => "cart", "user_id" => $account["id"]]);
         } else {
-            $index = $this->checkObjectInArray($cart, $product);
-
+//            $index = $this->checkObjectInArray($cart, $product);
+            $index = $this->checkKeyValueInArray($cart, $params["cart_slug"], 'cart_slug');
             if ($index > -1) {
-//                unset($cart[$index]);
-                $list = [];
-                foreach ($cart as $item) {
-                    if ($item["id"] != $cart[$index]["id"]) {
-                        $list[] = $item;
-                    }
-                }
-                $cart = $list;
+                unset($cart[$index]);
+                $cart = array_values($cart);
             } else {
                 $cart[] = [];
             }
             $param = [
                 "id" => null,
                 "title" => "cart",
-                "slug" => "cart",
+                "slug" => "cart-{$account["id"]}",
                 "type" => "cart",
                 "status" => 1,
                 "user_id" => $params["user_id"],
@@ -565,6 +662,19 @@ class ItemService implements ServiceInterface
                 return $index;
             }
         }
+        return $index;
+    }
+
+    private function checkKeyValueInArray(array $array, $value, $key = 'id')
+    {
+        $index = -1;
+        foreach ($array as $item) {
+            $index++;
+            if ($item[$key] == $value) {
+                return $index;
+            }
+        }
+        return $index;
     }
 
 
@@ -595,6 +705,7 @@ class ItemService implements ServiceInterface
         foreach ($cart as $item) {
             $items[$index] = $this->getItem($item['slug'], 'slug', ['type' => 'product']);
             $items[$index]['count'] = $item['count'];
+            $items[$index]['property'] = $item['property'];
             $index++;
         }
 
@@ -609,6 +720,9 @@ class ItemService implements ServiceInterface
             "state" => $params["state"],
             "city" => $params["city"],
             "zip_code" => $params["zip_code"],
+            "description" => $params["description"],
+            "day" => $params["day"],
+            "time" => $params["time"],
         ];
         $address_request = [
             "type" => "address",
@@ -655,12 +769,17 @@ class ItemService implements ServiceInterface
 
     public function calculateTotalPrice($product): float|int
     {
-        foreach ($product["meta"] as $meta) {
+        $metaList = $product["meta"];
+        if (isset($product['property'])) {
+            if (isset($product['property']['meta_selected_data'])) {
+                $metaList = $product['property']['meta_selected_data'];
+            }
+        }
+        foreach ($metaList as $meta) {
             if ($meta["meta_key"] == "price") {
                 return $meta["meta_value"] * (int)((isset($product["count"])) ? $product["count"] : 1);
             }
         }
-
         return 0; // Return 0 if no valid price found
     }
 
@@ -865,7 +984,7 @@ class ItemService implements ServiceInterface
                     $course['thumbnail'],
                     $course['course_title'],
                     $course['course_schedule'],
-                    ($course['course_fee']+($course['course_fee']*0.09)),
+                    ($course['course_fee'] + ($course['course_fee'] * 0.09)),
                     "ثبت نام شما بعد از پرداخت هزینه دوره نهایی خواهد شد.",
                     $this->config['admin']['template']['logo']
                 ),
@@ -889,7 +1008,7 @@ class ItemService implements ServiceInterface
                     $course['thumbnail'],
                     $course['course_title'],
                     $course['course_schedule'] . ' ' . $course['course_fee_view'],
-                    ($course['course_fee']+($course['course_fee']*0.09)),
+                    ($course['course_fee'] + ($course['course_fee'] * 0.09)),
                     $information['body']['user']['first_name'],
                     $information['body']['user']['last_name'],
                     $information['body']['user']['phone'],
@@ -1611,7 +1730,7 @@ class ItemService implements ServiceInterface
 
     public function getTourismMainDashboard($params, $account): array
     {
-        $top_sections  = array();
+        $top_sections = array();
         $top_sections_india = array();
         $top_sections_africa = array();
         $new_sections = array();
@@ -1679,10 +1798,10 @@ class ItemService implements ServiceInterface
                 "has_video" => false
             ],
             "middle_mode_banner" => [
-                "title"=>"به یاد ماندنی شوید",
+                "title" => "به یاد ماندنی شوید",
                 "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
-                "button_title"=>"مشاهده اطلاعات بیشتر",
-                "button_link"=>"/tours/",
+                "button_title" => "مشاهده اطلاعات بیشتر",
+                "button_link" => "/tours/",
                 "video" => "",
                 "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
                 "has_video" => false
@@ -1716,39 +1835,39 @@ class ItemService implements ServiceInterface
                 "banners" => [
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-03.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-04.jpg",
-                        "thumbnail"=>"https://yadapi.kerloper.com/upload/logo.png",
-                        "top_title"=>"متن",
-                        "title"=>"عنوان اصلی تصویر",
-                        "sub_title"=>"متن",
-                        "button_title"=>"مشاهده بیشتر",
-                        "button_link"=>"/",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "top_title" => "متن",
+                        "title" => "عنوان اصلی تصویر",
+                        "sub_title" => "متن",
+                        "button_title" => "مشاهده بیشتر",
+                        "button_link" => "/",
                     ]
                 ]
             ],

@@ -45,8 +45,8 @@ class DeleteHandler implements RequestHandlerInterface
         $params["type"] = "type";
         $params["product_id"] = $requestBody['id'];
         $params["slug"] = $requestBody['slug'];
+        $params["cart_slug"] = $requestBody['cart_slug'];
 
-        // Get list of notifications
         $result = $this->itemService->deleteCartItem($params, $account);
 
 
