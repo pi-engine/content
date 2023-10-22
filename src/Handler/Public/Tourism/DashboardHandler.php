@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Tourism\Tour;
+namespace Content\Handler\Public\Tourism;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class GetHandler implements RequestHandlerInterface
+class DashboardHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -35,21 +35,21 @@ class GetHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get account
+        // Dashboard account
         $account = $request->getAttribute('account');
 
-        // Get request body
+        // Dashboard request body
         $requestBody = $request->getParsedBody();
 
         // Set record params
         $params = [
             'user_id' => $account['id'] ?? 0,
-            'type' => "tour",
-            'parameter_type' => $requestBody['parameter_type'] ?? 'slug',
+            'type' => "tourism_main_dashboard",
+            'parameter_type' =>  'slug',
+            'slug' =>  'tourism_main_dashboard',
         ];
-        $params[$params['parameter_type']] = $requestBody[$params['parameter_type']];
 
-        $result = $this->itemService->getTour($params, $account);
+        $result = $this->itemService->getTourismMainDashboard($params, $account);
 
         // Set result
         $result = [

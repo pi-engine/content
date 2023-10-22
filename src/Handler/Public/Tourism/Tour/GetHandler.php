@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Tourism\Tour;
+namespace Content\Handler\Public\Tourism\Tour;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ListHandler implements RequestHandlerInterface
+class GetHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -42,9 +42,21 @@ class ListHandler implements RequestHandlerInterface
         $requestBody = $request->getParsedBody();
 
         // Set record params
-        $requestBody['type'] = 'tour';
-        $requestBody['user_id'] = $account['id'] ?? 0;
-        $result = $this->itemService->getItemList($requestBody, $account);
+        $params = [
+            'user_id' => $account['id'] ?? 0,
+            'type' => "tour",
+            'parameter_type' => $requestBody['parameter_type'] ?? 'slug',
+        ];
+        $params[$params['parameter_type']] = $requestBody[$params['parameter_type']];
+
+        $result = $this->itemService->getTour($params, $account);
+
+        // Set result
+        $result = [
+            'result' => true,
+            'data'   => $result,
+            'error'  => [],
+        ];
 
         return new JsonResponse($result);
     }

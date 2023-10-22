@@ -1,8 +1,8 @@
 <?php
 
-namespace Content\Factory\Handler\Api\Tourism\Destination;
+namespace Content\Factory\Handler\Public\Tourism\Destination;
 
-use Content\Handler\Api\Tourism\Destination\GetHandler;
+use Content\Handler\Public\Tourism\Destination\GetHandler;
 use Content\Service\ItemService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
