@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Tourism;
+namespace Content\Handler\Public\Tourism\Tour;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class DashboardHandler implements RequestHandlerInterface
+class ListHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -35,29 +35,30 @@ class DashboardHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Dashboard account
+        // Get account
         $account = $request->getAttribute('account');
 
-        // Dashboard request body
+        // Get request body
         $requestBody = $request->getParsedBody();
 
         // Set record params
+        $requestBody['user_id'] = $account['id'] ?? 0;
         $params = [
+            'type' => 'tour',
             'user_id' => $account['id'] ?? 0,
-            'type' => "tourism_main_dashboard",
-            'parameter_type' =>  'slug',
-            'slug' =>  'tourism_main_dashboard',
         ];
-
-        $result = $this->itemService->getTourismMainDashboard($params, $account);
-
-        // Set result
-        $result = [
-            'result' => true,
-            'data'   => $result,
-            'error'  => [],
-        ];
-
+        $result = $this->itemService->getItemList($params, $account);
+        if($requestBody['type'] =='special_tours'){
+            $result['data']["middle_mode_banner"] = [
+                "title" => "تورهای خاص",
+                "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
+                "button_title" => "مطالعه بیشتر",
+                "button_link" => "/special-tours/",
+                "video" => "",
+                "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
+                "has_video" => false
+            ];
+        }
         return new JsonResponse($result);
     }
 }

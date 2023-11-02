@@ -281,7 +281,7 @@ class MetaService implements ServiceInterface
 
     public function getMetaValueList(object|array|null $params): array
     {
-       return $this->itemService->getItemList(['type'=>'meta_'.$params['key']??'']);
+       return $this->itemService->getItemList(['type'=>'meta-'.$params['key']??'']);
     }
 
     private function canonizeMetaKey(mixed $meta, mixed $type = 'global'): array

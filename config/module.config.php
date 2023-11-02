@@ -79,12 +79,12 @@ return [
             Handler\Api\Report\Club\Score\ListHandler::class => Factory\Handler\Api\Report\Club\Score\ListHandlerFactory::class,
 
             // Tourism services factory
-            Handler\Api\Tourism\DashboardHandler::class => Factory\Handler\Api\Tourism\DashboardHandlerFactory::class,
-            Handler\Api\Tourism\Tour\GetHandler::class => Factory\Handler\Api\Tourism\Tour\GetHandlerFactory::class,
-            Handler\Api\Tourism\Tour\ListHandler::class => Factory\Handler\Api\Tourism\Tour\ListHandlerFactory::class,
-            Handler\Api\Tourism\Destination\GetHandler::class => Factory\Handler\Api\Tourism\Destination\GetHandlerFactory::class,
-            Handler\Api\Tourism\Destination\ListHandler::class => Factory\Handler\Api\Tourism\Destination\ListHandlerFactory::class,
-            Handler\Api\Tourism\Main\MainHandler::class => Factory\Handler\Api\Tourism\Main\MainHandlerFactory::class,
+            Handler\Public\Tourism\DashboardHandler::class => Factory\Handler\Public\Tourism\DashboardHandlerFactory::class,
+            Handler\Public\Tourism\Tour\GetHandler::class => Factory\Handler\Public\Tourism\Tour\GetHandlerFactory::class,
+            Handler\Public\Tourism\Tour\ListHandler::class => Factory\Handler\Public\Tourism\Tour\ListHandlerFactory::class,
+            Handler\Public\Tourism\Destination\GetHandler::class => Factory\Handler\Public\Tourism\Destination\GetHandlerFactory::class,
+            Handler\Public\Tourism\Destination\ListHandler::class => Factory\Handler\Public\Tourism\Destination\ListHandlerFactory::class,
+            Handler\Public\Tourism\Main\MainHandler::class => Factory\Handler\Public\Tourism\Main\MainHandlerFactory::class,
 
 
             ///Admin Section
@@ -340,7 +340,7 @@ return [
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             SecurityMiddleware::class,
-                                            Handler\Api\Tourism\DashboardHandler::class
+                                            Handler\Public\Tourism\DashboardHandler::class
                                         ),
                                     ],
                                 ],
@@ -365,7 +365,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Tour\GetHandler::class
+                                                    Handler\Public\Tourism\Tour\GetHandler::class
                                                 ),
                                             ],
                                         ],
@@ -384,7 +384,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Tour\ListHandler::class
+                                                    Handler\Public\Tourism\Tour\ListHandler::class
                                                 ),
                                             ],
                                         ],
@@ -412,7 +412,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Destination\GetHandler::class
+                                                    Handler\Public\Tourism\Destination\GetHandler::class
                                                 ),
                                             ],
                                         ],
@@ -431,7 +431,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Destination\ListHandler::class
+                                                    Handler\Public\Tourism\Destination\ListHandler::class
                                                 ),
                                             ],
                                         ],
@@ -459,7 +459,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Main\MainHandler::class
+                                                    Handler\Public\Tourism\Main\MainHandler::class
                                                 ),
                                             ],
                                         ],
@@ -478,7 +478,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
-                                                    Handler\Api\Tourism\Destination\ListHandler::class
+                                                    Handler\Public\Tourism\Destination\ListHandler::class
                                                 ),
                                             ],
                                         ],

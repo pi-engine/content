@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Api\Tourism\Main;
+namespace Content\Handler\Public\Tourism\Main;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;

@@ -47,6 +47,7 @@ class UpdateHandler implements RequestHandlerInterface
         $params["type"] = "cart";
         $params["product_id"] = $requestBody['id'];
         $params["slug"] = $requestBody['slug'];
+        $params["cart_slug"] = $requestBody['cart_slug'];
 
         // Get list of notifications
         $result = $this->itemService->updateCart($params, $account);
