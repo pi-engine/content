@@ -114,7 +114,7 @@ class ItemService implements ServiceInterface
         if (isset($params['data_to'])) {
             $listParams['data_to'] = strtotime(
                 ($params['data_to']) != null
-                    ? sprintf('%s 00:00:00', $params['data_from'])
+                    ? sprintf('%s 00:00:00', $params['data_to'])
                     : sprintf('%s 23:59:59', date('Y-m-d'))
             );
         }
