@@ -82,6 +82,8 @@ return [
             Handler\Public\Tourism\DashboardHandler::class => Factory\Handler\Public\Tourism\DashboardHandlerFactory::class,
             Handler\Public\Tourism\Tour\GetHandler::class => Factory\Handler\Public\Tourism\Tour\GetHandlerFactory::class,
             Handler\Public\Tourism\Tour\ListHandler::class => Factory\Handler\Public\Tourism\Tour\ListHandlerFactory::class,
+            Handler\Public\Tourism\Blog\BlogGetHandler::class => Factory\Handler\Public\Tourism\Blog\BlogGetHandlerFactory::class,
+            Handler\Public\Tourism\Blog\BlogListHandler::class => Factory\Handler\Public\Tourism\Blog\BlogListHandlerFactory::class,
             Handler\Public\Tourism\Destination\GetHandler::class => Factory\Handler\Public\Tourism\Destination\GetHandlerFactory::class,
             Handler\Public\Tourism\Destination\ListHandler::class => Factory\Handler\Public\Tourism\Destination\ListHandlerFactory::class,
             Handler\Public\Tourism\Main\MainHandler::class => Factory\Handler\Public\Tourism\Main\MainHandlerFactory::class,
@@ -385,6 +387,53 @@ return [
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
                                                     Handler\Public\Tourism\Tour\ListHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                ],
+                            ],
+                            'blog' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/blog',
+                                    'defaults' => [],
+                                ],
+                                'child_routes' => [
+                                    'get' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/get',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-tour',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Tourism\Blog\BlogGetHandler::class
+                                                ),
+                                            ],
+                                        ],
+
+                                    ],
+                                    'list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'api',
+                                                'package' => 'tourism',
+                                                'handler' => 'tour',
+                                                'permission' => 'api-content-tourism-tour',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Tourism\Blog\BlogListHandler::class
                                                 ),
                                             ],
                                         ],

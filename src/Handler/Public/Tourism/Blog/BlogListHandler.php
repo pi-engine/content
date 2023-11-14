@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Public\Tourism\Tour;
+namespace Content\Handler\Public\Tourism\Blog;
 
 use Content\Service\ItemService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ListHandler implements RequestHandlerInterface
+class BlogListHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -44,16 +44,16 @@ class ListHandler implements RequestHandlerInterface
         // Set record params
         $requestBody['user_id'] = $account['id'] ?? 0;
         $params = [
-            'type' => 'tour',
+            'type' => 'blog',
             'user_id' => $account['id'] ?? 0,
         ];
         $result = $this->itemService->getItemList($params, $account);
-        if($requestBody['type'] =='special-tours'){
+        if($requestBody['type'] =='special-blogs'){
             $result['data']["middle_mode_banner"] = [
-                "title" => "تورهای خاص",
+                "title" => "وبلاگ",
                 "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
                 "button_title" => "مطالعه بیشتر",
-                "button_link" => "/special-tours/",
+                "button_link" => "/blog/",
                 "video" => "",
                 "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
                 "has_video" => false
