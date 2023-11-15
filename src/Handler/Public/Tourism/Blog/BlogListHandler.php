@@ -43,12 +43,10 @@ class BlogListHandler implements RequestHandlerInterface
 
         // Set record params
         $requestBody['user_id'] = $account['id'] ?? 0;
-        $params = [
-            'type' => 'blog',
-            'user_id' => $account['id'] ?? 0,
-        ];
+        $params = $requestBody;
+        $params  ['type'] = 'blog'; 
         $result = $this->itemService->getItemList($params, $account);
-        if($requestBody['type'] =='special-blogs'){
+        if ($requestBody['type'] == 'special-blogs') {
             $result['data']["middle_mode_banner"] = [
                 "title" => "وبلاگ",
                 "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
