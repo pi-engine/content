@@ -322,7 +322,7 @@ class ItemService implements ServiceInterface
                 $data['stock_status'] = 1;
                 $data['stock_status_view'] = 'موجود در انبار';
         }
-
+        $data['time_create_view'] = $this->utilityService->date($item['time_create']);
         // Set information
         return $data;
     }
@@ -547,7 +547,7 @@ class ItemService implements ServiceInterface
                     }
                 }
             } else {
-                 $product['property'] = $orderProperty;
+                $product['property'] = $orderProperty;
             }
         }
 
