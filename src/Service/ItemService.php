@@ -314,7 +314,6 @@ class ItemService implements ServiceInterface
             case 'tour':
                 $data['cost_dollar'] = 670;
                 $data['cost_dollar_view'] = '670 دلار';
-                $data['type'] = 'tour';
                 break;
             case 'product':
                 $data['price'] = $this->calculateTotalPrice($data);
@@ -323,6 +322,7 @@ class ItemService implements ServiceInterface
                 $data['stock_status_view'] = 'موجود در انبار';
         }
         $data['time_create_view'] = $this->utilityService->date($item['time_create']);
+        $data['type'] =$item['type'];
         // Set information
         return $data;
     }
