@@ -84,7 +84,7 @@ return [
             Handler\Public\Tourism\Tour\ListHandler::class => Factory\Handler\Public\Tourism\Tour\ListHandlerFactory::class,
             Handler\Public\Tourism\Blog\BlogGetHandler::class => Factory\Handler\Public\Tourism\Blog\BlogGetHandlerFactory::class,
             Handler\Public\Tourism\Blog\BlogListHandler::class => Factory\Handler\Public\Tourism\Blog\BlogListHandlerFactory::class,
-           Handler\Public\Tourism\Travelogue\TravelogueGetHandler::class => Factory\Handler\Public\Tourism\Travelogue\TravelogueGetHandlerFactory::class,
+            Handler\Public\Tourism\Travelogue\TravelogueGetHandler::class => Factory\Handler\Public\Tourism\Travelogue\TravelogueGetHandlerFactory::class,
             Handler\Public\Tourism\Travelogue\TravelogueListHandler::class => Factory\Handler\Public\Tourism\Travelogue\TravelogueListHandlerFactory::class,
             Handler\Public\Tourism\Destination\GetHandler::class => Factory\Handler\Public\Tourism\Destination\GetHandlerFactory::class,
             Handler\Public\Tourism\Destination\ListHandler::class => Factory\Handler\Public\Tourism\Destination\ListHandlerFactory::class,

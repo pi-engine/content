@@ -48,10 +48,10 @@ class TravelogueListHandler implements RequestHandlerInterface
         $result = $this->itemService->getItemList($params, $account);
         if ($requestBody['type'] == 'special-travelogues') {
             $result['data']["middle_mode_banner"] = [
-                "title" => "وبلاگ",
+                "title" => "سفرنامه",
                 "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
                 "button_title" => "مطالعه بیشتر",
-                "button_link" => "/blog/",
+                "button_link" => "/travelogue/",
                 "video" => "",
                 "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
                 "has_video" => false
