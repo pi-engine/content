@@ -1966,10 +1966,15 @@ class ItemService implements ServiceInterface
             $entity['body'][sizeof($entity['body'])] = $object;
 
             usort($entity['body'], function ($a, $b) {
-                if ($a['index'] === $b['index']) {
-                    return $b['id'] - $a['id'];
+                if (is_numeric($a['index']) && is_numeric($b['index'])) {
+                    if ($a['index'] === $b['index']) {
+                        return $b['id'] - $a['id'];
+                    }
+                    return $a['index'] - $b['index'];
+                } else {
+                    // Handle string indices
+                    return strcmp($a['index'], $b['index']);
                 }
-                return $a['index'] - $b['index'];
             });
             $params = [
                 'information' => json_encode($entity)
