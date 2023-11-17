@@ -44,7 +44,7 @@ class TravelogueGetHandler implements RequestHandlerInterface
         // Set record params
         $params = [
             'user_id' => $account['id'] ?? 0,
-            'type' => "tour",
+            'type' => "travelogue",
             'parameter_type' => $requestBody['parameter_type'] ?? 'slug',
         ];
         $params[$params['parameter_type']] = $requestBody[$params['parameter_type']];
