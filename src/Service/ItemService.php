@@ -210,6 +210,7 @@ class ItemService implements ServiceInterface
             $list = $this->canonizeCartItem($row);
         }
 
+
         $count = $this->itemRepository->getItemCount($params);
 
         return [
@@ -319,8 +320,9 @@ class ItemService implements ServiceInterface
                 $data['stock_status'] = 1;
                 $data['stock_status_view'] = 'موجود در انبار';
         }
-        $data['time_create_view'] = $this->utilityService->date($item['time_create']);
-        $data['type'] =$item['type'];
+        ///TODO:resolve this
+//        $data['time_create_view'] = $this->utilityService->date($item['time_create']);
+//        $data['type'] =$item['type'];
         // Set information
         return $data;
     }
