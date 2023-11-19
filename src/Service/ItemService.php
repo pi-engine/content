@@ -200,7 +200,6 @@ class ItemService implements ServiceInterface
         $params['order'] = $order;
         $params['offset'] = $offset;
         $params['limit'] = $limit;
-        $params['type'] = $params['type'];
         $params['status'] = 1;
 
 
@@ -210,7 +209,6 @@ class ItemService implements ServiceInterface
 //            $list[] = $this->canonizeItem($row);
             $list = $this->canonizeCartItem($row);
         }
-
 
         $count = $this->itemRepository->getItemCount($params);
 
