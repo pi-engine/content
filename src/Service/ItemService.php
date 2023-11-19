@@ -207,8 +207,8 @@ class ItemService implements ServiceInterface
         $rowSet = $this->itemRepository->getItemList($params);
         foreach ($rowSet as $row) {
             ///TODO: review this codes
-            $list[] = $this->canonizeItem($row);
-            $list = $this->canonizeItem($row);
+//            $list[] = $this->canonizeItem($row);
+            $list = $this->canonizeCartItem($row);
         }
 
 
@@ -323,6 +323,57 @@ class ItemService implements ServiceInterface
         }
         $data['time_create_view'] = $this->utilityService->date($item['time_create']);
         $data['type'] =$item['type'];
+        // Set information
+        return $data;
+    }
+
+    public function canonizeCartItem(object|array $item, $type = 'global'): array
+    {
+        if (empty($item)) {
+            return [];
+        }
+
+        if (is_object($item)) {
+            $item = [
+                'id' => $item->getId(),
+                'title' => $item->getTitle(),
+                'slug' => $item->getSlug(),
+                'type' => $item->getType(),
+                'status' => $item->getStatus(),
+                'user_id' => $item->getUserId(),
+                'time_create' => $item->getTimeCreate(),
+                'time_update' => $item->getTimeUpdate(),
+                'time_delete' => $item->getTimeDelete(),
+                'information' => $item->getInformation(),
+            ];
+        } else {
+            $item = [
+                'id' => $item['id'],
+                'title' => $item['title'],
+                'slug' => $item['slug'],
+                'type' => $item['type'],
+                'status' => $item['status'],
+                'user_id' => $item['user_id'],
+                'time_create' => $item['time_create'],
+                'time_update' => $item['time_update'],
+                'time_delete' => $item['time_delete'],
+                'information' => $item['information'],
+            ];
+        }
+
+        $data = !empty($item['information']) ? json_decode($item['information'], true) : [];
+
+        switch ($type) {
+            case 'tour':
+                $data['cost_dollar'] = 670;
+                $data['cost_dollar_view'] = '670 دلار';
+                break;
+            case 'product':
+                $data['price'] = $this->calculateTotalPrice($data);
+                $data['price_view'] = number_format($data['price']) . " تومان";;
+                $data['stock_status'] = 1;
+                $data['stock_status_view'] = 'موجود در انبار';
+        }
         // Set information
         return $data;
     }
@@ -536,7 +587,7 @@ class ItemService implements ServiceInterface
         $product["count"] = (int)$params["count"];
 
         $orderProperty = json_decode($params["property"], true);
-        /// replace order property with original property ( 
+        /// replace order property with original property (
         if (isset($params['property'])) {
             if (isset($product['property'])) {
                 $originalProperty = $product["property"];
