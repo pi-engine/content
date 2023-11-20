@@ -100,7 +100,7 @@ class DashboardHandler implements RequestHandlerInterface
                         "list" => $this->itemService->getItemList([
                             'type' => 'product',
                             'special_suggest' => 1,
-                            'limit' => 6,
+                            'limit' => 2,
                             'page' => 1
                         ])['data']['list'],
                         "type" => "product",
