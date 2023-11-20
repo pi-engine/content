@@ -46,6 +46,7 @@ class ItemService implements ServiceInterface
             'size',
             'categories',
             'colors',
+            'special_suggest',
             'shed_colors',
             'min_price',
             'max_price',
@@ -516,6 +517,14 @@ class ItemService implements ServiceInterface
                                 'meta_key' => 'flames-count',
                                 'value' => $value,
                                 'type' => 'rangeMin',
+                            ];
+                        break;
+                     case 'special_suggest':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'special-suggest',
+                                'value' => $value,
+                                'type' => 'slug',
                             ];
                         break;
                     case 'flames_count':

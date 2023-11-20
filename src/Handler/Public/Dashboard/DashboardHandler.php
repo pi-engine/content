@@ -97,7 +97,12 @@ class DashboardHandler implements RequestHandlerInterface
                         ],
                     ],
                     "special_section" => [
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 3])['data']['list'],
+                        "list" => $this->itemService->getItemList([
+                            'type' => 'product',
+                            'special_suggest' => 1,
+                            'limit' => 6,
+                            'page' => 1
+                        ])['data']['list'],
                         "type" => "product",
                         "title" => "فروش ویژه",
                         "button_link" => "/products/",
@@ -449,22 +454,22 @@ class DashboardHandler implements RequestHandlerInterface
                         "list" => [
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-01.jpg?".time(),
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-01.jpg?" . time(),
                                 ]
                             ],
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-02.jpg?".time(),
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-02.jpg?" . time(),
                                 ]
                             ],
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-03.jpg?".time(),
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-03.jpg?" . time(),
                                 ]
                             ],
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-04.jpg?".time(),
+                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-04.jpg?" . time(),
                                 ]
                             ]
                         ],
