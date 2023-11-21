@@ -111,7 +111,7 @@ class ItemService implements ServiceInterface
             'offset' => $offset,
             'limit' => $limit,
             'type' => $params['type'],
-            'status' => 1,
+            'status' =>isset($params['status'])?$params['status']: 1,
         ];
 
 
