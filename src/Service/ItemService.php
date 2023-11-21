@@ -312,8 +312,8 @@ class ItemService implements ServiceInterface
 
         switch ($type) {
             case 'tour':
-                $data['cost_dollar'] = 670;
-                $data['cost_dollar_view'] = '670 دلار';
+//                $data['cost_dollar'] = 670;
+//                $data['cost_dollar_view'] = '670 دلار';
                 break;
             case 'product':
                 $data['price'] = $this->calculateTotalPrice($data);
@@ -366,8 +366,8 @@ class ItemService implements ServiceInterface
 
         switch ($type) {
             case 'tour':
-                $data['cost_dollar'] = 670;
-                $data['cost_dollar_view'] = '670 دلار';
+//                $data['cost_dollar'] = 670;
+//                $data['cost_dollar_view'] = '670 دلار';
                 break;
             case 'product':
                 $data['price'] = $this->calculateTotalPrice($data);
