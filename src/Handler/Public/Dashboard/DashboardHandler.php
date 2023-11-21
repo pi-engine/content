@@ -328,47 +328,10 @@ class DashboardHandler implements RequestHandlerInterface
                     "blog_list" => [
 
                         "title" => "وبلاگ شکرین",
-                        "more_link" => "/pages/",
+                        "more_link" => "/blog/",
                         "more_title" => "مشاهده بیشتر",
-                        "list" => [
+                        "list" => $this->itemService->getItemList(['type' => 'blog', 'limit' => 3, 'page' => 1])['data']['list'],
 
-                            [
-                                "id" => 1,
-                                "slug" => "our_story",
-                                "thumbnail" =>
-                                    "https://api.shokrin.com/upload/images/800x562-1.png",
-                                "author" => "ادمین",
-                                "tag" => "طراحی داخلی",
-                                "title" => "داستان ما",
-                                "description" =>
-                                    " توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ",
-                                "date" => "17 آبان 1401",
-                            ],
-                            [
-                                "id" => 2,
-                                "slug" => "dehydration_method",
-                                "thumbnail" =>
-                                    "https://api.shokrin.com/upload/images/800x562-2.png",
-                                "author" => "ادمین",
-                                "tag" => "طراحی داخلی",
-                                "title" => "روش اب کاری محصولات شکرین",
-                                "description" =>
-                                    " توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ",
-                                "date" => "10 آذر 1401",
-                            ],
-                            [
-                                "id" => 3,
-                                "slug" => "light_importance",
-                                "thumbnail" =>
-                                    "https://api.shokrin.com/upload/images/800x562-3.png",
-                                "author" => "ادمین",
-                                "tag" => "طراحی داخلی",
-                                "title" => " دلیل اهمیت نور در دکوراسیون فضای داخلی",
-                                "description" =>
-                                    " توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ توضیحات برای تست نمایش بلاگ",
-                                "date" => "23 آذر 1401",
-                            ],
-                        ],
                     ],
                     "testimonial" => [
                         [
