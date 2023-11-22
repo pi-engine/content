@@ -196,7 +196,7 @@ class DashboardHandler implements RequestHandlerInterface
                         "title" => "محصولات پر طرفدار",
                         "more_link" => "/products/",
                         "more_title" => "مشاهده بیشتر",
-                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 6, 'page' => 2])['data']['list'],
+                        "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 8, 'page' => 2])['data']['list'],
                         "banner" => [
                             "image" => "https://api.shokrin.com/upload/ver-03/category-banner.png",
                             "title" => "شمعدان‌های کلاسیک",
