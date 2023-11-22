@@ -115,6 +115,7 @@ return [
 
             // Meta
             Handler\Admin\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyListHandlerFactory::class,
+            Handler\Admin\Meta\Key\MetaKeyGetHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyGetHandlerFactory::class,
             Handler\Admin\Meta\Value\MetaValueListHandler::class => Factory\Handler\Admin\Meta\Value\MetaValueListHandlerFactory::class,
 
 
@@ -1527,6 +1528,26 @@ return [
                                                     AuthenticationMiddleware::class,
                                                     AuthorizationMiddleware::class,
                                                     Handler\Admin\Meta\Key\MetaKeyListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+                                    'get' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/get',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'admin',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'admin-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    AuthenticationMiddleware::class,
+                                                    AuthorizationMiddleware::class,
+                                                    Handler\Admin\Meta\Key\MetaKeyGetHandler::class
                                                 ),
                                             ],
                                         ],

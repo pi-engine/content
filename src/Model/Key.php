@@ -5,29 +5,32 @@ namespace Content\Model;
 class Key
 {
     private mixed $id;
-    private string $key;
-    private string $value;
-    private string $type;
-    private string $suffix;
-    private string $option;
-    private string $logo;
-    private int $status;
+    private mixed $key;
+    private mixed $value;
+    private mixed $target;
+    private mixed $type;
+    private mixed $suffix;
+    private mixed $option;
+    private mixed $logo;
+    private mixed $status;
 
     /**
      * @param mixed $id
-     * @param string $key
-     * @param string $value
-     * @param string $type
-     * @param string $suffix
-     * @param string $option
-     * @param string $logo
-     * @param int $status
+     * @param mixed $key
+     * @param mixed $value
+     * @param mixed $target
+     * @param mixed $type
+     * @param mixed $suffix
+     * @param mixed $option
+     * @param mixed $logo
+     * @param mixed $status
      */
-    public function __construct(mixed $id, string $key, string $value, string $type, string $suffix,string $option, string $logo, int $status)
+    public function __construct(mixed $id, mixed $key, mixed $value, mixed $target, mixed $type, mixed $suffix, mixed $option, mixed $logo, mixed $status)
     {
         $this->id = $id;
         $this->key = $key;
         $this->value = $value;
+        $this->target = $target;
         $this->type = $type;
         $this->suffix = $suffix;
         $this->option = $option;
@@ -52,116 +55,133 @@ class Key
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getKey(): string
+    public function getKey(): mixed
     {
         return $this->key;
     }
 
     /**
-     * @param string $key
+     * @param mixed $key
      */
-    public function setKey(string $key): void
+    public function setKey(mixed $key): void
     {
         $this->key = $key;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getValue(): string
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
     /**
-     * @param string $value
+     * @param mixed $value
      */
-    public function setValue(string $value): void
+    public function setValue(mixed $value): void
     {
         $this->value = $value;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getType(): string
+    public function getTarget(): mixed
+    {
+        return $this->target;
+    }
+
+    /**
+     * @param mixed $target
+     */
+    public function setTarget(mixed $target): void
+    {
+        $this->target = $target;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType(): mixed
     {
         return $this->type;
     }
 
     /**
-     * @param string $type
+     * @param mixed $type
      */
-    public function setType(string $type): void
+    public function setType(mixed $type): void
     {
         $this->type = $type;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getSuffix(): string
+    public function getSuffix(): mixed
     {
         return $this->suffix;
     }
 
     /**
-     * @param string $suffix
+     * @param mixed $suffix
      */
-    public function setSuffix(string $suffix): void
+    public function setSuffix(mixed $suffix): void
     {
         $this->suffix = $suffix;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getLogo(): string
-    {
-        return $this->logo;
-    }
-
-    /**
-     * @param string $logo
-     */
-    public function setLogo(string $logo): void
-    {
-        $this->logo = $logo;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int $status
-     */
-    public function setStatus(int $status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOption(): string
+    public function getOption(): mixed
     {
         return $this->option;
     }
 
     /**
-     * @param string $option
+     * @param mixed $option
      */
-    public function setOption(string $option): void
+    public function setOption(mixed $option): void
     {
         $this->option = $option;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLogo(): mixed
+    {
+        return $this->logo;
+    }
+
+    /**
+     * @param mixed $logo
+     */
+    public function setLogo(mixed $logo): void
+    {
+        $this->logo = $logo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus(): mixed
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus(mixed $status): void
+    {
+        $this->status = $status;
+    }
+
 
 
 }

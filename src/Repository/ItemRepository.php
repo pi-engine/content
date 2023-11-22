@@ -135,11 +135,14 @@ class ItemRepository implements ItemRepositoryInterface
      */
     public function getMetaKeyCount(array $params = []): int
     {
+        $where = [];
+        if (isset($params['target']) && !empty($params['target'])) {
+            $where['target'] = $params['target'];
+        }
         // Set where
         $columns = ['count' => new Expression('count(*)')];
-
         $sql = new Sql($this->db);
-        $select = $sql->select($this->tableMetaKey)->columns($columns);
+        $select = $sql->select($this->tableMetaKey)->columns($columns)->where($where);
         $statement = $sql->prepareStatementForSqlObject($select);
         $row = $statement->execute()->current();
 
@@ -390,10 +393,10 @@ class ItemRepository implements ItemRepositoryInterface
                 break;
 
             case 'rangeMax':
-                $select->where(['meta_key' => $filter['meta_key'], 'value_number < ?' =>  (int)$filter['value'] ]);
+                $select->where(['meta_key' => $filter['meta_key'], 'value_number < ?' => (int)$filter['value']]);
                 break;
             case 'rangeMin':
-                $select->where(['meta_key' => $filter['meta_key'], 'value_number >  ?' =>   (int)$filter['value']  ]);
+                $select->where(['meta_key' => $filter['meta_key'], 'value_number >  ?' => (int)$filter['value']]);
                 break;
         }
 
@@ -608,6 +611,11 @@ class ItemRepository implements ItemRepositoryInterface
     {
 
         $where = [];
+
+        if (isset($params['target']) && !empty($params['target'])) {
+            $where['target'] = $params['target'];
+        }
+
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableMetaKey)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -621,6 +629,49 @@ class ItemRepository implements ItemRepositoryInterface
         $resultSet->initialize($result);
 
         return $resultSet;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return object
+     */
+    public function getMetaKey(array $params = []): object
+    {
+        $where = [];
+        if (isset($params['key']) && !empty($params['key'])) {
+            $where['key'] = $params['key'];
+        }
+        if (isset($params['id']) && !empty($params['id'])) {
+            $where['id'] = $params['id'];
+        }
+        if (isset($params['target']) && !empty($params['target'])) {
+            $where['target'] = $params['target'];
+        }
+
+        $sql = new Sql($this->db);
+        $select = $sql->select($this->tableMetaKey)->where($where);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+            throw new RuntimeException(
+                sprintf(
+                    'Failed retrieving blog post with identifier "%s"; unknown database error.',
+                    $params
+                )
+            );
+        }
+
+        $resultSet = new HydratingResultSet($this->hydrator, $this->metaKeyPrototype);
+        $resultSet->initialize($result);
+        $item = $resultSet->current();
+
+        if (!$item) {
+            return [];
+        }
+
+        return $item;
     }
 
     public function destroyMetaValue($where): void

@@ -69,6 +69,6 @@ class EntityListHandler implements RequestHandlerInterface
             'error' => null,
         ];
 
-        return new JsonResponse($result);
+        return new JsonResponse($responseBody);
     }
 }

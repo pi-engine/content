@@ -239,9 +239,9 @@ class MetaService implements ServiceInterface
     {
         $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? [ 'id DESC'];
+        $order = $params['order'] ?? ['id DESC'];
         $offset = ($page - 1) * $limit;
-        $params['type'] = $params['type']??'';
+        $params['type'] = $params['type'] ?? '';
 
         // Set params
         $listParams = [
@@ -251,6 +251,9 @@ class MetaService implements ServiceInterface
             'type' => $params['type'],
             'status' => 1,
         ];
+        if (isset($params['target']) && !empty($params['target'])) {
+            $listParams['target'] = $params['target'];
+        }
 
         $rowSet = $this->itemRepository->getMetaKeyList($listParams);
         $list = [];
@@ -278,10 +281,15 @@ class MetaService implements ServiceInterface
 
     }
 
+    public function getMetaKey(object|array|null $params): object|array
+    {
+        return $this->canonizeMetaKey($this->itemRepository->getMetaKey($params));
+    }
+
 
     public function getMetaValueList(object|array|null $params): array
     {
-       return $this->itemService->getItemList(['type'=>'meta-'.$params['key']??'']);
+        return $this->itemService->getItemList(['type' => 'meta-' . $params['key'] ?? '']);
     }
 
     private function canonizeMetaKey(mixed $meta, mixed $type = 'global'): array
@@ -309,7 +317,7 @@ class MetaService implements ServiceInterface
                 'value' => $meta['value'],
                 'type' => $meta['type'],
                 'suffix' => $meta['suffix'],
-                'option' => json_decode( $meta['option']),
+                'option' => json_decode($meta['option']),
                 'logo' => $meta['logo'],
                 'status' => $meta['status'],
             ];
