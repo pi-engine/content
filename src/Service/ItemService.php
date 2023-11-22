@@ -243,7 +243,7 @@ class ItemService implements ServiceInterface
         $params['order'] = $order;
         $params['offset'] = $offset;
         $params['limit'] = $limit;
-        $params['type'] = $params['type'];
+//        $params['type'] = $params['type'];
         $params['status'] = 1;
 
         $list = [];
