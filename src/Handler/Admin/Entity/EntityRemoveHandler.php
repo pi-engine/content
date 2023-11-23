@@ -63,7 +63,7 @@ class EntityRemoveHandler implements RequestHandlerInterface
         }
         if (isset($requestBody['slug'])) {
             $params['slug'] = $requestBody['slug'];
-            $params['status'] = 0;
+            $params['status'] = 3;
         }
 
         $result = $this->itemService->editItem($params, $account);

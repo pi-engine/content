@@ -188,6 +188,8 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['type']) && !empty($params['type'])) {
             $where['type'] = $params['type'];
         }
+        $where['status'] = [0,1];
+
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where);
