@@ -111,7 +111,7 @@ class ItemService implements ServiceInterface
             'offset' => $offset,
             'limit' => $limit,
             'type' => $params['type'],
-            'status' =>isset($params['status'])?$params['status']: 1,
+            'status' => isset($params['status']) ? $params['status'] : 1,
         ];
 
 
@@ -414,11 +414,12 @@ class ItemService implements ServiceInterface
                 switch ($key) {
                     case 'color':
                     case 'size':
-                        $filters[$key] = [
-                            'meta_key' => $key,
-                            'value' => explode(',', $value),
-                            'type' => 'string',
-                        ];
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => $key,
+                                'value' => explode(',', $value),
+                                'type' => 'string',
+                            ];
                         break;
 
                     case 'brand':
@@ -519,7 +520,7 @@ class ItemService implements ServiceInterface
                                 'type' => 'rangeMin',
                             ];
                         break;
-                     case 'special_suggest':
+                    case 'special_suggest':
                         if (($value != '') && !empty($value) && ($value != null))
                             $filters[$key] = [
                                 'meta_key' => 'special-suggest',
@@ -536,25 +537,28 @@ class ItemService implements ServiceInterface
                             ];
                         break;
                     case 'categories':
-                        $filters[$key] = [
-                            'meta_key' => 'category',
-                            'value' => explode(',', $value),
-                            'type' => 'slug',
-                        ];
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'category',
+                                'value' => explode(',', $value),
+                                'type' => 'slug',
+                            ];
                         break;
                     case 'colors':
-                        $filters[$key] = [
-                            'meta_key' => 'color',
-                            'value' => explode(',', $value),
-                            'type' => 'slug',
-                        ];
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'color',
+                                'value' => explode(',', $value),
+                                'type' => 'slug',
+                            ];
                         break;
                     case 'shed_colors':
-                        $filters[$key] = [
-                            'meta_key' => 'shed_color',
-                            'value' => explode(',', $value),
-                            'type' => 'slug',
-                        ];
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'shed_color',
+                                'value' => explode(',', $value),
+                                'type' => 'slug',
+                            ];
                         break;
                 }
             }

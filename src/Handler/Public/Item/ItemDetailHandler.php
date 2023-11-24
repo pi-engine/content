@@ -38,7 +38,7 @@ class ItemDetailHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
 
-        // Get list of notifications
+        $requestBody['status'] = 1;
         $result = $this->itemService->getItem($requestBody['slug']??'', 'slug',$requestBody);
 
         // Set result
