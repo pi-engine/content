@@ -1993,7 +1993,7 @@ class ItemService implements ServiceInterface
         $request['status'] = $request['status'] ?? 0;
         $request['type'] = $request['type'] ?? 'entity';
         $request['user_id'] = $account['id'] ?? 0;
-        $request['body'] = [];
+        $request['body'] =isset($request['body'])?$request['body']:[];
         $params = [
             'user_id' => $request['user_id'],
             'title' => $request['title'],
