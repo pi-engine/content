@@ -43,42 +43,46 @@ class DashboardHandler implements RequestHandlerInterface
 
         switch ($requestBody['caller']) {
             case 'shokrin':
+                $sliders = $this->itemService->getItem('shokrin-slider-2023','slug');
                 $result = [
-                    "sliders" => [
-                        [
-                            "image" => "https://api.shokrin.com/upload/slide-01.jpg?" . time(),
-                            "mobile" => "https://api.shokrin.com/upload/slide-01.jpg?" . time(),
-                            "has_link" => true,
-                            "has_title" => true,
-                            "button_link" => "/products/desk-lampshade-code-170/",
-                            "button_title" => "خرید",
-                            "title" => "شکرین",
-                            "subhead" => " درخشش خانه تو",
-                            "subtitle" => "",
-                        ],
-                        [
-                            "image" => "https://api.shokrin.com/upload/slide-02.jpg?" . time(),
-                            "mobile" => "https://api.shokrin.com/upload/slide-02.jpg?" . time(),
-                            "has_link" => true,
-                            "has_title" => true,
-                            "button_link" => "/products/stand-lampshade-code-210/",
-                            "button_title" => "خرید",
-                            "title" => "شکرین",
-                            "subhead" => " درخشش خانه تو",
-                            "subtitle" => "",
-                        ],
-                        [
-                            "image" => "https://api.shokrin.com/upload/slide-03.jpg?" . time(),
-                            "mobile" => "https://api.shokrin.com/upload/slide-03.jpg?" . time(),
-                            "has_link" => false,
-                            "has_title" => false,
-                            "button_link" => "/products/",
-                            "button_title" => "خرید",
-                            "title" => "شکرین",
-                            "subhead" => " درخشش خانه تو",
-                            "subtitle" => "",
-                        ],
-                    ],
+
+                    "sliders" =>isset($sliders['banner_list'])?$sliders['banner_list']:[],
+
+//                        [
+//                        [
+//                            "image" => "https://api.shokrin.com/upload/slide-01.jpg?" . time(),
+//                            "mobile" => "https://api.shokrin.com/upload/slide-01.jpg?" . time(),
+//                            "has_link" => true,
+//                            "has_title" => true,
+//                            "button_link" => "/products/desk-lampshade-code-170/",
+//                            "button_title" => "خرید",
+//                            "title" => "شکرین",
+//                            "subhead" => " درخشش خانه تو",
+//                            "subtitle" => "",
+//                        ],
+//                        [
+//                            "image" => "https://api.shokrin.com/upload/slide-02.jpg?" . time(),
+//                            "mobile" => "https://api.shokrin.com/upload/slide-02.jpg?" . time(),
+//                            "has_link" => true,
+//                            "has_title" => true,
+//                            "button_link" => "/products/stand-lampshade-code-210/",
+//                            "button_title" => "خرید",
+//                            "title" => "شکرین",
+//                            "subhead" => " درخشش خانه تو",
+//                            "subtitle" => "",
+//                        ],
+//                        [
+//                            "image" => "https://api.shokrin.com/upload/slide-03.jpg?" . time(),
+//                            "mobile" => "https://api.shokrin.com/upload/slide-03.jpg?" . time(),
+//                            "has_link" => false,
+//                            "has_title" => false,
+//                            "button_link" => "/products/",
+//                            "button_title" => "خرید",
+//                            "title" => "شکرین",
+//                            "subhead" => " درخشش خانه تو",
+//                            "subtitle" => "",
+//                        ],
+//                    ],
                     "special_section" => [
                         "list" => $this->itemService->getItemList([
                             'type' => 'product',
