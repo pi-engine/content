@@ -1792,6 +1792,7 @@ class ItemService implements ServiceInterface
         return $this->canonizeItem($item);
     }
 
+
     public function getTourismMainDashboard($params, $account): array
     {
         $new_sections = array();
@@ -1896,7 +1897,7 @@ class ItemService implements ServiceInterface
                 "banners" => [
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-01.jpg",
-                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo-orange-no-padding.png",
                         "top_title" => "متن",
                         "title" => "عنوان اصلی تصویر",
                         "sub_title" => "متن",
@@ -1905,7 +1906,7 @@ class ItemService implements ServiceInterface
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-02.jpg",
-                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo-orange-no-padding.png",
                         "top_title" => "متن",
                         "title" => "عنوان اصلی تصویر",
                         "sub_title" => "متن",
@@ -1914,7 +1915,7 @@ class ItemService implements ServiceInterface
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-03.jpg",
-                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo-orange-no-padding.png",
                         "top_title" => "متن",
                         "title" => "عنوان اصلی تصویر",
                         "sub_title" => "متن",
@@ -1923,7 +1924,7 @@ class ItemService implements ServiceInterface
                     ],
                     [
                         "url" => "https://yadapi.kerloper.com/upload/banners/banner-04.jpg",
-                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo.png",
+                        "thumbnail" => "https://yadapi.kerloper.com/upload/logo-orange-no-padding.png",
                         "top_title" => "متن",
                         "title" => "عنوان اصلی تصویر",
                         "sub_title" => "متن",
