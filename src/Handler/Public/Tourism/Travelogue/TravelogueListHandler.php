@@ -49,9 +49,9 @@ class TravelogueListHandler implements RequestHandlerInterface
         if ($requestBody['type'] == 'special-travelogues') {
             $result['data']["middle_mode_banner"] = [
                 "title" => "سفرنامه",
-                "abstract" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، ",
-                "button_title" => "مطالعه بیشتر",
-                "button_link" => "/travelogue/",
+                "abstract" => "سفرنامه‌های آژانس‌ طبیعت‌گردی یادمان، نوشته‌هایی هستند که توسط شرکت‌کنندگان در این تورها نوشته می‌شوند. این سفرنامه‌ها، تجربیات و احساسات همسفران یادمان است که با شما به اشتراک می‌گذارند. برای نمایش سفرنامه خودتان در سایت یادمان به ما ایمیل بزنید.",
+                "button_title" => "ثبت سفرنامه من",
+                "button_link" => "#",
                 "video" => "",
                 "banner" => "https://yadapi.kerloper.com/upload/images/church-gh.jpg",
                 "has_video" => false
