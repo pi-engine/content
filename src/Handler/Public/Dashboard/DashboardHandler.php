@@ -357,6 +357,33 @@ class DashboardHandler implements RequestHandlerInterface
                         "abstract" => ""
                     ],
                 ];
+                break;
+            case "topinbiz":
+                $result = [
+                    "home_sliders" => [
+                        [
+                            "id"=>1,
+                            "image"=>"https://api.shokrin.com/upload/top-in-biz/slider01.png",
+                            "title_1"=>"Excellent",
+                            "title_2"=>"consultants",
+                            "text"=>"TopInBiz knows how to deal with matters in front of a company in China or Iran."
+                        ],
+                        [
+                            "id"=>1,
+                            "image"=>"https://api.shokrin.com/upload/top-in-biz/slider02.png",
+                            "title_1"=>"General",
+                            "title_2"=>"Trading",
+                            "text"=>"TopInBiz takes advantage of the knowledge and experience of its technical team in trading."
+                        ],
+                        [
+                            "id"=>1,
+                            "image"=>"https://api.shokrin.com/upload/top-in-biz/slider03.png",
+                            "title_1"=>"IT",
+                            "title_2"=>"Services",
+                            "text"=>"TopInBiz has the aim of providing services in the field of information technology with the help of the knowledge of its technical team experts."
+                        ]
+                    ]
+                ];
         }
 
         // Set result
