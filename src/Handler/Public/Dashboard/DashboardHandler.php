@@ -43,10 +43,10 @@ class DashboardHandler implements RequestHandlerInterface
 
         switch ($requestBody['caller']) {
             case 'shokrin':
-                $sliders = $this->itemService->getItem('shokrin-slider-2023','slug');
+                $sliders = $this->itemService->getItem('shokrin-slider-2023', 'slug');
                 $result = [
 
-                    "sliders" =>isset($sliders['banner_list'])?$sliders['banner_list']:[],
+                    "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
                     "special_section" => [
                         "list" => $this->itemService->getItemList([
                             'type' => 'product',
@@ -58,12 +58,12 @@ class DashboardHandler implements RequestHandlerInterface
                         "title" => "فروش ویژه",
                         "button_link" => "/products/?specialProducts=true",
                         "more_title" => "مشاهده بیشتر",
-                        "background" => "https://api.shokrin.com/upload/ver-03/right-side-main.png",
+                        "background" => "https://messenger.kerloper.com/upload/ver-03/right-side-main.png",
                         "abstract" => ""
                     ],
                     "middle_banner" => [
-                        "image" => "https://api.shokrin.com/upload/ver-03/middle-slider.png",
-                        "mobile" => "https://api.shokrin.com/upload/ver-03/middle-slider.png",
+                        "image" => "https://messenger.kerloper.com/upload/ver-03/middle-slider.png",
+                        "mobile" => "https://messenger.kerloper.com/upload/ver-03/middle-slider.png",
                         "has_link" => true,
                         "url" => "/products/chandelier-code-401/",
                         "button_title" => "انتخاب کن",
@@ -73,15 +73,15 @@ class DashboardHandler implements RequestHandlerInterface
                     ],
                     "old_sliders" => [
                         [
-                            "image" => "https://api.shokrin.com/upload/images/new-face/slider/slider-1.jpg",
-                            "mobile" => "https://api.shokrin.com/upload/images/new-face/slider/mob-1_768x940.jpg",
+                            "image" => "https://messenger.kerloper.com/upload/images/new-face/slider/slider-1.jpg",
+                            "mobile" => "https://messenger.kerloper.com/upload/images/new-face/slider/mob-1_768x940.jpg",
                             "title" => "قصه شکرین با عشق شروع میشه",
                             "subhead" => "عشق به تولید عشف به خلق کردن عشق به سازندگی",
                             "subtitle" => "عشق به کارآفرینی و اراﺋه محصولات با کیفیت ایرانی به سرزمینمون",
                         ],
                         [
-                            "image" => "https://api.shokrin.com/upload/images/new-face/slider/slider-2.jpg",
-                            "mobile" => "https://api.shokrin.com/upload/images/new-face/slider/mob-2_768x940.jpg",
+                            "image" => "https://messenger.kerloper.com/upload/images/new-face/slider/slider-2.jpg",
+                            "mobile" => "https://messenger.kerloper.com/upload/images/new-face/slider/mob-2_768x940.jpg",
 
                             "title" => "قصه شکرین با عشق شروع میشه",
                             "subhead" => "عشق به تولید عشف به خلق کردن عشق به سازندگی",
@@ -89,9 +89,9 @@ class DashboardHandler implements RequestHandlerInterface
                         ],
                         [
                             "image" =>
-                                "https://api.shokrin.com/upload/images/new-face/slider/slider-3.jpg",
+                                "https://messenger.kerloper.com/upload/images/new-face/slider/slider-3.jpg",
                             "mobile" =>
-                                "https://api.shokrin.com/upload/images/new-face/slider/mob-3_768x940.jpg",
+                                "https://messenger.kerloper.com/upload/images/new-face/slider/mob-3_768x940.jpg",
 
                             "title" => "قصه شکرین با عشق شروع میشه",
                             "subhead" => "عشق به تولید عشف به خلق کردن عشق به سازندگی",
@@ -103,7 +103,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 1,
                             "title" => "مجموعه جدیدترین ها",
                             "image" =>
-                                "https://api.shokrin.com/upload/images/new-face/banner/banner-1.jpg",
+                                "https://messenger.kerloper.com/upload/images/new-face/banner/banner-1.jpg",
                             "button" => "مشاهده محصولات",
                             "uri" => "shop/",
                             "url" => "",
@@ -113,7 +113,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 2,
                             "title" => "مجموعه مدروز",
                             "image" =>
-                                "https://api.shokrin.com/upload/images/new-face/banner/banner-2.jpg",
+                                "https://messenger.kerloper.com/upload/images/new-face/banner/banner-2.jpg",
                             "button" => "مشاهده محصولات",
                             "uri" => "shop/",
                             "url" => "",
@@ -123,7 +123,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 3,
                             "title" => "مجموعه پرفروش ترین ها",
                             "image" =>
-                                "https://api.shokrin.com/upload/images/new-face/banner/banner-3.jpg",
+                                "https://messenger.kerloper.com/upload/images/new-face/banner/banner-3.jpg",
                             "button" => "مشاهده محصولات",
                             "uri" => "shop/",
                             "url" => "",
@@ -149,7 +149,7 @@ class DashboardHandler implements RequestHandlerInterface
                         "more_title" => "مشاهده بیشتر",
                         "list" => $this->itemService->getItemList(['type' => 'product', 'limit' => 8, 'page' => 2])['data']['list'],
                         "banner" => [
-                            "image" => "https://api.shokrin.com/upload/ver-03/category-banner.png",
+                            "image" => "https://messenger.kerloper.com/upload/ver-03/category-banner.png",
                             "title" => "شمعدان‌های کلاسیک",
                             "subtitle" => "محصولات جدید",
                             "button_link" => "/products/",
@@ -213,7 +213,7 @@ class DashboardHandler implements RequestHandlerInterface
                     "parallex" => [
                         "right" => [
                             "image" =>
-                                "https://api.shokrin.com/upload/images/new-face/parallex/banner-6-1.jpg",
+                                "https://messenger.kerloper.com/upload/images/new-face/parallex/banner-6-1.jpg",
                             "title" => "شکرین ، درخشش خانه تو",
                             "text" => "تولید کننده ایرانی آباژور، لوستر، شمعدان و ساعت",
                             "uri" => "shop/",
@@ -224,7 +224,7 @@ class DashboardHandler implements RequestHandlerInterface
                         "left" => [
                             [
                                 "image" =>
-                                    "https://api.shokrin.com/upload/images/new-face/parallex/banner-6-4-2.jpg",
+                                    "https://messenger.kerloper.com/upload/images/new-face/parallex/banner-6-4-2.jpg",
                                 "title" => "تخفیف استثنایی",
                                 "text" => "موجودی محدود",
                                 "uri" => "shop/",
@@ -234,7 +234,7 @@ class DashboardHandler implements RequestHandlerInterface
                             ],
                             [
                                 "image" =>
-                                    "https://api.shokrin.com/upload/images/new-face/parallex/banner-6-4-1.jpg",
+                                    "https://messenger.kerloper.com/upload/images/new-face/parallex/banner-6-4-1.jpg",
                                 "title" => "",
                                 "text" => "",
                                 "uri" => "",
@@ -244,7 +244,7 @@ class DashboardHandler implements RequestHandlerInterface
                             ],
                             [
                                 "image" =>
-                                    "https://api.shokrin.com/upload/images/new-face/parallex/banner-6-4-4.jpg",
+                                    "https://messenger.kerloper.com/upload/images/new-face/parallex/banner-6-4-4.jpg",
                                 "title" => "",
                                 "text" => "",
                                 "uri" => "",
@@ -254,7 +254,7 @@ class DashboardHandler implements RequestHandlerInterface
                             ],
                             [
                                 "image" =>
-                                    "https://api.shokrin.com/upload/images/new-face/parallex/banner-6-4-3.jpg",
+                                    "https://messenger.kerloper.com/upload/images/new-face/parallex/banner-6-4-3.jpg",
                                 "title" => "پیشنهاد شگفت انگیز",
                                 "text" => "تخفیف عالی",
                                 "uri" => "shop/",
@@ -267,7 +267,7 @@ class DashboardHandler implements RequestHandlerInterface
                     "amazing_offer" => [
                         "id" => 1,
                         "slug" => "slug1",
-                        "thumbnail" => "https://api.shokrin.com/upload/images/493x484.png",
+                        "thumbnail" => "https://messenger.kerloper.com/upload/images/493x484.png",
                         "badge" => null,
                         "rate" => 3.5,
                         "title" => "آباژور کنارسالنی کد ۲۶۱",
@@ -289,7 +289,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 1,
                             "slug" => "slug1",
                             "title" => "تیتر1",
-                            "thumbnail" => "https://api.shokrin.com/upload/images/400x400.jpg",
+                            "thumbnail" => "https://messenger.kerloper.com/upload/images/400x400.jpg",
                             "caption" => " کپشن پست1",
                             "date" => "آبان ۱۷, ۱۴۰۱",
                         ],
@@ -297,7 +297,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 2,
                             "slug" => "slug2",
                             "title" => "تیتر2",
-                            "thumbnail" => "https://api.shokrin.com/upload/images/400x400.jpg",
+                            "thumbnail" => "https://messenger.kerloper.com/upload/images/400x400.jpg",
                             "caption" => " کپشن پست2",
                             "date" => "آبان ۱۷, ۱۴۰۱",
                         ],
@@ -305,7 +305,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 3,
                             "slug" => "slug3",
                             "title" => "تیتر3",
-                            "thumbnail" => "https://api.shokrin.com/upload/images/400x400.jpg",
+                            "thumbnail" => "https://messenger.kerloper.com/upload/images/400x400.jpg",
                             "caption" => " کپشن پست3",
                             "date" => "آبان ۱۷, ۱۴۰۱",
                         ],
@@ -313,7 +313,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 4,
                             "slug" => "slug4",
                             "title" => "تیتر4",
-                            "thumbnail" => "https://api.shokrin.com/upload/images/400x400.jpg",
+                            "thumbnail" => "https://messenger.kerloper.com/upload/images/400x400.jpg",
                             "caption" => " کپشن پست4",
                             "date" => "آبان ۱۷, ۱۴۰۱",
                         ],
@@ -321,7 +321,7 @@ class DashboardHandler implements RequestHandlerInterface
                             "id" => 5,
                             "slug" => "slug5",
                             "title" => "تیتر5",
-                            "thumbnail" => "https://api.shokrin.com/upload/images/400x400.jpg",
+                            "thumbnail" => "https://messenger.kerloper.com/upload/images/400x400.jpg",
                             "caption" => " کپشن پست5",
                             "date" => "آبان ۱۷, ۱۴۰۱",
                         ],
@@ -330,22 +330,22 @@ class DashboardHandler implements RequestHandlerInterface
                         "list" => [
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-01.jpg?" . time(),
+                                    "src" => "https://messenger.kerloper.com/upload/ver-03/insta-01.jpg?" . time(),
                                 ]
                             ],
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-02.jpg?" . time(),
+                                    "src" => "https://messenger.kerloper.com/upload/ver-03/insta-02.jpg?" . time(),
                                 ]
                             ],
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-03.jpg?" . time(),
+                                    "src" => "https://messenger.kerloper.com/upload/ver-03/insta-03.jpg?" . time(),
                                 ]
                             ],
                             [
                                 "image" => [
-                                    "src" => "https://api.shokrin.com/upload/ver-03/insta-04.jpg?" . time(),
+                                    "src" => "https://messenger.kerloper.com/upload/ver-03/insta-04.jpg?" . time(),
                                 ]
                             ]
                         ],
@@ -353,7 +353,7 @@ class DashboardHandler implements RequestHandlerInterface
                         "title" => "",
                         "more_link" => "/products/",
                         "more_title" => "مشاهده بیشتر",
-                        "background" => "https://api.shokrin.com/upload/ver-03/right-side-main.png",
+                        "background" => "https://messenger.kerloper.com/upload/ver-03/right-side-main.png",
                         "abstract" => ""
                     ],
                 ];
@@ -362,25 +362,121 @@ class DashboardHandler implements RequestHandlerInterface
                 $result = [
                     "home_sliders" => [
                         [
-                            "id"=>1,
-                            "image"=>"https://api.shokrin.com/upload/top-in-biz/slider01.png",
-                            "title_1"=>"Excellent",
-                            "title_2"=>"consultants",
-                            "text"=>"TopInBiz knows how to deal with matters in front of a company in China or Iran."
+                            "id" => 1,
+                            "image" => "https://messenger.kerloper.com/upload/top-in-biz/slider01.png",
+                            "title_1" => "Excellent",
+                            "title_2" => "consultants",
+                            "text" => "TopInBiz knows how to deal with matters in front of a company in China or Iran."
                         ],
                         [
-                            "id"=>1,
-                            "image"=>"https://api.shokrin.com/upload/top-in-biz/slider02.png",
-                            "title_1"=>"General",
-                            "title_2"=>"Trading",
-                            "text"=>"TopInBiz takes advantage of the knowledge and experience of its technical team in trading."
+                            "id" => 1,
+                            "image" => "https://messenger.kerloper.com/upload/top-in-biz/slider02.png",
+                            "title_1" => "General",
+                            "title_2" => "Trading",
+                            "text" => "TopInBiz takes advantage of the knowledge and experience of its technical team in trading."
                         ],
                         [
-                            "id"=>1,
-                            "image"=>"https://api.shokrin.com/upload/top-in-biz/slider03.png",
-                            "title_1"=>"IT",
-                            "title_2"=>"Services",
-                            "text"=>"TopInBiz has the aim of providing services in the field of information technology with the help of the knowledge of its technical team experts."
+                            "id" => 1,
+                            "image" => "https://messenger.kerloper.com/upload/top-in-biz/slider03.png",
+                            "title_1" => "IT",
+                            "title_2" => "Services",
+                            "text" => "TopInBiz has the aim of providing services in the field of information technology with the help of the knowledge of its technical team experts."
+                        ]
+                    ],
+                    "services" => [
+                        "title" => "our services",
+                        "sub_title" => "We Focused On Modern Consulting And Solutions",
+                        "items" =>
+                            [
+                                [
+                                    "id" => 1,
+                                    "title" => "Legal Services",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/legal.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Investment",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/investment.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Company Registration",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/registration.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Marketing & Advertising",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/market.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "General Trading",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/trading.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Express Delivery",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/express.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Travel and Exhibitions",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/tour.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Technology Transmission",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/tech.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "SCO",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/sco.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Products",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/products.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Supply by order",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/inventory.png",
+                                    "to" => ""
+                                ],
+                                [
+                                    "id" => 1,
+                                    "title" => "Other",
+                                    "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/other.png",
+                                    "to" => ""
+                                ],
+                            ]
+                    ],
+                    "gallery"=>[
+                        "title"=>"Gallery",
+                        "images"=>[
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/1.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/2.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/3.png"
+                            ],
                         ]
                     ]
                 ];
