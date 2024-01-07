@@ -477,8 +477,109 @@ class DashboardHandler implements RequestHandlerInterface
                                 "id"=>1,
                                 "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/3.png"
                             ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/4.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/5.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/6.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/7.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/8.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/9.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/10.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/11.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/12.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/13.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/14.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/15.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/16.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/17.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/gallery/18.png"
+                            ],
                         ]
-                    ]
+                    ],
+                    "team"=>[
+                        "title"=>"Our Team",
+                        "person"=>[
+                            [
+                                "id"=>1,
+                                "name"=>"Mohammad Rahimi",
+                                "position"=>"CEO",
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/team/1.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "name"=>"Mohammad Rahimi",
+                                "position"=>"CEO",
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/team/2.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "name"=>"Ghazal Raeghi",
+                                "position"=>"CEO",
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/team/3.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "name"=>"Ghazal Raeghi",
+                                "position"=>"CEO",
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/team/4.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "name"=>"Mohammad Rahimi",
+                                "position"=>"CEO",
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/team/5.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "name"=>"Mohammad Rahimi",
+                                "position"=>"CEO",
+                                "image"=>"https://messenger.kerloper.com/upload/top-in-biz/team/6.png"
+                            ],
+                        ]
+                    ],
                 ];
         }
 
