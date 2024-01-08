@@ -392,55 +392,55 @@ class DashboardHandler implements RequestHandlerInterface
                                     "id" => 1,
                                     "title" => "Legal Services",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/legal.png",
-                                    "to" => ""
+                                    "to" => "/services/legal-services"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "Investment",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/investment.png",
-                                    "to" => ""
+                                    "to" => "/services/investment"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "Company Registration",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/registration.png",
-                                    "to" => ""
+                                    "to" => "/services/company-registration"
                                 ],
                                 [
                                     "id" => 1,
-                                    "title" => "Marketing & Advertising",
+                                    "title" => "Marketing & Advertisement",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/market.png",
-                                    "to" => ""
+                                    "to" => "/services/marketing-advertisement"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "General Trading",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/trading.png",
-                                    "to" => ""
+                                    "to" => "/services/general-trading"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "Express Delivery",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/express.png",
-                                    "to" => ""
+                                    "to" => "/services/express-delivery"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "Travel and Exhibitions",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/tour.png",
-                                    "to" => ""
+                                    "to" => "/services/travel-exhibitions"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "Technology Transmission",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/tech.png",
-                                    "to" => ""
+                                    "to" => "/services/technology-transmission"
                                 ],
                                 [
                                     "id" => 1,
                                     "title" => "SCO",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/sco.png",
-                                    "to" => ""
+                                    "to" => "/services/sco"
                                 ],
                                 [
                                     "id" => 1,
@@ -458,7 +458,7 @@ class DashboardHandler implements RequestHandlerInterface
                                     "id" => 1,
                                     "title" => "Other",
                                     "image" => "https://messenger.kerloper.com/upload/top-in-biz/services/other.png",
-                                    "to" => ""
+                                    "to" => "/services/other"
                                 ],
                             ]
                     ],
