@@ -982,11 +982,11 @@ class ItemService implements ServiceInterface
 
         $hasCategories = isset($requestBody['categories']);
         $categoryKeyType = $requestBody['category_key_type'] ?? 'id';
-
+        $item_slug = uniqid();
         $params = [
             'user_id' => $requestBody['user_id'] ?? 0,
             'title' => $requestBody['title'],
-            'slug' => uniqid(),
+            'slug' => $item_slug,
             'status' => 1,
             'type' => $requestBody['type'] ?? 'question',
             'time_create' => time(),
@@ -1022,6 +1022,7 @@ class ItemService implements ServiceInterface
         if (isset($requestBody['categories'])) {
             $metaParams = [
                 'item_id' => $support->getId(),
+                'value_slug' => $item_slug,
                 'meta_key' => 'category',
                 'time_create' => time(),
             ];
