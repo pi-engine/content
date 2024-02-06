@@ -2021,45 +2021,66 @@ class ItemService implements ServiceInterface
     {
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
         $this->itemRepository->destroyMetaValue(['item_slug' => $request['slug']]);
+        ///TODO: remove this . this section for old panel
+        if(isset($request['mode'])){
+            $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
+            $object = $request['body'];
+            $params = [];
+            if ($request['mode'] == 'body') {
+                $object['id'] = time();
+                $entity['body'][sizeof($entity['body'])] = $object;
 
-
-        $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
-        $object = $request['body'];
-        $params = [];
-        if ($request['mode'] == 'body') {
-            $object['id'] = time();
-            $entity['body'][sizeof($entity['body'])] = $object;
-
-            usort($entity['body'], function ($a, $b) {
-                if (is_numeric($a['index']) && is_numeric($b['index'])) {
-                    if ($a['index'] === $b['index']) {
-                        return $b['id'] - $a['id'];
+                usort($entity['body'], function ($a, $b) {
+                    if (is_numeric($a['index']) && is_numeric($b['index'])) {
+                        if ($a['index'] === $b['index']) {
+                            return $b['id'] - $a['id'];
+                        }
+                        return $a['index'] - $b['index'];
+                    } else {
+                        // Handle string indices
+                        return strcmp($a['index'], $b['index']);
                     }
-                    return $a['index'] - $b['index'];
-                } else {
-                    // Handle string indices
-                    return strcmp($a['index'], $b['index']);
-                }
-            });
-            $params = [
-                'information' => json_encode($entity)
-            ];
-        }
-
-        if ($request['mode'] == 'entity') {
-            $request['type'] = $request['type'] ?? 'entity';
-            $request['body'] = [];
-
-            $information = $entity;
-            foreach ($information as $key => $value) {
-                if (isset($request[$key]) && $key != 'body') {
-                    $information[$key] = $request[$key];
-                }
+                });
+                $params = [
+                    'information' => json_encode($entity)
+                ];
             }
 
+            if ($request['mode'] == 'entity') {
+                $request['type'] = $request['type'] ?? 'entity';
+                $request['body'] = [];
+
+                $information = $entity;
+                foreach ($information as $key => $value) {
+                    if (isset($request[$key]) && $key != 'body') {
+                        $information[$key] = $request[$key];
+                    }
+                }
+
+                $params = [
+                    'title' => $request['title'],
+                    'information' => json_encode($information),
+                ];
+
+                if (isset($request['slug']))
+                    $params['slug'] = $request['slug'];
+                if (isset($request['status']))
+                    $params['status'] = $request['status'];
+
+            }
+            $params[$request['type']] = $request[$request['type']];
+            if (isset($request['meta'])) {
+                $request['id'] = $entity['id'] ?? 0;
+                $this->addMetaData($request);
+            }
+
+        }else{
+            $entity = $this->getItem($request['id']);
+
+            $request['type'] = $request['type'] ?? 'entity';
             $params = [
                 'title' => $request['title'],
-                'information' => json_encode($information),
+                'information' =>  json_encode($request),
             ];
 
             if (isset($request['slug']))
@@ -2067,14 +2088,13 @@ class ItemService implements ServiceInterface
             if (isset($request['status']))
                 $params['status'] = $request['status'];
 
-        }
-        $params[$request['type']] = $request[$request['type']];
-        if (isset($request['meta'])) {
-            $request['id'] = $entity['id'] ?? 0;
-            $this->addMetaData($request);
+            if (isset($request['meta'])) {
+                $request['id'] = $entity['id'] ?? 0;
+                $this->addMetaData($request);
+            }
+
         }
         return $this->canonizeItem($this->editItem($params));
-
     }
 
     public function replaceEntity(mixed $request, mixed $account): array
