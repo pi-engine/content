@@ -2076,7 +2076,7 @@ class ItemService implements ServiceInterface
             }
 
         }else{
-            $entity = $this->getItem($request['id']);
+            $entity = $this->getItem($request['slug'],'slug');
 
             $request['type'] = $request['type'] ?? 'entity';
             $params = [
