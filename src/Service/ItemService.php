@@ -2023,7 +2023,7 @@ class ItemService implements ServiceInterface
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
         $this->itemRepository->destroyMetaValue(['item_slug' => $request['slug']]);
         ///TODO: remove this . this section for old panel
-        if(isset($request['mode'])){
+        if(isset($request['mode'])&&$request['mode']!='entity'){
             $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
             $object = $request['body'];
             $params = [];
