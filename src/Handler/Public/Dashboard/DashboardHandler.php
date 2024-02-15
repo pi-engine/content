@@ -593,10 +593,6 @@ class DashboardHandler implements RequestHandlerInterface
                                 "id"=>1,
                                 "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/32.jpg"
                             ],
-                            [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/33.jpg"
-                            ],
                         ]
                     ],
                     "team"=>[
@@ -626,20 +622,35 @@ class DashboardHandler implements RequestHandlerInterface
                                 "position"=>"CEO",
                                 "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/4.png"
                             ],
+                        ]
+                    ],
+
+
+                    "partners"=>[
+                        "title"=>"Our Partners",
+                        "partner"=>[
                             [
                                 "id"=>1,
-                                "name"=>"Mohammad Rahimi",
-                                "position"=>"CEO",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/5.png"
+                                "name"=>"4MCO",
+                                "url"=>"https://4mco.ir/",
+                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/partners/4m.png"
                             ],
                             [
                                 "id"=>1,
-                                "name"=>"Mohammad Rahimi",
-                                "position"=>"CEO",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/6.png"
+                                "name"=>"Saman Express",
+                                "url"=>"https://samanexp.com/",
+                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/partners/saman.png"
+                            ],
+                            [
+                                "id"=>1,
+                                "name"=>"Veria Info Tech",
+                                "url"=>"https://www.veriainfotech.com/",
+                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/partners/veria.png"
                             ],
                         ]
                     ],
+
+
                 ];
         }
 
