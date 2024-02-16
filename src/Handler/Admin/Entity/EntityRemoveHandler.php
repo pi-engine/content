@@ -59,7 +59,7 @@ class EntityRemoveHandler implements RequestHandlerInterface
         $params = [];
         if (isset($requestBody['id'])) {
             $params['id'] = $requestBody['id'];
-            $params['status'] = 0;
+            $params['status'] = 3;
         }
         if (isset($requestBody['slug'])) {
             $params['slug'] = $requestBody['slug'];
