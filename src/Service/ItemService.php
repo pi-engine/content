@@ -322,7 +322,8 @@ class ItemService implements ServiceInterface
                 $data['stock_status_view'] = 'موجود در انبار';
         }
         ///TODO:resolve this
-//        $data['time_create_view'] = $this->utilityService->date($item['time_create']);
+        $data['time_create_view'] = $this->utilityService->date($item['time_create']);
+        $data['id'] = $item['id'];
 //        $data['type'] =$item['type'];
         // Set information
         return $data;
@@ -1995,7 +1996,7 @@ class ItemService implements ServiceInterface
         $request['status'] = $request['status'] ?? 0;
         $request['type'] = $request['type'] ?? 'entity';
         $request['user_id'] = $account['id'] ?? 0;
-        $request['body'] =isset($request['body'])?$request['body']:[];
+        $request['body'] = isset($request['body']) ? $request['body'] : [];
         $params = [
             'user_id' => $request['user_id'],
             'title' => $request['title'],
@@ -2023,7 +2024,7 @@ class ItemService implements ServiceInterface
         ///TODO : handel store meta key and value in meta_value table (for filter search and ...)
         $this->itemRepository->destroyMetaValue(['item_slug' => $request['slug']]);
         ///TODO: remove this . this section for old panel
-        if(isset($request['mode'])&&$request['mode']!='entity'){
+        if (isset($request['mode']) && $request['mode'] != 'entity') {
             $entity = $this->getItem($request[$request['type']] ?? -1, $request['type']);
             $object = $request['body'];
             $params = [];
@@ -2075,13 +2076,13 @@ class ItemService implements ServiceInterface
                 $this->addMetaData($request);
             }
 
-        }else{
-            $entity = $this->getItem($request['slug'],'slug');
+        } else {
+            $entity = $this->getItem($request['slug'], 'slug');
 
             $request['type'] = $request['type'] ?? 'entity';
             $params = [
                 'title' => $request['title'],
-                'information' =>  json_encode($request),
+                'information' => json_encode($request),
             ];
 
             if (isset($request['slug']))
