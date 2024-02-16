@@ -59,7 +59,7 @@ class EntityGetHandler implements RequestHandlerInterface
         }
 
         // Pass the decoded JSON data to the itemService
-        $result = $this->itemService->getItem($requestBody[$requestBody['type']]??-1,$requestBody['type'] );
+        $result = $this->itemService->getItem($requestBody[$requestBody['type']]??-1,$requestBody['type'],['status'=>[0,1,2,3] ]);
 
         // Set the response data
         $responseBody = [
