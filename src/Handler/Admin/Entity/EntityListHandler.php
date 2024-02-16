@@ -63,12 +63,6 @@ class EntityListHandler implements RequestHandlerInterface
         // Pass the decoded JSON data to the itemService
         $result = $this->itemService->getItemList($requestBody, $account);
 
-        // Set the response data
-        $responseBody = [
-            'result' => true,
-            'data' => $result,
-            'error' => null,
-        ];
 
         return new JsonResponse($result);
     }
