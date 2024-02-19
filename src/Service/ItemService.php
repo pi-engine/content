@@ -1854,8 +1854,9 @@ class ItemService implements ServiceInterface
         foreach ($suggest_sections_caller as $row) {
             $suggest_sections[] = $this->canonizeItem($row);
         }
-
+        $sliders = $this->getItem('yademan-slider-2023', 'slug');
         $jayParsedAry = [
+            "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
             "main_slider" => [
                 "video" => "",
                 "banner" => "https://yadapi.kerloper.com/upload/banners/home.jpg",
