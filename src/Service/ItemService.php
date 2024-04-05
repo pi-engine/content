@@ -1406,6 +1406,7 @@ class ItemService implements ServiceInterface
                 "current_version" => $params["version"],
                 "button_title" => $config["button_title"],
                 "title" => $config["title"],
+                "stn" => $config["stn"]??'',
 
             ];
         } catch (Exception $error) {
