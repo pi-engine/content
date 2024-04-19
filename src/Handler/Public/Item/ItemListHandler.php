@@ -37,8 +37,6 @@ class ItemListHandler implements RequestHandlerInterface
     {
         // Get request body
         $requestBody = $request->getParsedBody();
-        // $account = $request->getAttribute('account');
-        // $requestBody["user_id"] = $account['id'];
         $requestBody['status'] = 1;
         $result = $this->itemService->getItemList($requestBody);
 

@@ -42,6 +42,83 @@ class DashboardHandler implements RequestHandlerInterface
         $result = [];
 
         switch ($requestBody['caller']) {
+            case 'arax':
+                $sliders = $this->itemService->getItem('yademan-slider-2023', 'slug');
+                $result = [
+                    "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
+                    "side_list" => [
+                        "list" => $this->itemService->getItemList([
+                            'type' => 'blog',
+                            'limit' => 4,
+                            'page' => 1,
+                            'categories'=>'meta-category-news'
+                        ])['data']['list'],
+                        "type" => "blog",
+                        "title" => "Լրահոս",
+                        "button_link" => "/news/detail/",
+                        "more_title" => "Կարդացեք",
+                        "background" => " ",
+                        "abstract" => ""
+                    ],
+                    "middle_section" => [
+                        "title"=>"",
+                        "center"=>$this->itemService->getItemList([
+                            'type' => 'blog',
+                            'limit' => 1,
+                            'page' => 1,
+                            'categories'=>'meta-category-section-center-news'
+                        ])['data']['list'][0],
+                        "list" => [
+                            [
+                                "list" => $this->itemService->getItemList([
+                                    'type' => 'blog',
+                                    'limit' => 5,
+                                    'page' => 1,
+                                    'categories'=>'meta-category-news'
+                                ])['data']['list'],
+                                "type" => "blog",
+                                "title" => "Լրահոս",
+                                "button_link" => "/news/",
+                                "more_title" => "Կարդացեք",
+                                "background" => " ",
+                                "abstract" => ""
+                            ],
+                            [
+                                "list" => $this->itemService->getItemList([
+                                    'type' => 'blog',
+                                    'limit' => 5,
+                                    'page' => 1,
+                                    'categories'=>'meta-category-news'
+                                ])['data']['list'],
+                                "type" => "blog",
+                                "title" => "Լրահոս",
+                                "button_link" => "/news/",
+                                "more_title" => "Կարդացեք",
+                                "background" => " ",
+                                "abstract" => ""
+                            ],
+                            [
+                                "list" => $this->itemService->getItemList([
+                                    'type' => 'blog',
+                                    'limit' => 5,
+                                    'page' => 1,
+                                    'categories'=>'meta-category-news'
+                                ])['data']['list'],
+                                "type" => "blog",
+                                "title" => "Լրահոս",
+                                "button_link" => "/news/",
+                                "more_title" => "Կարդացեք",
+                                "background" => " ",
+                                "abstract" => ""
+                            ],
+                            ]
+                    ]
+
+
+                ];
+                break;
+
+
             case 'shokrin':
                 $sliders = $this->itemService->getItem('shokrin-slider-2023', 'slug');
                 $result = [
@@ -462,190 +539,190 @@ class DashboardHandler implements RequestHandlerInterface
                                 ],
                             ]
                     ],
-                    "gallery"=>[
-                        "title"=>"Gallery",
-                        "images"=>[
+                    "gallery" => [
+                        "title" => "Gallery",
+                        "images" => [
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/1.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/1.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/2.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/2.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/3.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/3.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/4.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/4.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/5.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/5.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/6.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/6.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/7.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/7.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/8.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/8.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/9.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/9.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/10.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/10.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/11.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/11.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/12.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/12.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/13.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/13.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/14.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/14.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/15.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/15.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/16.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/16.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/17.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/17.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/18.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/18.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/19.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/19.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/20.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/20.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/21.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/21.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/22.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/22.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/23.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/23.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/24.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/24.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/25.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/25.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/26.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/26.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/27.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/27.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/28.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/28.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/29.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/29.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/30.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/30.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/31.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/31.jpg"
                             ],
                             [
-                                "id"=>1,
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/gallery/32.jpg"
+                                "id" => 1,
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/gallery/32.jpg"
                             ],
                         ]
                     ],
-                    "team"=>[
-                        "title"=>"Our Team",
-                        "person"=>[
+                    "team" => [
+                        "title" => "Our Team",
+                        "person" => [
                             [
-                                "id"=>1,
-                                "name"=>"Mohammad Rahimi",
-                                "position"=>"CEO",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/1.png"
+                                "id" => 1,
+                                "name" => "Mohammad Rahimi",
+                                "position" => "CEO",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/team/1.png"
                             ],
                             [
-                                "id"=>1,
-                                "name"=>"Mohammad Rahimi",
-                                "position"=>"CEO",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/2.png"
+                                "id" => 1,
+                                "name" => "Mohammad Rahimi",
+                                "position" => "CEO",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/team/2.png"
                             ],
                             [
-                                "id"=>1,
-                                "name"=>"Ghazal Raeghi",
-                                "position"=>"CEO",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/3.png"
+                                "id" => 1,
+                                "name" => "Ghazal Raeghi",
+                                "position" => "CEO",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/team/3.png"
                             ],
                             [
-                                "id"=>1,
-                                "name"=>"Ghazal Raeghi",
-                                "position"=>"CEO",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/team/4.png"
+                                "id" => 1,
+                                "name" => "Ghazal Raeghi",
+                                "position" => "CEO",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/team/4.png"
                             ],
                         ]
                     ],
 
 
-                    "partners"=>[
-                        "title"=>"Our Partners",
-                        "partner"=>[
+                    "partners" => [
+                        "title" => "Our Partners",
+                        "partner" => [
                             [
-                                "id"=>1,
-                                "name"=>"4MCO",
-                                "url"=>"https://4mco.ir/",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/partners/4m.png"
+                                "id" => 1,
+                                "name" => "4MCO",
+                                "url" => "https://4mco.ir/",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/partners/4m.png"
                             ],
                             [
-                                "id"=>1,
-                                "name"=>"Saman Express",
-                                "url"=>"https://samanexp.com/",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/partners/saman.png"
+                                "id" => 1,
+                                "name" => "Saman Express",
+                                "url" => "https://samanexp.com/",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/partners/saman.png"
                             ],
                             [
-                                "id"=>1,
-                                "name"=>"Veria Info Tech",
-                                "url"=>"https://www.veriainfotech.com/",
-                                "image"=>"https://api.topinbiz.com/upload/top-in-biz/partners/veria.png"
+                                "id" => 1,
+                                "name" => "Veria Info Tech",
+                                "url" => "https://www.veriainfotech.com/",
+                                "image" => "https://api.topinbiz.com/upload/top-in-biz/partners/veria.png"
                             ],
                         ]
                     ],
