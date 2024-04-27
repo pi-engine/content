@@ -45,6 +45,7 @@ class TravelogueListHandler implements RequestHandlerInterface
         $requestBody['user_id'] = $account['id'] ?? 0;
         $params = $requestBody;
         $params  ['type'] = 'travelogue';
+        $params['status'] = 1;
         $result = $this->itemService->getItemList($params, $account);
         if ($requestBody['type'] == 'special-travelogues') {
             $result['data']["middle_mode_banner"] = [

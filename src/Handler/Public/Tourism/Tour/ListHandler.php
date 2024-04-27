@@ -45,6 +45,7 @@ class ListHandler implements RequestHandlerInterface
         $requestBody['user_id'] = $account['id'] ?? 0;
         $params = $requestBody;
         $params['type'] = 'tour';
+        $params['status'] = 1;
         $result = $this->itemService->getItemList($params, $account);
         if($requestBody['type'] =='special-tours'){
             $result['data']["middle_mode_banner"] = [

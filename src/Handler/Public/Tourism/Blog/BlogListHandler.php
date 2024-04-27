@@ -44,6 +44,7 @@ class BlogListHandler implements RequestHandlerInterface
         // Set record params
         $requestBody['user_id'] = $account['id'] ?? 0;
         $params = $requestBody;
+        $params['status'] = 1;
         $params  ['type'] = 'blog'; 
         $result = $this->itemService->getItemList($params, $account);
         if ($requestBody['type'] == 'special-blogs') {
