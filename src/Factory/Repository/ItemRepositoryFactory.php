@@ -30,7 +30,7 @@ class ItemRepositoryFactory implements FactoryInterface
         return new ItemRepository(
             $container->get(AdapterInterface::class),
             new ReflectionHydrator(),
-            new Item('', '', '', 0, 0, 0, 0, 0, '', 0),
+            new Item('', '', '', 0, 0, 0, 0, 0, 0, '', 0),
             new Meta(0, 0, 0,0, 0,0,0,0, '', 0,0,0,0, 0),
             new Key(0,0,0, 0, 0, 0, 0, 0, 0)
         );

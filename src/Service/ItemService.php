@@ -292,6 +292,7 @@ class ItemService implements ServiceInterface
                 'time_update' => $item->getTimeUpdate(),
                 'time_delete' => $item->getTimeDelete(),
                 'information' => $item->getInformation(),
+                'priority' => $item->getPriority(),
             ];
         } else {
             $item = [
@@ -305,27 +306,21 @@ class ItemService implements ServiceInterface
                 'time_update' => $item['time_update'],
                 'time_delete' => $item['time_delete'],
                 'information' => $item['information'],
+                'priority' => $item['priority'],
             ];
         }
 
         $data = !empty($item['information']) ? json_decode($item['information'], true) : [];
 
-        switch ($type) {
-            case 'tour':
-//                $data['cost_dollar'] = 670;
-//                $data['cost_dollar_view'] = '670 دلار';
-                break;
-            case 'product':
-                $data['price'] = $this->calculateTotalPrice($data);
-                $data['price_view'] = number_format($data['price']) . " تومان";;
-                $data['stock_status'] = 1;
-                $data['stock_status_view'] = 'موجود در انبار';
+        if ($type == 'product') {
+            $data['price'] = $this->calculateTotalPrice($data);
+            $data['price_view'] = number_format($data['price']) . " تومان";;
+            $data['stock_status'] = 1;
+            $data['stock_status_view'] = 'موجود در انبار';
         }
         ///TODO:resolve this
         $data['time_create_view'] = $this->utilityService->date($item['time_create']);
         $data['id'] = $item['id'];
-//        $data['type'] =$item['type'];
-        // Set information
         return $data;
     }
 
@@ -1406,7 +1401,7 @@ class ItemService implements ServiceInterface
                 "current_version" => $params["version"],
                 "button_title" => $config["button_title"],
                 "title" => $config["title"],
-                "stn" => $config["stn"]??'',
+                "stn" => $config["stn"] ?? '',
 
             ];
         } catch (Exception $error) {
@@ -1996,6 +1991,7 @@ class ItemService implements ServiceInterface
         $request['slug'] = $request['slug'] ?? uniqid();
         $request['time_create'] = time();
         $request['status'] = $request['status'] ?? 0;
+        $request['priority'] = (int)$request['priority'] ?? null;
         $request['type'] = $request['type'] ?? 'entity';
         $request['user_id'] = $account['id'] ?? 0;
         $request['body'] = isset($request['body']) ? $request['body'] : [];
@@ -2004,6 +2000,7 @@ class ItemService implements ServiceInterface
             'title' => $request['title'],
             'slug' => $request['slug'],
             'status' => $request['status'],
+            'priority' => $request['priority'],
             'type' => $request['type'],
             'time_create' => $request['time_create'],
             "information" => json_encode($request),
@@ -2050,28 +2047,6 @@ class ItemService implements ServiceInterface
                 ];
             }
 
-            if ($request['mode'] == 'entity') {
-                $request['type'] = $request['type'] ?? 'entity';
-                $request['body'] = [];
-
-                $information = $entity;
-                foreach ($information as $key => $value) {
-                    if (isset($request[$key]) && $key != 'body') {
-                        $information[$key] = $request[$key];
-                    }
-                }
-
-                $params = [
-                    'title' => $request['title'],
-                    'information' => json_encode($information),
-                ];
-
-                if (isset($request['slug']))
-                    $params['slug'] = $request['slug'];
-                if (isset($request['status']))
-                    $params['status'] = $request['status'];
-
-            }
             $params[$request['type']] = $request[$request['type']];
             if (isset($request['meta'])) {
                 $request['id'] = $entity['id'] ?? 0;
@@ -2092,12 +2067,19 @@ class ItemService implements ServiceInterface
             if (isset($request['status']))
                 $params['status'] = $request['status'];
 
+            if (isset($request['priority'])) {
+                $params['priority'] = $request['priority'];
+            } else {
+                $params['priority'] = null;
+            }
+
             if (isset($request['meta'])) {
                 $request['id'] = $entity['id'] ?? 0;
                 $this->addMetaData($request);
             }
 
         }
+
         return $this->canonizeItem($this->editItem($params));
     }
 
