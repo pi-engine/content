@@ -99,7 +99,7 @@ class ItemService implements ServiceInterface
         ///TODO:update limit count
         $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? ['priority desc , id desc'];
+        $order = $params['order'] ?? ['priority desc' , 'id desc'];
         $offset = ($page - 1) * $limit;
 
         // Set filters
