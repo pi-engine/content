@@ -117,8 +117,6 @@ class DashboardHandler implements RequestHandlerInterface
 
                 ];
                 break;
-
-
             case 'shokrin':
                 $sliders = $this->itemService->getItem('shokrin-slider-2023', 'slug');
                 $result = [

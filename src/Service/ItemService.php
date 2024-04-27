@@ -99,7 +99,7 @@ class ItemService implements ServiceInterface
         ///TODO:update limit count
         $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? ['id DESC'];
+        $order = $params['order'] ?? ['priority desc , id desc'];
         $offset = ($page - 1) * $limit;
 
         // Set filters
@@ -1800,6 +1800,7 @@ class ItemService implements ServiceInterface
         $top_sections = $this->getItemList(
             [
                 'type' => 'destination',
+                'order' => ['priority DESC','time_create DESC', 'id DESC'],
                 'page' => 1,
                 'limit' => 6,
             ]
@@ -1807,6 +1808,7 @@ class ItemService implements ServiceInterface
         $top_sections_africa = $this->getItemList(
             [
                 'type' => 'blog',
+                'order' => ['priority DESC','time_create DESC', 'id DESC'],
                 'page' => 1,
                 'limit' => 6,
                 'categories' => 'meta-category-kenya',
@@ -1816,6 +1818,7 @@ class ItemService implements ServiceInterface
         $top_sections_india = $this->getItemList(
             [
                 'type' => 'blog',
+                'order' => ['priority DESC','time_create DESC', 'id DESC'],
                 'page' => 1,
                 'limit' => 6,
                 'categories' => 'meta-category-india',
@@ -1826,7 +1829,7 @@ class ItemService implements ServiceInterface
         $new_sections_caller = $this->itemRepository->getItemList(
             [
                 'type' => 'tour',
-                'order' => ['time_create DESC', 'id DESC'],
+                'order' => ['priority DESC','time_create DESC', 'id DESC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 5,
@@ -1840,7 +1843,7 @@ class ItemService implements ServiceInterface
         $suggest_sections_caller = $this->itemRepository->getItemList(
             [
                 'type' => 'tour',
-                'order' => ['time_create DESC', 'id DESC'],
+                'order' => ['priority DESC','time_create DESC', 'id DESC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 4,
