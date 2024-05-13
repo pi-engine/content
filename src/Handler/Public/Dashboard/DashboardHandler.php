@@ -44,15 +44,16 @@ class DashboardHandler implements RequestHandlerInterface
         switch ($requestBody['caller']) {
             case 'arax':
                 $sliders = $this->itemService->getItem('yademan-slider-2023', 'slug');
+                $newsList = $this->itemService->getItemList([
+                    'type' => 'blog',
+                    'limit' => 40,
+                    'page' => 1,
+                    'categories'=>'meta-category-news'
+                ])['data']['list'];
                 $result = [
                     "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
                     "side_list" => [
-                        "list" => $this->itemService->getItemList([
-                            'type' => 'blog',
-                            'limit' => 4,
-                            'page' => 1,
-                            'categories'=>'meta-category-news'
-                        ])['data']['list'],
+                        "list" =>  array_slice($newsList,0,4),
                         "type" => "blog",
                         "title" => "Լրահոս",
                         "button_link" => "/news/detail/",
@@ -70,12 +71,7 @@ class DashboardHandler implements RequestHandlerInterface
                         ])['data']['list'][0],
                         "list" => [
                             [
-                                "list" => $this->itemService->getItemList([
-                                    'type' => 'blog',
-                                    'limit' => 5,
-                                    'page' => 1,
-                                    'categories'=>'meta-category-news'
-                                ])['data']['list'],
+                                "list" => array_slice($newsList,6,9),
                                 "type" => "blog",
                                 "title" => "Լրահոս",
                                 "button_link" => "/news/",
@@ -84,12 +80,7 @@ class DashboardHandler implements RequestHandlerInterface
                                 "abstract" => ""
                             ],
                             [
-                                "list" => $this->itemService->getItemList([
-                                    'type' => 'blog',
-                                    'limit' => 5,
-                                    'page' => 1,
-                                    'categories'=>'meta-category-news'
-                                ])['data']['list'],
+                                "list" => array_slice($newsList,4,2),
                                 "type" => "blog",
                                 "title" => "Լրահոս",
                                 "button_link" => "/news/",
@@ -98,12 +89,7 @@ class DashboardHandler implements RequestHandlerInterface
                                 "abstract" => ""
                             ],
                             [
-                                "list" => $this->itemService->getItemList([
-                                    'type' => 'blog',
-                                    'limit' => 5,
-                                    'page' => 1,
-                                    'categories'=>'meta-category-news'
-                                ])['data']['list'],
+                                "list" =>  array_slice($newsList,15,9),
                                 "type" => "blog",
                                 "title" => "Լրահոս",
                                 "button_link" => "/news/",
@@ -111,12 +97,14 @@ class DashboardHandler implements RequestHandlerInterface
                                 "background" => " ",
                                 "abstract" => ""
                             ],
-                            ]
+                        ]
                     ]
 
 
                 ];
                 break;
+
+
             case 'shokrin':
                 $sliders = $this->itemService->getItem('shokrin-slider-2023', 'slug');
                 $result = [
