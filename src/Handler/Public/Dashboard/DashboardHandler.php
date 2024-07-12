@@ -52,6 +52,65 @@ class DashboardHandler implements RequestHandlerInterface
                 ])['data']['list'];
                 $result = [
                     "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
+
+                    //start new objects
+
+                    "categories_sections" => [
+                        [
+                            "category" => [
+                                "id" => 7,
+                                "icon" => "",
+                                "slug" => "meta-category-news-armenia",
+                                "type" => "category",
+                                "title" => "Հայաստան",
+                                "value" => "meta-category-news-armenia",
+                                "time_create_view" => "2024/07/13 00:26:23"
+                            ],
+                            "leader"=>array_slice($newsList,0,1)[0],
+                            "list" => array_slice($newsList,1,4),
+                        ],
+                        [
+                            "category" => [
+                                "id" => 13,
+                                "icon" => "",
+                                "slug" => "meta-category-interview",
+                                "type" => "category",
+                                "title" => "Հարցազրույց",
+                                "value" => "meta-category-interview",
+                                "time_create_view" => "2024/07/13 00:26:23"
+                            ],
+
+                            "leader"=>array_slice($newsList,5,1)[0],
+                            "list" => array_slice($newsList,6,4),
+                        ],
+                        [
+                            "category" => [
+                                "id" => 8,
+                                "icon" => "",
+                                "slug" => "meta-category-news-international",
+                                "type" => "category",
+                                "title" => "Աշխարհ",
+                                "value" => "meta-category-news-international",
+                                "time_create_view" => "2024/07/13 00:26:23"
+                            ],
+
+                            "leader"=>array_slice($newsList,11,1)[0],
+                            "list" => array_slice($newsList,12,4),
+                        ]
+                    ],
+                    "corner"=>[
+                        [
+                            "title"=>"նորերը",
+                            "list"=>array_slice($newsList,16,5),
+                        ],
+                        [
+                            "title"=>"Խմբագրի ընտրություն",
+                            "list"=>array_slice($newsList,6,6),
+                        ]
+                    ],
+                    "videos"=>array_slice($newsList,15,4),
+                    //end new objects
+
                     "side_list" => [
                         "list" =>  array_slice($newsList,0,4),
                         "type" => "blog",
