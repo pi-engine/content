@@ -105,7 +105,7 @@ class DashboardHandler implements RequestHandlerInterface
                         ],
                         [
                             "title"=>"Խմբագրի ընտրություն",
-                            "list"=>array_slice($newsList,6,6),
+                            "list"=>array_slice($newsList,6,10),
                         ]
                     ],
                     "videos"=>array_slice($newsList,15,4),
