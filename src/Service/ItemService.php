@@ -39,12 +39,14 @@ class ItemService implements ServiceInterface
         = [
             'category',
             'brand',
+            'brand_list',
             'min_price',
             'max_price',
             'title',
             'color',
             'size',
             'categories',
+            'category_list',
             'colors',
             'special_suggest',
             'shed_colors',
@@ -99,7 +101,7 @@ class ItemService implements ServiceInterface
         ///TODO:update limit count
         $limit = $params['limit'] ?? 125;
         $page = $params['page'] ?? 1;
-        $order = $params['order'] ?? ['priority desc' , 'id desc'];
+        $order = $params['order'] ?? ['priority desc', 'id desc'];
         $offset = ($page - 1) * $limit;
 
         // Set filters
@@ -313,14 +315,18 @@ class ItemService implements ServiceInterface
         $data = !empty($item['information']) ? json_decode($item['information'], true) : [];
 
         if ($type == 'product') {
-            $data['price'] = $this->calculateTotalPrice($data);
-            $data['price_view'] = number_format($data['price']) . " تومان";;
-            $data['stock_status'] = 1;
-            $data['stock_status_view'] = 'موجود در انبار';
+//            $data['price'] = $this->calculateTotalPrice($data);
+//            $data['price_view'] = number_format($data['price']) . " تومان";;
+//            $data['stock_status'] = 1;
+//            $data['stock_status_view'] = 'موجود در انبار';
+            $data['thumbnail'] = $data['image'];
         }
         ///TODO:resolve this
         $data['time_create_view'] = $this->utilityService->date($item['time_create']);
         $data['id'] = $item['id'];
+        if (isset($data['image']))
+            if (!isset($data['thumbnail']))
+                $data['thumbnail'] = $data['image'];
         return $data;
     }
 
@@ -366,10 +372,10 @@ class ItemService implements ServiceInterface
 //                $data['cost_dollar_view'] = '670 دلار';
                 break;
             case 'product':
-                $data['price'] = $this->calculateTotalPrice($data);
-                $data['price_view'] = number_format($data['price']) . " تومان";;
-                $data['stock_status'] = 1;
-                $data['stock_status_view'] = 'موجود در انبار';
+//                $data['price'] = $this->calculateTotalPrice($data);
+//                $data['price_view'] = number_format($data['price']) . " تومان";;
+//                $data['stock_status'] = 1;
+//                $data['stock_status_view'] = 'موجود در انبار';
         }
         // Set information
         return $data;
@@ -537,6 +543,22 @@ class ItemService implements ServiceInterface
                             $filters[$key] = [
                                 'meta_key' => 'category',
                                 'value' => explode(',', $value),
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'category_list':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'category',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'brand_list':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'brand',
+                                'value' => $value,
                                 'type' => 'slug',
                             ];
                         break;
@@ -738,7 +760,7 @@ class ItemService implements ServiceInterface
     }
 
 
-    // ToDo: update it
+    ///TODO: update it/ remove from content module
     public function addOrderItem($params, $account): array
     {
 
@@ -829,7 +851,7 @@ class ItemService implements ServiceInterface
 
     public function calculateTotalPrice($product): float|int
     {
-        $metaList = $product["meta"];
+        $metaList = $product["meta"] ?? [];
         if (isset($product['property'])) {
             if (isset($product['property']['meta_selected_data'])) {
                 $metaList = $product['property']['meta_selected_data'];
@@ -1800,7 +1822,7 @@ class ItemService implements ServiceInterface
         $top_sections = $this->getItemList(
             [
                 'type' => 'destination',
-                'order' => ['priority DESC','time_create DESC', 'id DESC'],
+                'order' => ['priority DESC', 'time_create DESC', 'id DESC'],
                 'page' => 1,
                 'limit' => 6,
             ]
@@ -1808,7 +1830,7 @@ class ItemService implements ServiceInterface
         $top_sections_africa = $this->getItemList(
             [
                 'type' => 'blog',
-                'order' => ['priority DESC','time_create DESC', 'id DESC'],
+                'order' => ['priority DESC', 'time_create DESC', 'id DESC'],
                 'page' => 1,
                 'limit' => 6,
                 'categories' => 'meta-category-kenya',
@@ -1818,7 +1840,7 @@ class ItemService implements ServiceInterface
         $top_sections_india = $this->getItemList(
             [
                 'type' => 'blog',
-                'order' => ['priority DESC','time_create DESC', 'id DESC'],
+                'order' => ['priority DESC', 'time_create DESC', 'id DESC'],
                 'page' => 1,
                 'limit' => 6,
                 'categories' => 'meta-category-india',
@@ -1829,7 +1851,7 @@ class ItemService implements ServiceInterface
         $new_sections_caller = $this->itemRepository->getItemList(
             [
                 'type' => 'tour',
-                'order' => ['priority DESC','time_create DESC', 'id DESC'],
+                'order' => ['priority DESC', 'time_create DESC', 'id DESC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 5,
@@ -1843,7 +1865,7 @@ class ItemService implements ServiceInterface
         $suggest_sections_caller = $this->itemRepository->getItemList(
             [
                 'type' => 'tour',
-                'order' => ['priority DESC','time_create DESC', 'id DESC'],
+                'order' => ['priority DESC', 'time_create DESC', 'id DESC'],
                 'offset' => 0,
                 'page' => 1,
                 'limit' => 4,
