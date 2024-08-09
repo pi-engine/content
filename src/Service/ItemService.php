@@ -64,6 +64,7 @@ class ItemService implements ServiceInterface
             'product_middle_section',
             'product_trend',
             'product_new',
+            'product_special',
         ];
 
     // ToDo: get it from DB and cache
@@ -553,6 +554,14 @@ class ItemService implements ServiceInterface
                         if (($value != '') && !empty($value) && ($value != null))
                             $filters[$key] = [
                                 'meta_key' => 'product-new',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'product_special':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'product-special',
                                 'value' => $value,
                                 'type' => 'slug',
                             ];

@@ -162,8 +162,6 @@ class DashboardHandler implements RequestHandlerInterface
 
                 ];
                 break;
-
-
             case 'shokrin':
                 $sliders = $this->itemService->getItem('shokrin-slider-2023', 'slug');
                 $result = [
@@ -774,6 +772,59 @@ class DashboardHandler implements RequestHandlerInterface
 
 
                 ];
+            case 'base-shop':
+                $sliders = $this->itemService->getItem('home-slider-2024', 'slug');
+                $result = [
+
+                    "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
+                    "trend_section" => [
+                        "list" => $this->itemService->getItemList([
+                            'type' => 'product',
+                            'product_trend' => 1,
+                            'limit' => 8,
+                            'page' => 1
+                        ])['data']['list'],
+                        "type" => "product",
+                        "title" => "فروش ویژه",
+                        "button_link" => "/products/?trendProducts=true",
+                        "more_title" => "مشاهده بیشتر",
+                        "background" => "",
+                        "abstract" => ""
+                    ],
+                    "middle_banner" => [
+                        "image" => "https://api.topinbiz.com/upload/ver-03/middle-slider.png",
+                        "mobile" => "https://api.topinbiz.com/upload/ver-03/middle-slider.png",
+                        "has_link" => true,
+                        "url" => "/products/chandelier-code-401/",
+                        "button_title" => "انتخاب کن",
+                        "title" => "شکرین",
+                        "subhead" => " درخشش خانه تو",
+                        "subtitle" => "",
+                    ],
+                    "special_section" => [
+                        "list" => $this->itemService->getItemList([
+                            'type' => 'product',
+                            'special_suggest' => 1,
+                            'limit' => 6,
+                            'page' => 1
+                        ])['data']['list'],
+                        "type" => "product",
+                        "title" => "فروش ویژه",
+                        "button_link" => "/products/?specialProducts=true",
+                        "more_title" => "مشاهده بیشتر",
+                        "background" => "https://api.topinbiz.com/upload/ver-03/right-side-main.png",
+                        "abstract" => ""
+                    ],
+                    "blog_list" => [
+
+                        "title" => "وبلاگ",
+                        "more_link" => "/blog/",
+                        "more_title" => "مشاهده بیشتر",
+                        "list" => $this->itemService->getItemList(['type' => 'blog', 'limit' => 3, 'page' => 1])['data']['list'],
+
+                    ],
+                ];
+                break;
         }
 
         // Set result
