@@ -545,7 +545,7 @@ class ItemService implements ServiceInterface
                     case 'product_trend':
                         if (($value != '') && !empty($value) && ($value != null))
                             $filters[$key] = [
-                                'meta_key' => 'special-product-trend',
+                                'meta_key' => 'product-trend',
                                 'value' => $value,
                                 'type' => 'slug',
                             ];
