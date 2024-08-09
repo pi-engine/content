@@ -61,6 +61,9 @@ class ItemService implements ServiceInterface
             'min_flames_count',
             'max_flames_count',
             'flames_count',
+            'product_middle_section',
+            'product_trend',
+            'product_new',
         ];
 
     // ToDo: get it from DB and cache
@@ -526,6 +529,30 @@ class ItemService implements ServiceInterface
                         if (($value != '') && !empty($value) && ($value != null))
                             $filters[$key] = [
                                 'meta_key' => 'special-suggest',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'product_middle_section':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'product-middle-section',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'product_trend':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'special-product-trend',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'product_new':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'product-new',
                                 'value' => $value,
                                 'type' => 'slug',
                             ];
