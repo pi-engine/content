@@ -121,6 +121,36 @@ class ItemService implements ServiceInterface
         ];
 
 
+        ///TODO: Kerloper: remove these emthods
+        if(array_key_exists('admin', $params)){
+            if(array_key_exists('next_follow_up', $params['admin'])){
+                if($params['admin']['next_follow_up']!=='null'){
+                    $listParams['support_next_follow_up'] = explode(' ',$params['admin']['next_follow_up'])[0];
+                }
+            }
+            if(array_key_exists('order_status', $params['admin'])){
+                if($params['admin']['order_status']!=='null'){
+                    $listParams['support_order_status'] = $params['admin']['order_status'];
+                }
+            }
+        }
+
+        if(array_key_exists('contact', $params)){
+            if(array_key_exists('name', $params['contact'])){
+                if($params['contact']['name']!=='null'){
+                    $listParams['support_name'] = $params['contact']['name'];
+                }
+            }
+        }
+
+        if(array_key_exists('product', $params)){
+            if(array_key_exists('name', $params['product'])){
+                if($params['product']['name']!=='null'){
+                    $listParams['support_product_name'] = $params['product']['name'];
+                }
+            }
+        }
+
         if (isset($params['data_from'])) {
             $listParams['data_from'] = strtotime(
                 ($params['data_from']) != null

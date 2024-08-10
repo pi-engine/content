@@ -92,6 +92,24 @@ class ItemRepository implements ItemRepositoryInterface
 
         $where = $this->createConditional($params);
 
+        ///TODO: kerloper: move fom here
+        /// support filter section
+        if (isset($params['support_next_follow_up']) && !empty($params['support_next_follow_up'])) {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.admin.next_follow_up') LIKE ?", '%' . $params['support_next_follow_up'] . '%');
+        }
+
+        if (isset($params['support_order_status']) && !empty($params['support_order_status'])) {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.admin.order_status') LIKE ?", '%' . $params['support_order_status'] . '%');
+        }
+
+        if (isset($params['support_name']) && !empty($params['support_name'])) {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.contact.name') LIKE ?", '%' . $params['support_name'] . '%');
+        }
+
+        if (isset($params['support_product_name']) && !empty($params['support_product_name'])) {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.product.name') LIKE ?", '%' . $params['support_product_name'] . '%');
+        }
+
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
