@@ -653,7 +653,9 @@ class ItemService implements ServiceInterface
     // TODO: update it
     public function editItem($params, $account = null)
     {
-        $params["time_update"] = time();
+        if(!isset($params["time_update"])){
+            $params["time_update"] = time();
+        }
         return $this->itemRepository->editItem($params);
     }
 
