@@ -120,36 +120,50 @@ class ItemService implements ServiceInterface
             'status' => isset($params['status']) ? $params['status'] : 1,
         ];
 
-
-        ///TODO: Kerloper: remove these emthods
-        if(array_key_exists('admin', $params)){
-            if(array_key_exists('next_follow_up', $params['admin'])){
-                if($params['admin']['next_follow_up']!=='null'){
-                    $listParams['support_next_follow_up'] = explode(' ',$params['admin']['next_follow_up'])[0];
-                }
+        if (array_key_exists('support_follow_up_date', $params)) {
+            if ($params['support_follow_up_date']) {
+                $listParams['support_follow_up_date'] = $params['support_follow_up_date'];
             }
-            if(array_key_exists('order_status', $params['admin'])){
-                if($params['admin']['order_status']!=='null'){
-                    $listParams['support_order_status'] = $params['admin']['order_status'];
+        }
+
+        if (array_key_exists('support_title', $params)) {
+            if ($params['support_title']) {
+                $listParams['support_title'] = $params['support_title'];
+            }
+        }
+
+        if (array_key_exists('support_product_title', $params)) {
+            if ($params['support_product_title']) {
+                $listParams['support_product_title'] = $params['support_product_title'];
+            }
+        }
+
+        if (array_key_exists('support_customer_name', $params)) {
+            if ($params['support_customer_name']) {
+                $listParams['support_customer_name'] = $params['support_customer_name'];
+            }
+        }
+
+        if (array_key_exists('support_customer_email', $params)) {
+            if ($params['support_customer_email']) {
+                $listParams['support_customer_email'] = $params['support_customer_email'];
+            }
+        }
+
+        if (array_key_exists('support_status', $params)) {
+            if (isset($params['support_status']['value'])) {
+                if (in_array($params['support_status']['value'], [0, 1])) {
+                    $listParams['status'] = $params['support_status']['value'];
                 }
             }
         }
 
-        if(array_key_exists('contact', $params)){
-            if(array_key_exists('name', $params['contact'])){
-                if($params['contact']['name']!=='null'){
-                    $listParams['support_name'] = $params['contact']['name'];
-                }
+        if (array_key_exists('support_order_status', $params)) {
+            if (isset($params['support_order_status']['value'])) {
+                $listParams['support_order_status'] = $params['support_order_status']['value'];
             }
         }
 
-        if(array_key_exists('product', $params)){
-            if(array_key_exists('name', $params['product'])){
-                if($params['product']['name']!=='null'){
-                    $listParams['support_product_name'] = $params['product']['name'];
-                }
-            }
-        }
 
         if (isset($params['data_from'])) {
             $listParams['data_from'] = strtotime(
@@ -653,7 +667,7 @@ class ItemService implements ServiceInterface
     // TODO: update it
     public function editItem($params, $account = null)
     {
-        if(!isset($params["time_update"])){
+        if (!isset($params["time_update"])) {
             $params["time_update"] = time();
         }
         return $this->itemRepository->editItem($params);

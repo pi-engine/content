@@ -94,21 +94,30 @@ class ItemRepository implements ItemRepositoryInterface
 
         ///TODO: kerloper: move fom here
         /// support filter section
-        if (isset($params['support_next_follow_up']) && !empty($params['support_next_follow_up'])) {
-            $where[] = new Expression("JSON_EXTRACT(information, '$.admin.next_follow_up') LIKE ?", '%' . $params['support_next_follow_up'] . '%');
+        if (isset($params['support_follow_up_date']) && !empty($params['support_follow_up_date'])) {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.follow_up_date') LIKE ?", '%' . $params['support_follow_up_date'] . '%');
+        }
+
+        if (isset($params['support_title']) && !empty($params['support_title'])) {
+            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.title')) LIKE ?", '%' . strtolower($params['support_title']) . '%');
+        }
+
+        if (isset($params['support_product_title']) && !empty($params['support_product_title'])) {
+            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.order.product.title')) LIKE ?", '%' . strtolower($params['support_product_title']) . '%');
+        }
+
+        if (isset($params['support_customer_name']) && !empty($params['support_customer_name'])) {
+            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.customer.name')) LIKE ?", '%' . strtolower($params['support_customer_name']) . '%');
+        }
+
+        if (isset($params['support_customer_email']) && !empty($params['support_customer_email'])) {
+            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.customer.email')) LIKE ?", '%' . strtolower($params['support_customer_email']) . '%');
         }
 
         if (isset($params['support_order_status']) && !empty($params['support_order_status'])) {
-            $where[] = new Expression("JSON_EXTRACT(information, '$.admin.order_status') LIKE ?", '%' . $params['support_order_status'] . '%');
+            $where[] = new Expression("JSON_EXTRACT(information, '$.order.order_status') LIKE ?",   '%' . $params['support_order_status'].'%'   );
         }
 
-        if (isset($params['support_name']) && !empty($params['support_name'])) {
-            $where[] = new Expression("JSON_EXTRACT(information, '$.contact.name') LIKE ?", '%' . $params['support_name'] . '%');
-        }
-
-        if (isset($params['support_product_name']) && !empty($params['support_product_name'])) {
-            $where[] = new Expression("JSON_EXTRACT(information, '$.product.name') LIKE ?", '%' . $params['support_product_name'] . '%');
-        }
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
@@ -596,7 +605,7 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['type']) && !empty($params['type'])) {
             $where['type'] = $params['type'];
         }
-        if (isset($params['status']) && !empty($params['status'])) {
+        if (isset($params['status']) && in_array($params['status'],[0,1])) {
             $where['status'] = $params['status'];
         }
         if (isset($params['id'])) {
