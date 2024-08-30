@@ -150,6 +150,12 @@ class ItemService implements ServiceInterface
             }
         }
 
+        if (array_key_exists('support_customer_id', $params)) {
+            if ($params['support_customer_id']) {
+                $listParams['support_customer_id'] = $params['support_customer_id'];
+            }
+        }
+
         if (array_key_exists('support_status', $params)) {
             if (isset($params['support_status']['value'])) {
                 if (in_array($params['support_status']['value'], [0, 1])) {

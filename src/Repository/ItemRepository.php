@@ -114,6 +114,10 @@ class ItemRepository implements ItemRepositoryInterface
             $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.customer.email')) LIKE ?", '%' . strtolower($params['support_customer_email']) . '%');
         }
 
+        if (isset($params['support_customer_id']) && !empty($params['support_customer_id'])) {
+            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.customer.id')) IN ( ? ) ",  strtolower($params['support_customer_id']) );
+        }
+
         if (isset($params['support_order_status']) && !empty($params['support_order_status'])) {
             $where[] = new Expression("JSON_EXTRACT(information, '$.order.order_status') LIKE ?",   '%' . $params['support_order_status'].'%'   );
         }
