@@ -210,7 +210,10 @@ class ItemService implements ServiceInterface
                     $listParams['id'] = array_intersect($listParams['id'], $itemIdList);
                 }
             }
+        }
 
+        if(isset($params['id'])&&!empty($params['id'])){
+            $listParams['id'] = isset($listParams['id'])?array_intersect($listParams['id'], $params['id']):$params['id'];
         }
 
 
