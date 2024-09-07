@@ -212,8 +212,8 @@ class ItemService implements ServiceInterface
             }
         }
 
-        if(isset($params['id'])&&!empty($params['id'])){
-            $listParams['id'] = isset($listParams['id'])?array_intersect($listParams['id'], $params['id']):$params['id'];
+        if (isset($params['id']) && !empty($params['id'])) {
+            $listParams['id'] = isset($listParams['id']) ? array_intersect($listParams['id'], $params['id']) : $params['id'];
         }
 
 
@@ -699,6 +699,11 @@ class ItemService implements ServiceInterface
     {
         $params["time_deleted"] = time();
         return $this->itemRepository->deleteItem($params, $account);
+    }
+
+    public function destroyItem($params): void
+    {
+        $this->itemRepository->destroyItem($params);
     }
 
     ///TODO: update it
