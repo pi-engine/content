@@ -826,7 +826,7 @@ return [
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
-                                            Handler\Api\Address\AddHandler::class
+                                            \Order\Handler\Api\Address\AddressAddHandler::class
                                         ),
                                     ],
                                 ],
@@ -846,7 +846,7 @@ return [
 //                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
-                                            Handler\Api\Address\ListHandler::class
+                                            \Order\Handler\Api\Address\AddressListHandler::class
                                         ),
                                     ],
                                 ],
