@@ -289,7 +289,12 @@ class MetaService implements ServiceInterface
 
     public function getMetaValueList(object|array|null $params): array
     {
-        $params['type']='meta-' . $params['key'] ?? '';
+        $params['key'] = $params['key'] ?? '';
+        if (is_array($params['key'])) {
+            $params['type'] = $params['key'];
+        } else {
+            $params['type'] = 'meta-' . $params['key'] ?? '';
+        }
         return $this->itemService->getItemList($params);
     }
 

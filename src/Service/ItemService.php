@@ -65,6 +65,10 @@ class ItemService implements ServiceInterface
             'product_trend',
             'product_new',
             'product_special',
+            'target-muscles',
+            'type-muscles',
+            'activity-types',
+
         ];
 
     // ToDo: get it from DB and cache
@@ -664,6 +668,30 @@ class ItemService implements ServiceInterface
                             $filters[$key] = [
                                 'meta_key' => 'shed_color',
                                 'value' => explode(',', $value),
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'target-muscles':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'target-muscles',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'activity-types':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'activity-types',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'type-muscles':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'type-muscles',
+                                'value' => $value,
                                 'type' => 'slug',
                             ];
                         break;
