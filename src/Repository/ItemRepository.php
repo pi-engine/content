@@ -606,6 +606,9 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['user_id']) && !empty($params['user_id'])) {
             $where['user_id'] = $params['user_id'];
         }
+        if (isset($params['parent_id']) && !empty($params['parent_id'])) {
+            $where['parent_id'] = $params['parent_id'];
+        }
         if (isset($params['type']) && !empty($params['type'])) {
             $where['type'] = $params['type'];
         }

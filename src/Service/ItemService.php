@@ -195,6 +195,10 @@ class ItemService implements ServiceInterface
             $listParams['user_id'] = $params['user_id'];
         }
 
+        if (isset($params['parent_id'])) {
+            $listParams['parent_id'] = $params['parent_id'];
+        }
+
         if (isset($params['title'])) {
             $listParams['title'] = $params['title'];
         }
