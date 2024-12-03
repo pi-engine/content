@@ -127,6 +127,9 @@ return [
             // Dashboard
             Handler\Public\Dashboard\DashboardHandler::class => Factory\Handler\Public\Dashboard\DashboardHandlerFactory::class,
 
+            // Dashboard
+            Handler\Public\Information\InformationAddressHandler::class => Factory\Handler\Public\Information\InformationAddressHandlerFactory::class,
+
             // Meta
             Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\Key\MetaKeyListHandlerFactory::class,
             Handler\Public\Meta\Value\MetaValueListHandler::class => Factory\Handler\Public\Meta\Value\MetaValueListHandlerFactory::class,
@@ -185,6 +188,32 @@ return [
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
                                             Handler\Public\Dashboard\DashboardHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'information' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/information',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/address',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'public-content-information-address',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            Handler\Public\Information\InformationAddressHandler::class
                                         ),
                                     ],
                                 ],
