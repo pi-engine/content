@@ -7,6 +7,7 @@ use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\Router\Http\Literal;
 use User\Middleware\AuthenticationMiddleware;
 use User\Middleware\AuthorizationMiddleware;
+use User\Middleware\RequestPreparationMiddleware;
 use User\Middleware\SecurityMiddleware;
 
 return [
@@ -902,7 +903,8 @@ return [
                                         'permission' => 'api-content-question-add',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
-//                                            SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
                                             Handler\Api\Question\AddHandler::class
@@ -922,7 +924,8 @@ return [
                                         'permission' => 'api-content-question-reply',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
-//                                            SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
                                             Handler\Api\Question\ReplyHandler::class
@@ -942,7 +945,8 @@ return [
                                         'permission' => 'api-content-question-list',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
-//                                    SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
+//                                            SecurityMiddleware::class,
 //                                    AuthenticationMiddleware::class,
 //                                    AuthorizationMiddleware::class,
                                             Handler\Api\Question\ListHandler::class
@@ -962,7 +966,8 @@ return [
                                         'permission' => 'api-content-question-get',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
-//                                            SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
                                             Handler\Api\Question\GetHandler::class
