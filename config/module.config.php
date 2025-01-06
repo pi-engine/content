@@ -341,6 +341,7 @@ return [
                                                 'permission' => 'public-content-item-list',
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
+                                                    RequestPreparationMiddleware::class,
                                                     SecurityMiddleware::class,
                                                     Handler\Public\Meta\Value\MetaValueListHandler::class
                                                 ),
