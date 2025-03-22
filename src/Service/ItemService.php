@@ -63,6 +63,7 @@ class ItemService implements ServiceInterface
             'flames_count',
             'product_middle_section',
             'product_trend',
+            'product_popular',
             'product_new',
             'product_special',
             'target-muscles',
@@ -607,6 +608,14 @@ class ItemService implements ServiceInterface
                         if (($value != '') && !empty($value) && ($value != null))
                             $filters[$key] = [
                                 'meta_key' => 'product-trend',
+                                'value' => $value,
+                                'type' => 'slug',
+                            ];
+                        break;
+                    case 'product_popular':
+                        if (($value != '') && !empty($value) && ($value != null))
+                            $filters[$key] = [
+                                'meta_key' => 'product-popular',
                                 'value' => $value,
                                 'type' => 'slug',
                             ];
