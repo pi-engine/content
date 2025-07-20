@@ -1611,6 +1611,7 @@ return [
                                                 'controller' => PipeSpec::class,
                                                 'middleware' => new PipeSpec(
                                                     SecurityMiddleware::class,
+                                                    RequestPreparationMiddleware::class,
                                                     AuthenticationMiddleware::class,
                                                     AuthorizationMiddleware::class,
                                                     Handler\Admin\Meta\Value\MetaValueListHandler::class
