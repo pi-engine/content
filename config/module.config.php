@@ -172,6 +172,7 @@ return [
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
+                                        RequestPreparationMiddleware::class,
                                             Handler\Public\Item\ItemDetailHandler::class
                                         ),
                                     ],
@@ -190,6 +191,7 @@ return [
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
 //                                            SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
                                             Handler\Public\Dashboard\DashboardHandler::class
                                         ),
                                     ],

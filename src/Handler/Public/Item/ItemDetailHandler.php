@@ -45,7 +45,7 @@ class ItemDetailHandler implements RequestHandlerInterface
         $result = [
             'result' => true,
             'data'   => $result,
-            'error'  => [],
+            'error'  => [3],
         ];
 
         return new JsonResponse($result);
