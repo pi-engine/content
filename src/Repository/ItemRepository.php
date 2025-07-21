@@ -115,11 +115,11 @@ class ItemRepository implements ItemRepositoryInterface
         }
 
         if (isset($params['support_customer_id']) && !empty($params['support_customer_id'])) {
-            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.customer.id')) IN ( ? ) ",  strtolower($params['support_customer_id']) );
+            $where[] = new Expression("LOWER(JSON_EXTRACT(information, '$.customer.id')) IN ( ? ) ", strtolower($params['support_customer_id']));
         }
 
         if (isset($params['support_order_status']) && !empty($params['support_order_status'])) {
-            $where[] = new Expression("JSON_EXTRACT(information, '$.order.order_status') LIKE ?",   '%' . $params['support_order_status'].'%'   );
+            $where[] = new Expression("JSON_EXTRACT(information, '$.order.order_status') LIKE ?", '%' . $params['support_order_status'] . '%');
         }
 
 
@@ -221,8 +221,8 @@ class ItemRepository implements ItemRepositoryInterface
         }
         if (isset($params['status']) && !empty($params['status'])) {
             $where['status'] = $params['status'];
-        }else{
-            $where['status'] = [0,1];
+        } else {
+            $where['status'] = [0, 1];
         }
 
 
@@ -313,6 +313,7 @@ class ItemRepository implements ItemRepositoryInterface
 
         return (isset($params["id"])) ? $this->getItem($params["id"]) : $this->getItem($params["slug"], "slug");
     }
+
 
     /**
      * @param array $params
@@ -523,6 +524,29 @@ class ItemRepository implements ItemRepositoryInterface
      *
      * @return array|object
      */
+    public function addMetaKey(array $params): object|array
+    {
+        $insert = new Insert($this->tableMetaKey);
+        $insert->values($params);
+
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface) {
+            throw new RuntimeException(
+                'Database error occurred during blog post insert operation'
+            );
+        }
+        $id = $result->getGeneratedValue();
+        return $this->getMetaKey(["id" => $id]);
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return array|object
+     */
     public function addMetaValue(array $params): object|array
     {
         $insert = new Insert($this->tableMetaValue);
@@ -538,7 +562,7 @@ class ItemRepository implements ItemRepositoryInterface
             );
         }
         $id = $result->getGeneratedValue();
-        return $this->getMetaValue(["id" => $id], "object");
+        return $this->getMetaValue(["id" => $id]);
     }
 
     /**
@@ -612,7 +636,7 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['type']) && !empty($params['type'])) {
             $where['type'] = $params['type'];
         }
-        if (isset($params['status']) && in_array($params['status'],[0,1])) {
+        if (isset($params['status']) && in_array($params['status'], [0, 1])) {
             $where['status'] = $params['status'];
         }
         if (isset($params['id'])) {
@@ -722,6 +746,33 @@ class ItemRepository implements ItemRepositoryInterface
         $sql = new Sql($this->db);
         $statement = $sql->prepareStatementForSqlObject($update);
         $statement->execute();
+    }
+    /**
+     * @param array $params
+     *
+     * @return array|object
+     */
+    public function updateMetaKey(array $params): object|array
+    {
+        $update = new Update($this->tableMetaKey);
+        $update->set($params);
+        if (isset($params["id"]))
+            $update->where(['id' => $params["id"]]);
+
+        if (isset($params["slug"]))
+            $update->where(['slug' => $params["slug"]]);
+
+        $sql = new Sql($this->db);
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $result = $statement->execute();
+
+        if (!$result instanceof ResultInterface) {
+            throw new RuntimeException(
+                'Database error occurred during update operation'
+            );
+        }
+
+        return (isset($params["id"])) ? $this->getItem($params["id"]) : $this->getItem($params["slug"], "slug");
     }
 
 }

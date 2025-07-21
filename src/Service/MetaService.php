@@ -183,7 +183,7 @@ class MetaService implements ServiceInterface
 
     public function updateMeta(array $metaPrams): array
     {
-        $row = $this->itemRepository->updateMetaValue($metaPrams);
+        $row = $this->itemRepository->addMetaItem($metaPrams);
         return $this->canonizeMeta($row);
     }
 
@@ -331,6 +331,28 @@ class MetaService implements ServiceInterface
 
         return $meta;
 
+    }
+
+    public function addMetaKey(object|array|null $requestBody): array
+    {
+        $requestBody['option'] = json_encode($requestBody['option']);
+        $meta = $this->itemRepository->addMetaKey($requestBody);
+        return [
+          "result" => true,
+          "data"=>true,
+          "error"=> null
+        ];
+    }
+    public function updateMetaKey(object|array|null $requestBody): array
+    {
+        $requestBody['option'] = json_encode($requestBody['option']);
+        $requestBody['id'] = $requestBody['id']??-1;
+        $meta = $this->itemRepository->updateMetaKey($requestBody);
+        return [
+          "result" => true,
+          "data"=>true,
+          "error"=> null
+        ];
     }
 
 }

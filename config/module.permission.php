@@ -478,6 +478,16 @@ return [
         [
             'module' => 'content',
             'section' => 'admin',
+            'package' => 'meta',
+            'handler' => 'add',
+            'permission' => 'admin-content-meta-add',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
             'package' => 'item',
             'handler' => 'list',
             'permissions' => 'item-list',

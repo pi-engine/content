@@ -20,7 +20,6 @@ interface ItemRepositoryInterface
 
     public function getIDFromFilter(array $filters = []): HydratingResultSet|array;
 
-
     public function addCartItem(array $params): object|array;
 
     public function getGroupList($params);
@@ -28,5 +27,11 @@ interface ItemRepositoryInterface
     public function getMetaKeyCount(array $params);
 
     public function getMetaKeyList(array $listParams);
+
+    public function addMetaKey(array $params): object|array;
+
+    public function updateMetaKey(array $params): object|array;
+
+    public function addMetaValue(array $params): object|array;
 
 }

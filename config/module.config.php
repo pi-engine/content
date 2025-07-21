@@ -116,6 +116,8 @@ return [
 
             // Meta
             Handler\Admin\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyListHandlerFactory::class,
+            Handler\Admin\Meta\Key\MetaKeyAddHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyAddHandlerFactory::class,
+            Handler\Admin\Meta\Key\MetaKeyUpdateHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyUpdateHandlerFactory::class,
             Handler\Admin\Meta\Key\MetaKeyGetHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyGetHandlerFactory::class,
             Handler\Admin\Meta\Value\MetaValueListHandler::class => Factory\Handler\Admin\Meta\Value\MetaValueListHandlerFactory::class,
 
@@ -1519,6 +1521,48 @@ return [
                         ],
                         'child_routes' => [
 
+                            'key/add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/key/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-item-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Meta\Key\MetaKeyAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'key/update' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/key/update',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-item-update',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            RequestPreparationMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Meta\Key\MetaKeyUpdateHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
                             'list' => [
                                 'type' => Literal::class,
                                 'options' => [
