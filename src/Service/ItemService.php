@@ -2143,6 +2143,9 @@ class ItemService implements ServiceInterface
     public function addEntity(object|array|null $request, mixed $account): array
     {
 
+        if(!isset($request['priority'])){
+            $request['priority']=null;
+        }
 
         $request['slug'] = $request['slug'] ?? uniqid();
         $request['time_create'] = time();
