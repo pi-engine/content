@@ -1438,6 +1438,7 @@ return [
                                 'permissions' => 'item-edit',
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
+                                    RequestPreparationMiddleware::class,
                                     SecurityMiddleware::class,
                                     AuthenticationMiddleware::class,
                                     AuthorizationMiddleware::class,

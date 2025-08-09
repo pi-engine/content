@@ -68,8 +68,8 @@ class EntityRemoveHandler implements RequestHandlerInterface
         }
 
         $data = $this->itemService->getItem($params[$type],$type,['status'=>[0,1,2,3]]);
-        $data['status'] = 3;
-        $params['status'] = 3;
+        $data['status'] = $requestBody['status']??3;
+        $params['status'] = $requestBody['status']??3;
         $params['information'] = json_encode($data);
 
         $result = $this->itemService->editItem($params, $account);
