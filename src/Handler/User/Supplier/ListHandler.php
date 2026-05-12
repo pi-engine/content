@@ -1,8 +1,8 @@
 <?php
 
-namespace Content\Handler\Admin\Meta\Key;
+namespace Content\Handler\User\Supplier;
 
-use Content\Service\MetaService;
+use Content\Service\SupplierService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -10,35 +10,35 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MetaKeyListHandler implements RequestHandlerInterface
+/**
+ * User panel: supplier list. Returns only active suppliers.
+ * list_type is forced to 'active'; inactive and pending are not accessible.
+ */
+class ListHandler implements RequestHandlerInterface
 {
-    /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
-
-    /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
-
-    /** @var MetaService */
-    protected MetaService $metaService;
-
+    protected SupplierService $supplierService;
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface $streamFactory,
-        MetaService $metaService
+        SupplierService $supplierService
     ) {
         $this->responseFactory = $responseFactory;
-        $this->streamFactory   = $streamFactory;
-        $this->metaService     = $metaService;
+        $this->streamFactory  = $streamFactory;
+        $this->supplierService = $supplierService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get request body
         $requestBody = $request->getParsedBody();
-        $requestBody['status'] = 1;
-        $result = $this->metaService->getMetaKeyList($requestBody);
+        $params = is_array($requestBody) ? $requestBody : [];
 
+        // User panel: only active suppliers; ignore any list_type from client
+        $params['list_type'] = 'active';
+
+        $result = $this->supplierService->getSupplierList($params);
         return new JsonResponse($result);
     }
 }

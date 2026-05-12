@@ -5,10 +5,17 @@ namespace Content\Service;
 use Content\Repository\ItemRepositoryInterface;
 use mysql_xdevapi\Exception;
 use User\Service\AccountService;
+use function array_diff_key;
+use function array_flip;
+use function array_merge;
 use function explode;
 use function in_array;
+use function is_array;
 use function is_object;
 use function json_decode;
+use function json_encode;
+use function strtolower;
+use function uniqid;
 
 class MetaService implements ServiceInterface
 {
@@ -296,6 +303,127 @@ class MetaService implements ServiceInterface
             $params['type'] = 'meta-' . $params['key'] ?? '';
         }
         return $this->itemService->getItemList($params);
+    }
+
+    /**
+     * Return industry and sub_industry lists as a single JSON-friendly array.
+     * Uses parent_id: industries have parent_id=0, sub-industries have parent_id=industry id.
+     *
+     * @return array{result: bool, data: array{industry: array, sub_industry: array}, error: array}
+     */
+    public function getIndustrySubIndustryList(): array
+    {
+        $all = $this->itemService->getItemList([
+            'type' => 'meta-industry',
+            'status' => 1,
+            'limit' => 500,
+        ]);
+        $list = $all['data']['list'] ?? [];
+        $industry = [];
+        $subIndustry = [];
+        foreach ($list as $row) {
+            $parentId = (int) ($row['parent_id'] ?? 0);
+            if ($parentId === 0) {
+                $industry[] = $row;
+            } else {
+                $subIndustry[] = $row;
+            }
+        }
+        return [
+            'result' => true,
+            'data' => [
+                'industry' => $industry,
+                'sub_industry' => $subIndustry,
+            ],
+            'error' => [],
+        ];
+    }
+
+    public function createMetaValue(object|array|null $requestBody, array $account = []): array
+    {
+        if (is_object($requestBody)) {
+            $requestBody = (array)$requestBody;
+        }
+
+        if (!is_array($requestBody)) {
+            $requestBody = [];
+        }
+
+//        $type = $requestBody['type'] ?? null;
+//        if ($type === null && isset($requestBody['key']) && !is_array($requestBody['key'])) {
+            $type = sprintf('meta-%s', $requestBody['key']);
+//        }
+
+        if (empty($type)) {
+            return [
+                'result' => false,
+                'data'   => [],
+                'error'  => [
+                    'type' => 'Meta type is required. Provide `type` or `key` in request body.',
+                ],
+            ];
+        }
+
+        if (empty($requestBody['title'])) {
+            return [
+                'result' => false,
+                'data'   => [],
+                'error'  => [
+                    'title' => 'Title is required.',
+                ],
+            ];
+        }
+
+        $request['type'] = $type;
+        $request['user_id'] = $requestBody['user_id'] ?? ($account['id'] ?? 0);
+        $request['title'] = $requestBody['title'] ;
+        $request['status'] = $requestBody['status'] ?? 1;
+        $request['time_create'] = $requestBody['time_create'] ?? time();
+        $request['priority'] = $requestBody['priority'] ?? 0;
+        $request['slug'] = $requestBody['slug']  ;
+
+        if (empty($requestBody['slug'])) {
+            $request['slug'] = strtolower($type . '-' . uniqid());
+        }
+
+        $information = [];
+        if (isset($requestBody['information'])) {
+            if (is_array($requestBody['information']) || is_object($requestBody['information'])) {
+                $information = (array)$requestBody['information'];
+            }
+        }
+
+        $columnKeys = [
+            'title',
+            'slug',
+            'priority',
+            'type',
+            'status',
+            'user_id',
+            'time_create',
+            'time_update',
+            'time_delete',
+            'information',
+        ];
+
+        $extraPayload = array_diff_key($requestBody, array_flip($columnKeys));
+        if (!empty($extraPayload)) {
+            $information = array_merge($information, $extraPayload);
+        }
+
+        $information['title'] = $requestBody['title'];
+        $information['slug'] = $requestBody['slug'];
+        $information['priority'] = $requestBody['priority'];
+
+        $request['information'] = json_encode($information, JSON_UNESCAPED_UNICODE);
+
+        $created = $this->itemService->addItem($request, $account);
+
+        return [
+            'result' => true,
+            'data'   => $created,
+            'error'  => [],
+        ];
     }
 
     private function canonizeMetaKey(mixed $meta, mixed $type = 'global'): array

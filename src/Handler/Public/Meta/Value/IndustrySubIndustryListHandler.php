@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Admin\Meta\Key;
+namespace Content\Handler\Public\Meta\Value;
 
 use Content\Service\MetaService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -10,17 +10,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MetaKeyListHandler implements RequestHandlerInterface
+class IndustrySubIndustryListHandler implements RequestHandlerInterface
 {
-    /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
-
-    /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
-
-    /** @var MetaService */
     protected MetaService $metaService;
-
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
@@ -34,11 +28,7 @@ class MetaKeyListHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get request body
-        $requestBody = $request->getParsedBody();
-        $requestBody['status'] = 1;
-        $result = $this->metaService->getMetaKeyList($requestBody);
-
+        $result = $this->metaService->getIndustrySubIndustryList();
         return new JsonResponse($result);
     }
 }

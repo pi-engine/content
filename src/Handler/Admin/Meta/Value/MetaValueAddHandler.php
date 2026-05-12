@@ -1,6 +1,6 @@
 <?php
 
-namespace Content\Handler\Admin\Meta\Key;
+namespace Content\Handler\Admin\Meta\Value;
 
 use Content\Service\MetaService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -9,8 +9,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use function is_array;
+use function is_object;
 
-class MetaKeyListHandler implements RequestHandlerInterface
+class MetaValueAddHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -20,7 +22,6 @@ class MetaKeyListHandler implements RequestHandlerInterface
 
     /** @var MetaService */
     protected MetaService $metaService;
-
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
@@ -34,11 +35,19 @@ class MetaKeyListHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get request body
+        $account = $request->getAttribute('account', []);
+        if (!is_array($account)) {
+            $account = [];
+        }
+
         $requestBody = $request->getParsedBody();
-        $requestBody['status'] = 1;
-        $result = $this->metaService->getMetaKeyList($requestBody);
+        if (!is_array($requestBody) && !is_object($requestBody)) {
+            $requestBody = [];
+        }
+
+        $result = $this->metaService->createMetaValue($requestBody, $account);
 
         return new JsonResponse($result);
     }
 }
+

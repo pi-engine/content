@@ -122,9 +122,105 @@ class ItemRepository implements ItemRepositoryInterface
             $where[] = new Expression("JSON_EXTRACT(information, '$.order.order_status') LIKE ?", '%' . $params['support_order_status'] . '%');
         }
 
+        if (isset($params['company_id']) && (int) $params['company_id'] > 0 && isset($params['type']) && $params['type'] === 'material_offer') {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.company_id') = ?", [(int) $params['company_id']]);
+        }
+        if (isset($params['type']) && $params['type'] === 'material_offer' && isset($params['offer_status']) && trim((string) $params['offer_status']) !== '') {
+            $where[] = new Expression("JSON_UNQUOTE(JSON_EXTRACT(information, '$.status')) = ?", [trim((string) $params['offer_status'])]);
+        }
+        if (isset($params['type']) && $params['type'] === 'material_offer' && isset($params['country_of_origin']) && trim((string) $params['country_of_origin']) !== '') {
+            $search = '%' . mb_strtolower(trim((string) $params['country_of_origin'])) . '%';
+            $where[] = new Expression(
+                "LOWER(CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(information, '$.country_of_origin')), '') AS CHAR(500))) LIKE ?",
+                [$search]
+            );
+        }
 
+        // Supplier list tabs: active | pending | inactive (must match getItemCount)
+        if (isset($params['type']) && $params['type'] === 'supplier' && isset($params['list_type']) && in_array($params['list_type'], ['active', 'pending', 'inactive'], true)) {
+            $listType = $params['list_type'];
+            if ($listType === 'pending') {
+                $where[] = new Expression(
+                    "JSON_UNQUOTE(JSON_EXTRACT(information, '$.registration_source')) = ? AND (JSON_EXTRACT(information, '$.was_activated_at') IS NULL)",
+                    ['public']
+                );
+            } elseif ($listType === 'inactive') {
+                $where[] = new Expression(
+                    "JSON_UNQUOTE(COALESCE(JSON_EXTRACT(information, '$.supplier_active'), '1')) = ?",
+                    ['0']
+                );
+            } else {
+                $where[] = new Expression(
+                    "((JSON_EXTRACT(information, '$.supplier_active') IS NULL OR JSON_UNQUOTE(JSON_EXTRACT(information, '$.supplier_active')) != ?) AND (JSON_EXTRACT(information, '$.registration_source') IS NULL OR JSON_UNQUOTE(COALESCE(JSON_EXTRACT(information, '$.registration_source'), '\"\"')) != ? OR JSON_EXTRACT(information, '$.was_activated_at') IS NOT NULL))",
+                    ['0', 'public']
+                );
+            }
+        }
+
+        if (!empty($params['parent_id']) && is_array($params['parent_id'])) {
+            $ids = array_values(array_filter(array_map('intval', $params['parent_id'])));
+            if ($ids !== []) {
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $where[] = new Expression('parent_id IN (' . $placeholders . ')', $ids);
+            }
+        }
+
+        // sub_industries_keys: Material uses $.sub_industries_keys; Supplier uses industry_subindustries[].sub_industry.slug
+        if (!empty($params['sub_industries_keys']) && is_array($params['sub_industries_keys'])) {
+            $keys = array_values(array_filter(array_map('trim', $params['sub_industries_keys'])));
+            if ($keys !== []) {
+                if (isset($params['type']) && $params['type'] === 'supplier') {
+                    // Supplier: match industry_subindustries[].sub_industry.slug (key = slug or last part, e.g. "plastics_and_polymers" or "meta-industry-chemical-plastics_and_polymers")
+                    $conditions = [];
+                    $bind = [];
+                    foreach ($keys as $key) {
+                        $esc = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $key);
+                        $conditions[] = "(information LIKE ? OR information LIKE ? OR information LIKE ?)";
+                        $bind[] = '%"sub_industry":%"slug":"' . $esc . '"%';
+                        $bind[] = '%"sub_industry":%"slug": "' . $esc . '"%';
+                        $bind[] = '%"sub_industry":%-' . $esc . '"%';
+                    }
+                    $where[] = new Expression('(' . implode(' OR ', $conditions) . ')', $bind);
+                } else {
+                    // Material: match $.sub_industries_keys
+                    $placeholders = implode(' OR ', array_fill(0, count($keys), "JSON_CONTAINS(information, ?, '$.sub_industries_keys')"));
+                    $where[] = new Expression('(' . $placeholders . ')', array_map('json_encode', $keys));
+                }
+            }
+        }
+
+        // Supplier filter: by sub_industry id(s) (information.industry_subindustries[].sub_industry.id)
+        if (!empty($params['sub_industry_ids']) && is_array($params['sub_industry_ids'])) {
+            $ids = array_values(array_filter(array_map('intval', $params['sub_industry_ids'])));
+            if ($ids !== []) {
+                $conditions = [];
+                $bind = [];
+                foreach ($ids as $sid) {
+                    if ($sid > 0) {
+                        $conditions[] = '(information LIKE ? OR information LIKE ?)';
+                        $bind[] = '%"sub_industry":{"id":' . $sid . '%';
+                        $bind[] = '%"sub_industry": {"id": ' . $sid . '%';
+                    }
+                }
+                if ($conditions !== []) {
+                    $where[] = new Expression('(' . implode(' OR ', $conditions) . ')', $bind);
+                }
+            }
+        } elseif (!empty($params['sub_industry_id']) && (int) $params['sub_industry_id'] > 0) {
+            $sid = (int) $params['sub_industry_id'];
+            $where[] = new Expression(
+                '(information LIKE ? OR information LIKE ?)',
+                ['%"sub_industry":{"id":' . $sid . '%', '%"sub_industry": {"id": ' . $sid . '%']
+            );
+        }
+
+        $order = $params['order'] ?? ['time_create DESC', 'id DESC'];
+        if (isset($params['type']) && $params['type'] === 'material_offer' && !empty($params['order_by_price_rial'])) {
+            $dir = (strtolower((string) $params['order_by_price_rial']) === 'asc') ? 'ASC' : 'DESC';
+            $order = [new Expression('(CAST(JSON_UNQUOTE(JSON_EXTRACT(information, "$.unit_price_rial")) AS UNSIGNED)) ' . $dir), 'id DESC'];
+        }
         $sql = new Sql($this->db);
-        $select = $sql->select($this->tableItem)->where($where)->order($params['order'])->offset($params['offset'])->limit($params['limit']);
+        $select = $sql->select($this->tableItem)->where($where)->order($order)->offset($params['offset'])->limit($params['limit']);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -150,6 +246,105 @@ class ItemRepository implements ItemRepositoryInterface
 
         $where = $this->createConditional($params);
 
+        if (isset($params['company_id']) && (int) $params['company_id'] > 0 && isset($params['type']) && $params['type'] === 'material_offer') {
+            $where[] = new Expression("JSON_EXTRACT(information, '$.company_id') = ?", [(int) $params['company_id']]);
+        }
+        if (isset($params['type']) && $params['type'] === 'material_offer' && isset($params['offer_status']) && trim((string) $params['offer_status']) !== '') {
+            $where[] = new Expression("JSON_UNQUOTE(JSON_EXTRACT(information, '$.status')) = ?", [trim((string) $params['offer_status'])]);
+        }
+        if (isset($params['type']) && $params['type'] === 'material_offer' && isset($params['country_of_origin']) && trim((string) $params['country_of_origin']) !== '') {
+            $search = '%' . mb_strtolower(trim((string) $params['country_of_origin'])) . '%';
+            $where[] = new Expression(
+                "LOWER(CAST(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(information, '$.country_of_origin')), '') AS CHAR(500))) LIKE ?",
+                [$search]
+            );
+        }
+
+        if (isset($params['type']) && $params['type'] === 'supplier' && isset($params['list_type']) && in_array($params['list_type'], ['active', 'pending', 'inactive'], true)) {
+            $listType = $params['list_type'];
+            if ($listType === 'pending') {
+                $where[] = new Expression(
+                    "JSON_UNQUOTE(JSON_EXTRACT(information, '$.registration_source')) = ? AND (JSON_EXTRACT(information, '$.was_activated_at') IS NULL)",
+                    ['public']
+                );
+            } elseif ($listType === 'inactive') {
+                $where[] = new Expression(
+                    "JSON_UNQUOTE(COALESCE(JSON_EXTRACT(information, '$.supplier_active'), '1')) = ?",
+                    ['0']
+                );
+            } else {
+                $where[] = new Expression(
+                    "((JSON_EXTRACT(information, '$.supplier_active') IS NULL OR JSON_UNQUOTE(JSON_EXTRACT(information, '$.supplier_active')) != ?) AND (JSON_EXTRACT(information, '$.registration_source') IS NULL OR JSON_UNQUOTE(COALESCE(JSON_EXTRACT(information, '$.registration_source'), '\"\"')) != ? OR JSON_EXTRACT(information, '$.was_activated_at') IS NOT NULL))",
+                    ['0', 'public']
+                );
+            }
+        } elseif (isset($params['type']) && $params['type'] === 'supplier' && isset($params['registration_source']) && trim((string) $params['registration_source']) !== '') {
+            $src = trim((string) $params['registration_source']);
+            if ($src === 'public') {
+                $where[] = new Expression(
+                    "JSON_UNQUOTE(JSON_EXTRACT(information, '$.registration_source')) = ? AND (JSON_EXTRACT(information, '$.was_activated_at') IS NULL)",
+                    ['public']
+                );
+            } elseif ($src === 'exclude_public') {
+                $where[] = new Expression(
+                    "(JSON_EXTRACT(information, '$.registration_source') IS NULL OR JSON_UNQUOTE(COALESCE(JSON_EXTRACT(information, '$.registration_source'), '\"\"')) != ? OR JSON_EXTRACT(information, '$.was_activated_at') IS NOT NULL)",
+                    ['public']
+                );
+            }
+        }
+
+        if (!empty($params['parent_id']) && is_array($params['parent_id'])) {
+            $ids = array_values(array_filter(array_map('intval', $params['parent_id'])));
+            if ($ids !== []) {
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $where[] = new Expression('parent_id IN (' . $placeholders . ')', $ids);
+            }
+        }
+
+        if (!empty($params['sub_industries_keys']) && is_array($params['sub_industries_keys'])) {
+            $keys = array_values(array_filter(array_map('trim', $params['sub_industries_keys'])));
+            if ($keys !== []) {
+                if (isset($params['type']) && $params['type'] === 'supplier') {
+                    $conditions = [];
+                    $bind = [];
+                    foreach ($keys as $key) {
+                        $esc = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $key);
+                        $conditions[] = "(information LIKE ? OR information LIKE ? OR information LIKE ?)";
+                        $bind[] = '%"sub_industry":%"slug":"' . $esc . '"%';
+                        $bind[] = '%"sub_industry":%"slug": "' . $esc . '"%';
+                        $bind[] = '%"sub_industry":%-' . $esc . '"%';
+                    }
+                    $where[] = new Expression('(' . implode(' OR ', $conditions) . ')', $bind);
+                } else {
+                    $placeholders = implode(' OR ', array_fill(0, count($keys), "JSON_CONTAINS(information, ?, '$.sub_industries_keys')"));
+                    $where[] = new Expression('(' . $placeholders . ')', array_map('json_encode', $keys));
+                }
+            }
+        }
+
+        if (!empty($params['sub_industry_ids']) && is_array($params['sub_industry_ids'])) {
+            $ids = array_values(array_filter(array_map('intval', $params['sub_industry_ids'])));
+            if ($ids !== []) {
+                $conditions = [];
+                $bind = [];
+                foreach ($ids as $sid) {
+                    if ($sid > 0) {
+                        $conditions[] = '(information LIKE ? OR information LIKE ?)';
+                        $bind[] = '%"sub_industry":{"id":' . $sid . '%';
+                        $bind[] = '%"sub_industry": {"id": ' . $sid . '%';
+                    }
+                }
+                if ($conditions !== []) {
+                    $where[] = new Expression('(' . implode(' OR ', $conditions) . ')', $bind);
+                }
+            }
+        } elseif (!empty($params['sub_industry_id']) && (int) $params['sub_industry_id'] > 0) {
+            $sid = (int) $params['sub_industry_id'];
+            $where[] = new Expression(
+                '(information LIKE ? OR information LIKE ?)',
+                ['%"sub_industry":{"id":' . $sid . '%', '%"sub_industry": {"id": ' . $sid . '%']
+            );
+        }
 
         $sql = new Sql($this->db);
         $select = $sql->select($this->tableItem)->columns($columns)->where($where);
@@ -630,8 +825,12 @@ class ItemRepository implements ItemRepositoryInterface
         if (isset($params['user_id']) && !empty($params['user_id'])) {
             $where['user_id'] = $params['user_id'];
         }
-        if (isset($params['parent_id']) && !empty($params['parent_id'])) {
-            $where['parent_id'] = $params['parent_id'];
+        if (array_key_exists('parent_id', $params)) {
+            if (is_array($params['parent_id']) && !empty($params['parent_id'])) {
+                // Handled in getItemList/getItemCount with Expression
+            } else {
+                $where['parent_id'] = (int) $params['parent_id'];
+            }
         }
         if (isset($params['type']) && !empty($params['type'])) {
             $where['type'] = $params['type'];
@@ -675,7 +874,7 @@ class ItemRepository implements ItemRepositoryInterface
     {
 
         $where = [];
-
+        $where['status'] = 1;
         if (isset($params['target']) && !empty($params['target'])) {
             $where['target'] = $params['target'];
         }

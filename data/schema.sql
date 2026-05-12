@@ -5,6 +5,7 @@
 
 CREATE TABLE `content_item` (
                                 `id` int UNSIGNED NOT NULL,
+                                `parent_id` int UNSIGNED NOT NULL DEFAULT '0',
                                 `title` varchar(255) NOT NULL DEFAULT '',
                                 `slug` varchar(255) NOT NULL DEFAULT '',
                                 `type` varchar(64) DEFAULT NULL,

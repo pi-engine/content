@@ -87,7 +87,7 @@ class ItemService implements ServiceInterface
         NotificationService     $notificationService,
         LogService              $logService,
         UtilityService          $utilityService,
-                                $config
+        $config
     )
     {
         $this->itemRepository = $itemRepository;
@@ -198,6 +198,35 @@ class ItemService implements ServiceInterface
 
         if (isset($params['parent_id'])) {
             $listParams['parent_id'] = $params['parent_id'];
+        }
+        if (isset($params['company_id'])) {
+            $listParams['company_id'] = $params['company_id'];
+        }
+        if (isset($params['offer_status']) && trim((string) $params['offer_status']) !== '') {
+            $listParams['offer_status'] = trim((string) $params['offer_status']);
+        }
+        if (isset($params['country_of_origin']) && trim((string) $params['country_of_origin']) !== '') {
+            $listParams['country_of_origin'] = trim((string) $params['country_of_origin']);
+        }
+        if (isset($params['order_by_price_rial']) && trim((string) $params['order_by_price_rial']) !== '') {
+            $listParams['order_by_price_rial'] = trim((string) $params['order_by_price_rial']);
+        }
+
+        if (isset($params['registration_source']) && trim((string) $params['registration_source']) !== '') {
+            $listParams['registration_source'] = trim((string) $params['registration_source']);
+        }
+        if (isset($params['list_type']) && in_array($params['list_type'], ['active', 'pending', 'inactive'], true)) {
+            $listParams['list_type'] = $params['list_type'];
+        }
+        if (isset($params['sub_industries_keys']) && is_array($params['sub_industries_keys'])) {
+            $listParams['sub_industries_keys'] = $params['sub_industries_keys'];
+        }
+
+        if (isset($params['sub_industry_ids']) && is_array($params['sub_industry_ids'])) {
+            $listParams['sub_industry_ids'] = $params['sub_industry_ids'];
+        }
+        if (isset($params['sub_industry_id'])) {
+            $listParams['sub_industry_id'] = $params['sub_industry_id'];
         }
 
         if (isset($params['title'])) {
@@ -351,6 +380,7 @@ class ItemService implements ServiceInterface
         if (is_object($item)) {
             $item = [
                 'id' => $item->getId(),
+                'parent_id' => $item->getParentId(),
                 'title' => $item->getTitle(),
                 'slug' => $item->getSlug(),
                 'type' => $item->getType(),
@@ -365,6 +395,7 @@ class ItemService implements ServiceInterface
         } else {
             $item = [
                 'id' => $item['id'],
+                'parent_id' => $item['parent_id'] ?? 0,
                 'title' => $item['title'],
                 'slug' => $item['slug'],
                 'type' => $item['type'],
@@ -379,17 +410,24 @@ class ItemService implements ServiceInterface
         }
 
         $data = !empty($item['information']) ? json_decode($item['information'], true) : [];
+        if (!is_array($data)) {
+            $data = [];
+        }
 
         if ($type == 'product') {
 //            $data['price'] = $this->calculateTotalPrice($data);
 //            $data['price_view'] = number_format($data['price']) . " تومان";;
 //            $data['stock_status'] = 1;
 //            $data['stock_status_view'] = 'موجود در انبار';
-            $data['thumbnail'] = $data['image'];
+            $data['thumbnail'] = $data['image'] ?? null;
         }
         ///TODO:resolve this
         $data['time_create_view'] = $this->utilityService->date($item['time_create']);
         $data['id'] = $item['id'];
+        $data['parent_id'] = (int) ($item['parent_id'] ?? 0);
+        $data['user_id'] = (int) ($item['user_id'] ?? 0);
+        $data['title'] = $item['title'] ?? ($data['title'] ?? '');
+        $data['slug'] = $item['slug'] ?? ($data['slug'] ?? '');
         if (isset($data['image']))
             if (!isset($data['thumbnail']))
                 $data['thumbnail'] = $data['image'];
@@ -732,7 +770,9 @@ class ItemService implements ServiceInterface
     // TODO: update it
     public function deleteItem($params, $account)
     {
-        $params["time_deleted"] = time();
+        $params["time_delete"] = time();
+        $params["status"] = 0;
+        $params["status"] = 0;
         return $this->itemRepository->deleteItem($params, $account);
     }
 
@@ -2142,6 +2182,7 @@ class ItemService implements ServiceInterface
 
     public function addEntity(object|array|null $request, mixed $account): array
     {
+
 
         if(!isset($request['priority'])){
             $request['priority']=null;

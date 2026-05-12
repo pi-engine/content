@@ -1,8 +1,8 @@
 <?php
 
-namespace Content\Handler\Admin\Meta\Key;
+namespace Content\Handler\Admin\Industry;
 
-use Content\Service\MetaService;
+use Content\Service\IndustryService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -10,35 +10,28 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class MetaKeyListHandler implements RequestHandlerInterface
+use function is_array;
+
+class ListHandler implements RequestHandlerInterface
 {
-    /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
-
-    /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
-
-    /** @var MetaService */
-    protected MetaService $metaService;
-
+    protected IndustryService $industryService;
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface $streamFactory,
-        MetaService $metaService
+        IndustryService $industryService
     ) {
         $this->responseFactory = $responseFactory;
         $this->streamFactory   = $streamFactory;
-        $this->metaService     = $metaService;
+        $this->industryService = $industryService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get request body
         $requestBody = $request->getParsedBody();
-        $requestBody['status'] = 1;
-        $result = $this->metaService->getMetaKeyList($requestBody);
-
+        $result = $this->industryService->getList(is_array($requestBody) ? $requestBody : []);
         return new JsonResponse($result);
     }
 }

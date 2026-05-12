@@ -639,6 +639,26 @@ return [
                 'admin',
             ],
         ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'supplier-review',
+            'handler' => 'list',
+            'permission' => 'admin-content-supplier-review-list',
+            'role' => [
+                'admin',
+            ],
+        ],
+        [
+            'module' => 'content',
+            'section' => 'admin',
+            'package' => 'supplier-review',
+            'handler' => 'update-status',
+            'permission' => 'admin-content-supplier-review-update-status',
+            'role' => [
+                'admin',
+            ],
+        ],
 
     ],
 

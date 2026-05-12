@@ -119,8 +119,57 @@ return [
             Handler\Admin\Meta\Key\MetaKeyAddHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyAddHandlerFactory::class,
             Handler\Admin\Meta\Key\MetaKeyUpdateHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyUpdateHandlerFactory::class,
             Handler\Admin\Meta\Key\MetaKeyGetHandler::class => Factory\Handler\Admin\Meta\Key\MetaKeyGetHandlerFactory::class,
+            Handler\Admin\Meta\Value\MetaValueAddHandler::class => Factory\Handler\Admin\Meta\Value\MetaValueAddHandlerFactory::class,
             Handler\Admin\Meta\Value\MetaValueListHandler::class => Factory\Handler\Admin\Meta\Value\MetaValueListHandlerFactory::class,
 
+            // Supplier (admin)
+            Content\Service\SupplierService::class => Content\Factory\Service\SupplierServiceFactory::class,
+            Handler\Admin\Supplier\AddHandler::class => Factory\Handler\Admin\Supplier\AddHandlerFactory::class,
+            Handler\Admin\Supplier\ListHandler::class => Factory\Handler\Admin\Supplier\ListHandlerFactory::class,
+            Handler\User\Supplier\ListHandler::class => Factory\Handler\User\Supplier\ListHandlerFactory::class,
+            Handler\User\Supplier\GetHandler::class => Factory\Handler\User\Supplier\GetHandlerFactory::class,
+            Handler\Admin\Supplier\GetHandler::class => Factory\Handler\Admin\Supplier\GetHandlerFactory::class,
+            Handler\Admin\Supplier\EditHandler::class => Factory\Handler\Admin\Supplier\EditHandlerFactory::class,
+            Handler\Admin\Supplier\DeleteHandler::class => Factory\Handler\Admin\Supplier\DeleteHandlerFactory::class,
+            // Material (admin)
+            Content\Service\MaterialService::class => Content\Factory\Service\MaterialServiceFactory::class,
+            Handler\Admin\Material\AddHandler::class => Factory\Handler\Admin\Material\AddHandlerFactory::class,
+            Handler\Admin\Material\ListHandler::class => Factory\Handler\Admin\Material\ListHandlerFactory::class,
+            Handler\Admin\Material\GetHandler::class => Factory\Handler\Admin\Material\GetHandlerFactory::class,
+            Handler\Admin\Material\EditHandler::class => Factory\Handler\Admin\Material\EditHandlerFactory::class,
+            // Material offer (supplier: رکورد میزان ساخت و مبلغ واحد برای هر ماده)
+            Service\MaterialOfferService::class => Factory\Service\MaterialOfferServiceFactory::class,
+            Handler\Admin\MaterialOffer\AddHandler::class => Factory\Handler\Admin\MaterialOffer\AddHandlerFactory::class,
+            Handler\Admin\MaterialOffer\ListHandler::class => Factory\Handler\Admin\MaterialOffer\ListHandlerFactory::class,
+            Handler\Admin\MaterialOffer\EditHandler::class => Factory\Handler\Admin\MaterialOffer\EditHandlerFactory::class,
+            Handler\Admin\MaterialOffer\DeleteHandler::class => Factory\Handler\Admin\MaterialOffer\DeleteHandlerFactory::class,
+            Handler\Admin\MaterialOffer\PricingContextHandler::class => Factory\Handler\Admin\MaterialOffer\PricingContextHandlerFactory::class,
+            Handler\User\MaterialOffer\ListHandler::class => Factory\Handler\User\MaterialOffer\ListHandlerFactory::class,
+            // Supplier review (user + admin)
+            Repository\SupplierReviewRepository::class => Factory\Repository\SupplierReviewRepositoryFactory::class,
+            Service\SupplierReviewService::class => Factory\Service\SupplierReviewServiceFactory::class,
+            Handler\User\SupplierReview\AddHandler::class => Factory\Handler\User\SupplierReview\AddHandlerFactory::class,
+            Handler\User\SupplierReview\GetMyRatingHandler::class => Factory\Handler\User\SupplierReview\GetMyRatingHandlerFactory::class,
+            Handler\User\SupplierReview\AddRatingHandler::class => Factory\Handler\User\SupplierReview\AddRatingHandlerFactory::class,
+            Handler\User\SupplierReview\AddCommentHandler::class => Factory\Handler\User\SupplierReview\AddCommentHandlerFactory::class,
+            Handler\User\SupplierReview\ListHandler::class => Factory\Handler\User\SupplierReview\ListHandlerFactory::class,
+            Handler\Admin\SupplierReview\ListHandler::class => Factory\Handler\Admin\SupplierReview\ListHandlerFactory::class,
+            Handler\Admin\SupplierReview\UpdateStatusHandler::class => Factory\Handler\Admin\SupplierReview\UpdateStatusHandlerFactory::class,
+            // Supplier multi-type scores
+            Repository\SupplierScoreTypeRepository::class => Factory\Repository\SupplierScoreTypeRepositoryFactory::class,
+            Repository\SupplierScoreRepository::class => Factory\Repository\SupplierScoreRepositoryFactory::class,
+            Service\SupplierScoreService::class => Factory\Service\SupplierScoreServiceFactory::class,
+            Handler\User\SupplierReview\GetScoreTypesHandler::class => Factory\Handler\User\SupplierReview\GetScoreTypesHandlerFactory::class,
+            Handler\User\SupplierReview\AddScoresHandler::class => Factory\Handler\User\SupplierReview\AddScoresHandlerFactory::class,
+            Handler\User\SupplierReview\GetMyScoresHandler::class => Factory\Handler\User\SupplierReview\GetMyScoresHandlerFactory::class,
+            Handler\User\SupplierReview\GetSupplierScoreAveragesHandler::class => Factory\Handler\User\SupplierReview\GetSupplierScoreAveragesHandlerFactory::class,
+            // Industry (admin)
+            Content\Service\IndustryService::class => Content\Factory\Service\IndustryServiceFactory::class,
+            Handler\Admin\Industry\ListHandler::class => Factory\Handler\Admin\Industry\ListHandlerFactory::class,
+            Handler\Admin\Industry\GetHandler::class => Factory\Handler\Admin\Industry\GetHandlerFactory::class,
+            Handler\Admin\Industry\AddHandler::class => Factory\Handler\Admin\Industry\AddHandlerFactory::class,
+            Handler\Admin\Industry\EditHandler::class => Factory\Handler\Admin\Industry\EditHandlerFactory::class,
+            Handler\Admin\Industry\DeleteHandler::class => Factory\Handler\Admin\Industry\DeleteHandlerFactory::class,
 
             ///Public Section
             // Item
@@ -136,7 +185,13 @@ return [
             // Meta
             Handler\Public\Meta\Key\MetaKeyListHandler::class => Factory\Handler\Public\Meta\Key\MetaKeyListHandlerFactory::class,
             Handler\Public\Meta\Value\MetaValueListHandler::class => Factory\Handler\Public\Meta\Value\MetaValueListHandlerFactory::class,
+            Handler\Public\Meta\Value\IndustrySubIndustryListHandler::class => Factory\Handler\Public\Meta\Value\IndustrySubIndustryListHandlerFactory::class,
 
+            Handler\Public\Supplier\RegisterHandler::class => Factory\Handler\Public\Supplier\RegisterHandlerFactory::class,
+            Handler\Public\Workflow\IndustriesMaterialsHandler::class => Factory\Handler\Public\Workflow\IndustriesMaterialsHandlerFactory::class,
+            Handler\Public\Workflow\VendorsHandler::class => Factory\Handler\Public\Workflow\VendorsHandlerFactory::class,
+            Handler\Public\Workflow\VendorsAndMaterialsHandler::class => Factory\Handler\Public\Workflow\VendorsAndMaterialsHandlerFactory::class,
+            Service\WorkflowDataService::class => Factory\Service\WorkflowDataServiceFactory::class,
 
         ],
     ],
@@ -353,12 +408,113 @@ return [
                                             ],
                                         ],
                                     ],
+                                    'industry-list' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/industry-list',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'public',
+                                                'package' => 'item',
+                                                'handler' => 'industry-list',
+                                                'permission' => 'public-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    RequestPreparationMiddleware::class,
+                                                    SecurityMiddleware::class,
+                                                    Handler\Public\Meta\Value\IndustrySubIndustryListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
 
                                 ]
                             ],
 
 
                         ]
+                    ],
+
+                    'supplier' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/supplier',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'register' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/register',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'register',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            Handler\Public\Supplier\RegisterHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+
+                    'workflow' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/workflow',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'industries-materials' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/industries-materials',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            Handler\Public\Workflow\IndustriesMaterialsHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'vendors' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/vendors',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            Handler\Public\Workflow\VendorsHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'vendors-and-materials' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/vendors-and-materials',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'public',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            Handler\Public\Workflow\VendorsAndMaterialsHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
 
                     'tourism' => [
@@ -1517,6 +1673,492 @@ return [
                             ],
                         ]
                     ],
+                    'supplier' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/supplier',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-item-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Supplier\AddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Supplier\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'admin-content-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Supplier\GetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/edit',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'edit',
+                                        'permission' => 'admin-content-item-edit',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Supplier\EditHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/delete',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'delete',
+                                        'permission' => 'admin-content-item-delete',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Supplier\DeleteHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'supplier-review' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/supplier-review',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\SupplierReview\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'update-status' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/update-status',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'edit',
+                                        'permission' => 'admin-content-item-edit',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\SupplierReview\UpdateStatusHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'material' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/material',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-item-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Material\AddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Material\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'admin-content-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Material\GetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/edit',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'edit',
+                                        'permission' => 'admin-content-item-edit',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Material\EditHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'material-offer' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/material-offer',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-item-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\MaterialOffer\AddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\MaterialOffer\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/edit',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'edit',
+                                        'permission' => 'admin-content-item-edit',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\MaterialOffer\EditHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/delete',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'delete',
+                                        'permission' => 'admin-content-item-delete',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\MaterialOffer\DeleteHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'pricing-context' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/pricing-context',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'pricing-context',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+//                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\MaterialOffer\PricingContextHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'industry' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/industry',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'list',
+                                        'permission' => 'admin-content-item-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Industry\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'admin-content-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Industry\GetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'add',
+                                        'permission' => 'admin-content-item-add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Industry\AddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/edit',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'edit',
+                                        'permission' => 'admin-content-item-edit',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Industry\EditHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/delete',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'admin',
+                                        'package' => 'item',
+                                        'handler' => 'delete',
+                                        'permission' => 'admin-content-item-edit',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Admin\Industry\DeleteHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                     'meta' => [
                         'type' => Literal::class,
                         'options' => [
@@ -1663,6 +2305,27 @@ return [
                                                     AuthenticationMiddleware::class,
                                                     AuthorizationMiddleware::class,
                                                     Handler\Admin\Meta\Value\MetaValueListHandler::class
+                                                ),
+                                            ],
+                                        ],
+                                    ],
+                                    'add' => [
+                                        'type' => Literal::class,
+                                        'options' => [
+                                            'route' => '/add',
+                                            'defaults' => [
+                                                'module' => 'content',
+                                                'section' => 'admin',
+                                                'package' => 'item',
+                                                'handler' => 'list',
+                                                'permission' => 'admin-content-item-list',
+                                                'controller' => PipeSpec::class,
+                                                'middleware' => new PipeSpec(
+                                                    SecurityMiddleware::class,
+                                                    RequestPreparationMiddleware::class,
+                                                    AuthenticationMiddleware::class,
+                                                    AuthorizationMiddleware::class,
+                                                    Handler\Admin\Meta\Value\MetaValueAddHandler::class
                                                 ),
                                             ],
                                         ],
@@ -1944,6 +2607,223 @@ return [
                         ]
                     ],
 
+                ],
+            ],
+            // User section (read-only: suppliers + pricing for logged-in users)
+            'user_content' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/user/content',
+                    'defaults' => [],
+                ],
+                'child_routes' => [
+                    'supplier' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/supplier',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\Supplier\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\Supplier\GetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'material-offer' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/material-offer',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\MaterialOffer\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'supplier-review' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/supplier-review',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\AddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get-my-rating' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get-my-rating',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\GetMyRatingHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'add-rating' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add-rating',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\AddRatingHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'add-comment' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add-comment',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\AddCommentHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\ListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'score-types' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/score-types',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\GetScoreTypesHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'add-scores' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add-scores',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\AddScoresHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get-my-scores' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get-my-scores',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\GetMyScoresHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'get-supplier-score-averages' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get-supplier-score-averages',
+                                    'defaults' => [
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            Handler\User\SupplierReview\GetSupplierScoreAveragesHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
