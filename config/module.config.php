@@ -188,6 +188,8 @@ return [
             Handler\Public\Meta\Value\IndustrySubIndustryListHandler::class => Factory\Handler\Public\Meta\Value\IndustrySubIndustryListHandlerFactory::class,
 
             Handler\Public\Supplier\RegisterHandler::class => Factory\Handler\Public\Supplier\RegisterHandlerFactory::class,
+            Handler\Api\Supplier\GetHandler::class => Factory\Handler\Api\Supplier\GetHandlerFactory::class,
+            Handler\Api\Supplier\UpdateHandler::class => Factory\Handler\Api\Supplier\UpdateHandlerFactory::class,
             Handler\Public\Workflow\IndustriesMaterialsHandler::class => Factory\Handler\Public\Workflow\IndustriesMaterialsHandlerFactory::class,
             Handler\Public\Workflow\VendorsHandler::class => Factory\Handler\Public\Workflow\VendorsHandlerFactory::class,
             Handler\Public\Workflow\VendorsAndMaterialsHandler::class => Factory\Handler\Public\Workflow\VendorsAndMaterialsHandlerFactory::class,
@@ -1509,11 +1511,59 @@ return [
                                 ],
                             ],
                         ],
-                    ],
-
 
                 ],
+                    'supplier' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/supplier',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'api',
+                                        'package' => 'supplier',
+                                        'handler' => 'get',
+                                        'permission' => 'api-content-supplier-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            Handler\Api\Supplier\GetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'update' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/update',
+                                    'defaults' => [
+                                        'module' => 'content',
+                                        'section' => 'api',
+                                        'package' => 'supplier',
+                                        'handler' => 'update',
+                                        'permission' => 'api-content-supplier-update',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Api\Supplier\UpdateHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
             ],
+                ],
             // Admin section
             'admin_content' => [
                 'type' => Literal::class,
